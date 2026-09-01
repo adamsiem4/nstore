@@ -2,11 +2,13 @@
   "name": "nstore",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "bun src/server/queries/products.check.ts"
   },
   "dependencies": {
     "next": "16.3.3",

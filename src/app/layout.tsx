@@ -13,7 +13,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "nstore",
+  title: {
+    default: "nstore",
+    template: "%s · nstore",
+  },
   description: "Everyday things, made well.",
 };
 
@@ -23,7 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full font-sans text-zinc-900">{children}</body>
     </html>
   );
 }
