@@ -9,6 +9,12 @@ This block is written and re-added by `next dev` - verify at `node_modules/next/
 
 <!-- END:nextjs-agent-rules -->
 
+## Git
+
+Never stage, commit, push, merge, rebase, or create PRs.
+Only edit files and inspect Git state.
+The user handles all Git write operations manually.
+
 # NStore
 
 NStore is a portfolio-grade full-stack e-commerce application.
