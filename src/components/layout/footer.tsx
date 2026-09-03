@@ -1,6 +1,6 @@
 export function SiteFooter() {
   return (
-    <footer className="border-t border-zinc-200 py-8 text-center text-sm text-zinc-500">
+    <footer className="border-t py-8 text-center text-sm text-muted-foreground">
       © {new Date().getFullYear()} nstore
     </footer>
   );

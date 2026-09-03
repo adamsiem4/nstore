@@ -3,6 +3,7 @@ import { shadcn } from "@clerk/ui/themes";
 import { PostHogIdentity } from "@/components/analytics/posthog-identity";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,13 +28,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full font-sans text-zinc-900">
-        <ClerkProvider appearance={{ theme: shadcn }}>
-          <PostHogIdentity />
-          {children}
-        </ClerkProvider>
+      <body className="min-h-full font-sans">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ClerkProvider appearance={{ theme: shadcn }}>
+            <PostHogIdentity />
+            {children}
+          </ClerkProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

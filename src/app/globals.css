@@ -49,10 +49,6 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-body {
-  background: #fff;
-  color: #18181b;
-}
 
 :root {
   --background: oklch(1 0 0);
