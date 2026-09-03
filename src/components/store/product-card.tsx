@@ -6,12 +6,12 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/products/${product.id}`}
-      className="block rounded-3xl border border-zinc-200 p-6 transition-colors hover:border-zinc-400"
+      className="group block h-full rounded-2xl border bg-background p-4 transition-[transform,border-color,box-shadow] hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       {/* ponytail: no image slot yet — placeholder block keeps the grid honest */}
-      <div className="aspect-4/3 rounded-2xl bg-zinc-100" />
+      <div className="aspect-4/3 rounded-xl bg-gradient-to-br from-muted to-accent" />
       <h3 className="mt-5 font-medium">{product.name}</h3>
-      <p className="mt-1 text-zinc-600">{money.format(product.price)}</p>
+      <p className="mt-1 text-muted-foreground">{money.format(product.price)}</p>
     </Link>
   );
 }
