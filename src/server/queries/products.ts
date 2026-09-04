@@ -41,8 +41,14 @@ const catalog: Product[] = [
   },
 ];
 
-export async function getProducts(): Promise<Product[]> {
-  return catalog;
+export async function getProducts(query?: string): Promise<Product[]> {
+  const q = query?.trim().toLowerCase();
+
+  if (!q) return catalog;
+
+  return catalog.filter((p) =>
+    `${p.name} ${p.description}`.toLowerCase().includes(q),
+  );
 }
 
 export async function getProduct(id: string): Promise<Product | undefined> {
