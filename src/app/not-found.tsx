@@ -1,15 +1,18 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
     <div className="py-24 text-center">
       <h1 className="text-3xl font-semibold tracking-tight">Not found</h1>
-      <p className="mt-3 text-zinc-600">
+      <p className="mt-3 text-muted-foreground">
         That page or product doesn&apos;t exist.
       </p>
       <Link
         href="/products"
-        className="mt-8 inline-flex h-12 items-center rounded-full bg-zinc-900 px-8 font-medium text-white hover:bg-zinc-700"
+        className={buttonVariants({
+          className: "mt-8 h-12 px-8 text-base",
+        })}
       >
         Back to shop
       </Link>

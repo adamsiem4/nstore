@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/layout/header";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { money } from "@/lib/utils";
 import { getProduct, getProducts } from "@/server/queries/products";
 
@@ -25,32 +27,35 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
   if (!product) notFound();
 
   return (
-    <div className="flex flex-col gap-3 rounded-[2rem] bg-muted/50 p-3 sm:rounded-[2.5rem] sm:p-4">
+    <main className="flex min-h-[calc(100svh-1rem)] flex-col rounded-lg border bg-card p-5 sm:min-h-[calc(100svh-1.5rem)] sm:p-8 lg:p-12">
       <SiteHeader />
-      <article className="grid gap-8 rounded-[1.75rem] bg-card p-6 sm:p-10 lg:grid-cols-2 lg:gap-12">
+      <Separator className="my-6 sm:my-8" />
+      <article className="grid flex-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
         {/* ponytail: no image slot yet — placeholder block holds the layout */}
-        <div className="aspect-square rounded-[1.5rem] bg-gradient-to-br from-muted to-accent" />
-        <div className="lg:py-8">
+        <div className="aspect-square rounded-lg bg-gradient-to-br from-muted to-accent" />
+        <div>
           <Link
             href="/products"
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             ← Back to shop
           </Link>
-          <h1 className="mt-6 text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h1 className="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">
             {product.name}
           </h1>
-          <p className="mt-3 text-2xl">{money.format(product.price)}</p>
-          <p className="mt-6 text-muted-foreground">{product.description}</p>
+          <p className="mt-4 text-2xl">{money.format(product.price)}</p>
+          <p className="mt-6 max-w-lg text-lg leading-8 text-muted-foreground">
+            {product.description}
+          </p>
           {/* ponytail: no cart yet — a chip, not a fake button */}
-          <span className="mt-10 inline-flex h-12 items-center rounded-full bg-primary px-8 font-medium text-primary-foreground">
+          <Badge className="mt-10 h-12 rounded-lg px-8 text-base">
             Add to cart
-          </span>
+          </Badge>
           <p className="mt-4 text-sm text-muted-foreground">
             Free shipping over $75 · 30-day returns
           </p>
         </div>
       </article>
-    </div>
+    </main>
   );
 }

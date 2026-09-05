@@ -2,68 +2,78 @@ import { Show, UserButton } from "@clerk/nextjs";
 import { SearchIcon, ShoppingBagIcon } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-/** Pill row that lives inside the dashboard panel — no page-wide navbar. */
+const controlClass = "h-10 px-4 text-sm";
+
+/** Top row of the full-bleed store panel — no page-wide navbar. */
 export function SiteHeader() {
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <header className="flex flex-wrap items-center gap-3">
       <Link
         href="/"
-        className="inline-flex h-14 shrink-0 items-center rounded-full bg-card px-6 text-lg font-semibold tracking-tight shadow-sm transition-colors hover:bg-accent"
+        className="text-xl font-semibold tracking-tight transition-opacity hover:opacity-70"
       >
         nstore
       </Link>
 
       <form
         action="/products"
-        className="flex h-14 min-w-56 flex-1 items-center gap-2 rounded-full bg-card pr-2 pl-5 shadow-sm"
+        className="flex min-w-52 flex-1 items-center gap-2"
       >
-        <input
+        <Input
           name="q"
           type="search"
           placeholder="Search the collection"
           aria-label="Search the collection"
-          className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          className="h-10"
         />
-        <button
+        <Button
           type="submit"
+          variant="outline"
+          size="icon-lg"
           aria-label="Search"
-          className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground transition-opacity hover:opacity-80"
+          className="size-10"
         >
-          <SearchIcon className="size-4" />
-        </button>
+          <SearchIcon />
+        </Button>
       </form>
 
-      <div className="flex h-14 items-center gap-2 rounded-full bg-card px-3 shadow-sm">
+      <div className="flex items-center gap-2">
         <ThemeToggle />
         {/* ponytail: no cart yet — a count chip, not a dead link */}
-        <span className="inline-flex h-9 items-center gap-1.5 rounded-full bg-muted px-3 text-sm">
-          <ShoppingBagIcon className="size-4" />0
-        </span>
+        <Badge variant="outline" className="h-10 gap-1.5 rounded-lg px-3 text-sm">
+          <ShoppingBagIcon />0
+        </Badge>
         <Show when="signed-out">
           <Link
             href="/sign-in"
-            className="inline-flex h-9 items-center rounded-full px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className={buttonVariants({
+              variant: "ghost",
+              className: controlClass,
+            })}
           >
             Sign in
           </Link>
-          <Link
-            href="/sign-up"
-            className="inline-flex h-9 items-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-80"
-          >
+          <Link href="/sign-up" className={buttonVariants({ className: controlClass })}>
             Sign up
           </Link>
         </Show>
         <Show when="signed-in">
           <Link
             href="/account"
-            className="inline-flex h-9 items-center rounded-full px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className={buttonVariants({
+              variant: "ghost",
+              className: controlClass,
+            })}
           >
             Account
           </Link>
           <UserButton />
         </Show>
       </div>
-    </div>
+    </header>
   );
 }

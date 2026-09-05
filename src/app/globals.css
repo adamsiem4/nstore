@@ -74,7 +74,10 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  /* 4px = Fluent's in-page radius (Win11/Brave reserve 8px for the window
+     frame itself, and the panel now sits in a gutter wider than that frame
+     radius, so it is its own surface). Whole shadcn scale derives from this. */
+  --radius: 0.25rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);

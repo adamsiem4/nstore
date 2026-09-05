@@ -21,7 +21,7 @@ export function ThemeToggle() {
           <Button
             variant="outline"
             size="icon-lg"
-            className="rounded-full"
+            className="size-10"
             aria-label="Choose color theme"
           />
         }
