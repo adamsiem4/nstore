@@ -1,17 +1,29 @@
 import { Show, UserButton } from "@clerk/nextjs";
-import { SearchIcon, ShoppingBagIcon } from "lucide-react";
+import { SearchIcon, ShoppingBagIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
-const controlClass = "h-10 px-4 text-sm";
+const categories = [
+  "Outerwear",
+  "Knitwear",
+  "Bags",
+  "Accessories",
+  "Socks",
+  "Leather",
+];
 
-/** Top row of the full-bleed store panel — no page-wide navbar. */
+const navLinkClass = buttonVariants({
+  variant: "ghost",
+  className: "h-9 px-4 text-xs tracking-[0.12em] text-muted-foreground uppercase",
+});
+
+/** Store name, centered catalog nav, icon cluster — top row of the panel. */
 export function SiteHeader() {
   return (
-    <header className="flex flex-wrap items-center gap-3">
+    <header className="flex flex-wrap items-center gap-x-2 gap-y-3">
       <Link
         href="/"
         className="text-xl font-semibold tracking-tight transition-opacity hover:opacity-70"
@@ -19,58 +31,78 @@ export function SiteHeader() {
         nstore
       </Link>
 
-      <form
-        action="/products"
-        className="flex min-w-52 flex-1 items-center gap-2"
+      <nav
+        aria-label="Catalog"
+        className="order-3 w-full overflow-x-auto [scrollbar-width:none] md:order-none md:mx-auto md:w-auto md:overflow-visible [&::-webkit-scrollbar]:hidden"
       >
-        <Input
-          name="q"
-          type="search"
-          placeholder="Search the collection"
-          aria-label="Search the collection"
-          className="h-10"
-        />
-        <Button
-          type="submit"
-          variant="outline"
-          size="icon-lg"
-          aria-label="Search"
-          className="size-10"
-        >
-          <SearchIcon />
-        </Button>
-      </form>
+        <ul className="flex items-center gap-1">
+          <li>
+            <Link
+              href="/products"
+              className={cn(navLinkClass, "font-semibold text-foreground")}
+            >
+              Shop
+            </Link>
+          </li>
+          {categories.map((category) => (
+            <li key={category}>
+              <Link
+                href={`/products?q=${encodeURIComponent(category)}`}
+                className={navLinkClass}
+              >
+                {category}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-      <div className="flex items-center gap-2">
+      <div className="ml-auto flex items-center gap-0.5 md:ml-0">
         <ThemeToggle />
+
+        {/* ponytail: <details> is the whole search toggle — no state, no popover lib */}
+        <details className="relative">
+          <summary
+            aria-label="Search"
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "icon-lg" }),
+              "cursor-pointer list-none [&::-webkit-details-marker]:hidden",
+            )}
+          >
+            <SearchIcon />
+          </summary>
+          <form
+            action="/products"
+            className="absolute top-full right-0 z-20 mt-2 flex w-[min(18rem,calc(100vw-3rem))] items-center gap-2 rounded-xl border bg-popover p-2 shadow-md"
+          >
+            <Input
+              name="q"
+              type="search"
+              placeholder="Search the collection"
+              aria-label="Search the collection"
+              className="h-9"
+            />
+            <Button type="submit" size="icon-lg" aria-label="Search">
+              <SearchIcon />
+            </Button>
+          </form>
+        </details>
+
         {/* ponytail: no cart yet — a count chip, not a dead link */}
-        <Badge variant="outline" className="h-10 gap-1.5 rounded-lg px-3 text-sm">
-          <ShoppingBagIcon />0
-        </Badge>
+        <span className="inline-flex h-9 items-center gap-1.5 px-2 text-sm text-muted-foreground">
+          <ShoppingBagIcon className="size-4" />0
+        </span>
+
         <Show when="signed-out">
           <Link
             href="/sign-in"
-            className={buttonVariants({
-              variant: "ghost",
-              className: controlClass,
-            })}
+            aria-label="Sign in"
+            className={buttonVariants({ variant: "ghost", size: "icon-lg" })}
           >
-            Sign in
-          </Link>
-          <Link href="/sign-up" className={buttonVariants({ className: controlClass })}>
-            Sign up
+            <UserIcon />
           </Link>
         </Show>
         <Show when="signed-in">
-          <Link
-            href="/account"
-            className={buttonVariants({
-              variant: "ghost",
-              className: controlClass,
-            })}
-          >
-            Account
-          </Link>
           <UserButton />
         </Show>
       </div>

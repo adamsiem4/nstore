@@ -5,6 +5,23 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ponytail: CSS marquee. The track holds the message list 6x at natural width,
+   so one keyframe cycle slides exactly one copy (100% / 6) — distance and
+   therefore speed are identical on every viewport, and 5 spare copies keep the
+   tail filled up to ~4000px wide. translate3d keeps it on the compositor. */
+@theme {
+  --animate-marquee: marquee 17s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-16.6667%, 0, 0);
+    }
+  }
+}
+
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -43,7 +60,9 @@
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
+  /* Surface radius: measured 12px on youtube.com thumbnails and lockups
+     (Material 3 "medium" corner token). Controls stay on --radius (4px). */
+  --radius-xl: 12px;
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);

@@ -1,7 +1,13 @@
 import type { ReactNode } from "react";
+import { AnnouncementBar } from "@/components/layout/announcement-bar";
 
 export default function StoreLayout({ children }: { children: ReactNode }) {
-  // ponytail: 8/12px gutter — wide enough that the panel reads as its own
-  // surface instead of hugging the browser frame
-  return <div className="w-full p-2 sm:p-3">{children}</div>;
+  // ponytail: flex column instead of min-h calc — the panel absorbs whatever
+  // height the promo strip leaves
+  return (
+    <div className="flex min-h-svh w-full flex-col gap-2 p-2 sm:gap-3 sm:p-3">
+      <AnnouncementBar />
+      {children}
+    </div>
+  );
 }

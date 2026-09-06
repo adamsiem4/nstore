@@ -17,7 +17,7 @@ export default async function ProductsPage({
   const products = await getProducts(query);
 
   return (
-    <main className="flex min-h-[calc(100svh-1rem)] flex-col rounded-lg border bg-card p-5 sm:min-h-[calc(100svh-1.5rem)] sm:p-8 lg:p-12">
+    <main className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
       <SiteHeader />
       <Separator className="my-6 sm:my-8" />
       <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">

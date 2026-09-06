@@ -8,46 +8,17 @@ import { Separator } from "@/components/ui/separator";
 import { money } from "@/lib/utils";
 import { getProducts } from "@/server/queries/products";
 
-const categories = [
-  "Outerwear",
-  "Knitwear",
-  "Bags",
-  "Accessories",
-  "Socks",
-  "Leather",
-];
-
 export default async function HomePage() {
   const products = await getProducts();
   const [feature, ...rest] = products;
 
   return (
-    <main className="flex min-h-[calc(100svh-1rem)] flex-col rounded-lg border bg-card p-5 sm:min-h-[calc(100svh-1.5rem)] sm:p-8 lg:p-12">
+    <main className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
       <SiteHeader />
 
-      <Separator className="mt-5 sm:mt-7" />
+      <Separator className="my-5 sm:my-6" />
 
-      <nav aria-label="Product categories" className="py-3">
-        <ul className="flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {categories.map((category) => (
-            <li key={category}>
-              <Link
-                href={`/products?q=${encodeURIComponent(category)}`}
-                className={buttonVariants({
-                  variant: "ghost",
-                  className: "h-10 px-4 text-sm text-muted-foreground",
-                })}
-              >
-                {category}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <Separator />
-
-      <section className="grid flex-1 items-center gap-10 py-10 sm:py-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:py-14">
+      <section className="grid flex-1 items-center gap-8 py-8 sm:py-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
         <div>
           <p className="mb-5 text-sm font-semibold tracking-[0.16em] text-muted-foreground uppercase">
             Thoughtful everyday goods
@@ -72,7 +43,7 @@ export default async function HomePage() {
               <ArrowRightIcon data-icon="inline-end" />
             </Link>
             <p className="text-sm leading-6 text-muted-foreground">
-              Free shipping over $75
+              Free shipping over €60
               <br />
               30-day returns
             </p>
@@ -80,7 +51,7 @@ export default async function HomePage() {
         </div>
 
         <Link href={`/products/${feature.id}`} className="group block">
-          <Card className="gap-0 rounded-lg bg-muted/40 transition-colors group-hover:bg-muted">
+          <Card className="gap-0 bg-muted/40 transition-colors group-hover:bg-muted">
             <CardContent className="flex items-center justify-between gap-4">
               <Badge variant="outline" className="h-8 rounded-lg bg-card px-3 text-sm">
                 New arrival
@@ -95,7 +66,7 @@ export default async function HomePage() {
             </CardContent>
             {/* ponytail: no image slot yet — placeholder block holds the layout */}
             <CardContent>
-              <div className="h-56 rounded-lg bg-gradient-to-br from-background to-accent sm:h-72 lg:h-80" />
+              <div className="h-48 rounded-xl bg-gradient-to-br from-background to-accent sm:h-64 lg:h-72" />
             </CardContent>
             <CardContent className="flex items-end justify-between gap-6">
               <div>
@@ -137,7 +108,7 @@ export default async function HomePage() {
               <Link href={`/products/${product.id}`} className="group block h-full">
                 <Card
                   size="sm"
-                  className="h-full rounded-lg transition-colors group-hover:bg-muted/60"
+                  className="h-full transition-colors group-hover:bg-muted/60"
                 >
                   <CardContent className="flex items-center justify-between gap-4">
                     <div>

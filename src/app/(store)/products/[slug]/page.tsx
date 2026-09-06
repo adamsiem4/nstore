@@ -27,12 +27,12 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
   if (!product) notFound();
 
   return (
-    <main className="flex min-h-[calc(100svh-1rem)] flex-col rounded-lg border bg-card p-5 sm:min-h-[calc(100svh-1.5rem)] sm:p-8 lg:p-12">
+    <main className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
       <SiteHeader />
       <Separator className="my-6 sm:my-8" />
       <article className="grid flex-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
         {/* ponytail: no image slot yet — placeholder block holds the layout */}
-        <div className="aspect-square rounded-lg bg-gradient-to-br from-muted to-accent" />
+        <div className="aspect-square rounded-xl bg-gradient-to-br from-muted to-accent" />
         <div>
           <Link
             href="/products"
@@ -52,7 +52,7 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
             Add to cart
           </Badge>
           <p className="mt-4 text-sm text-muted-foreground">
-            Free shipping over $75 · 30-day returns
+            Free shipping over €60 · 30-day returns
           </p>
         </div>
       </article>

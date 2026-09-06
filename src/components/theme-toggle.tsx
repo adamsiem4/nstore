@@ -19,9 +19,8 @@ export function ThemeToggle() {
       <DropdownMenuTrigger
         render={
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon-lg"
-            className="size-10"
             aria-label="Choose color theme"
           />
         }
