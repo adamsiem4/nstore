@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 
 const messages = [
   { label: "Free shipping on orders over €60" },
-  { label: "Explore new arrivals", href: "/products" },
-  { label: "30 days returns" },
-  { label: "Sale", href: "/products" },
+  { label: "Home appliances & household goods", href: "/products" },
+  { label: "30-day returns" },
+  { label: "A little better, every day", href: "/products?q=Home%20comfort" },
 ];
 
 /** Copies of the message list; the keyframes slide exactly one of them. */

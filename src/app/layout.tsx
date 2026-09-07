@@ -18,10 +18,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "nstore",
+    default: "nstore · Home Appliances & Household Goods",
     template: "%s · nstore",
   },
-  description: "Everyday things, made well.",
+  description:
+    "Home appliances and household goods for everyday living. Explore kitchen appliances, cookware, cleaning, laundry, storage, and home comfort at nstore.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -1,4 +1,5 @@
-import { ArrowRightIcon, StarIcon } from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/layout/header";
 import { Badge } from "@/components/ui/badge";
@@ -21,16 +22,16 @@ export default async function HomePage() {
       <section className="grid flex-1 items-center gap-8 py-8 sm:py-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
         <div>
           <p className="mb-5 text-sm font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-            Thoughtful everyday goods
+            Home appliances &amp; household goods
           </p>
           <h1 className="max-w-3xl text-balance text-5xl leading-[0.95] font-semibold tracking-[-0.055em] sm:text-7xl lg:text-8xl">
-            Fewer things.
+            A better home.
             <br />
-            Better made.
+            Every day.
           </h1>
           <p className="mt-7 max-w-xl text-pretty text-lg leading-8 text-muted-foreground sm:text-xl">
-            Durable clothing and useful objects, selected for honest materials,
-            quiet details, and daily wear.
+            From your first coffee to a freshly made room. Thoughtful appliances
+            and household essentials for the way you live.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-5">
             <Link
@@ -39,11 +40,11 @@ export default async function HomePage() {
                 className: "h-14 px-7 text-base",
               })}
             >
-              Shop the collection
+              Find your essentials
               <ArrowRightIcon data-icon="inline-end" />
             </Link>
             <p className="text-sm leading-6 text-muted-foreground">
-              Free shipping over €60
+              {products.length} everyday essentials
               <br />
               30-day returns
             </p>
@@ -54,23 +55,29 @@ export default async function HomePage() {
           <Card className="gap-0 bg-muted/40 transition-colors group-hover:bg-muted">
             <CardContent className="flex items-center justify-between gap-4">
               <Badge variant="outline" className="h-8 rounded-lg bg-card px-3 text-sm">
-                New arrival
+                New for home
               </Badge>
               <Badge
                 variant="outline"
-                className="h-8 gap-1.5 rounded-lg bg-card px-3 text-sm"
+                className="h-8 rounded-lg bg-card px-3 text-sm"
               >
-                <StarIcon className="fill-current text-amber-500" />
-                4.9
+                {feature.category}
               </Badge>
             </CardContent>
-            {/* ponytail: no image slot yet — placeholder block holds the layout */}
             <CardContent>
-              <div className="h-48 rounded-xl bg-gradient-to-br from-background to-accent sm:h-64 lg:h-72" />
+              <Image
+                src={feature.image}
+                alt={feature.name}
+                width={1536}
+                height={1536}
+                sizes="(max-width: 1023px) 100vw, 42vw"
+                preload
+                className="aspect-square max-h-96 w-full rounded-xl object-contain bg-[#eeede7]"
+              />
             </CardContent>
             <CardContent className="flex items-end justify-between gap-6">
               <div>
-                <p className="text-sm text-muted-foreground">Featured piece</p>
+                <p className="text-sm text-muted-foreground">Meet your daily helper</p>
                 <h2 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
                   {feature.name}
                 </h2>
@@ -88,11 +95,11 @@ export default async function HomePage() {
 
       <Separator />
 
-      <section id="featured" className="pt-6 sm:flex sm:items-start sm:gap-10">
-        <div className="mb-5 shrink-0 sm:mb-0 sm:w-52">
-          <p className="text-sm text-muted-foreground">The edit</p>
+      <section id="featured" className="pt-6 lg:flex lg:items-start lg:gap-10">
+        <div className="mb-5 shrink-0 lg:mb-0 lg:w-52">
+          <p className="text-sm text-muted-foreground">Made for home</p>
           <h2 className="mt-1 text-2xl font-semibold tracking-tight">
-            Featured pieces
+            Everyday favourites
           </h2>
           <Link
             href="/products"
@@ -110,14 +117,21 @@ export default async function HomePage() {
                   size="sm"
                   className="h-full transition-colors group-hover:bg-muted/60"
                 >
-                  <CardContent className="flex items-center justify-between gap-4">
+                  <CardContent className="grid gap-3 xl:grid-cols-[4rem_1fr] xl:items-center">
+                    <Image
+                      src={product.image}
+                      alt=""
+                      width={1536}
+                      height={1536}
+                      sizes="64px"
+                      className="size-16 rounded-lg object-cover"
+                    />
                     <div>
                       <p className="text-base font-medium">{product.name}</p>
                       <p className="mt-1 text-sm text-muted-foreground">
                         {money.format(product.price)}
                       </p>
                     </div>
-                    <ArrowRightIcon className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
                   </CardContent>
                 </Card>
               </Link>

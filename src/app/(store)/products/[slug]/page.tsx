@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/layout/header";
@@ -31,8 +32,15 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
       <SiteHeader />
       <Separator className="my-6 sm:my-8" />
       <article className="grid flex-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        {/* ponytail: no image slot yet — placeholder block holds the layout */}
-        <div className="aspect-square rounded-xl bg-gradient-to-br from-muted to-accent" />
+        <Image
+          src={product.image}
+          alt={product.name}
+          width={1536}
+          height={1536}
+          sizes="(max-width: 1023px) 100vw, 50vw"
+          preload
+          className="aspect-square w-full rounded-xl object-cover"
+        />
         <div>
           <Link
             href="/products"
@@ -40,7 +48,10 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
           >
             ← Back to shop
           </Link>
-          <h1 className="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">
+          <p className="mt-6 text-sm font-medium tracking-wide text-muted-foreground uppercase">
+            {product.category}
+          </p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
             {product.name}
           </h1>
           <p className="mt-4 text-2xl">{money.format(product.price)}</p>

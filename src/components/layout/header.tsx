@@ -7,17 +7,17 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 const categories = [
-  "Outerwear",
-  "Knitwear",
-  "Bags",
-  "Accessories",
-  "Socks",
-  "Leather",
+  "Kitchen appliances",
+  "Cookware",
+  "Cleaning",
+  "Laundry",
+  "Storage",
+  "Home comfort",
 ];
 
 const navLinkClass = buttonVariants({
   variant: "ghost",
-  className: "h-9 px-4 text-xs tracking-[0.12em] text-muted-foreground uppercase",
+  className: "h-9 px-3 text-xs tracking-[0.08em] text-muted-foreground uppercase",
 });
 
 /** Store name, centered catalog nav, icon cluster — top row of the panel. */
@@ -33,7 +33,7 @@ export function SiteHeader() {
 
       <nav
         aria-label="Catalog"
-        className="order-3 w-full overflow-x-auto [scrollbar-width:none] md:order-none md:mx-auto md:w-auto md:overflow-visible [&::-webkit-scrollbar]:hidden"
+        className="order-3 w-full overflow-x-auto [scrollbar-width:none] xl:order-none xl:mx-auto xl:w-auto [&::-webkit-scrollbar]:hidden"
       >
         <ul className="flex items-center gap-1">
           <li>
@@ -57,7 +57,7 @@ export function SiteHeader() {
         </ul>
       </nav>
 
-      <div className="ml-auto flex items-center gap-0.5 md:ml-0">
+      <div className="ml-auto flex items-center gap-0.5 xl:ml-0">
         <ThemeToggle />
 
         {/* ponytail: <details> is the whole search toggle — no state, no popover lib */}
@@ -78,8 +78,8 @@ export function SiteHeader() {
             <Input
               name="q"
               type="search"
-              placeholder="Search the collection"
-              aria-label="Search the collection"
+              placeholder="Search home essentials"
+              aria-label="Search home essentials"
               className="h-9"
             />
             <Button type="submit" size="icon-lg" aria-label="Search">

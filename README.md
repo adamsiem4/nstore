@@ -1,6 +1,6 @@
 # NStore
 
-NStore is a single full-stack e-commerce application built with the Next.js
+NStore is a home appliances and household goods store built with the Next.js
 App Router, TypeScript, Bun, and Tailwind CSS.
 
 ## Stack
@@ -32,7 +32,8 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 
 ## Implemented
 
-- Landing page, product catalog, and product detail pages
+- Landing page, searchable 50-product catalog, and product detail pages
+- Six household categories with original 1536×1536, text-free 3D product renders
 - Shared storefront layout and shadcn/ui configuration
 - Clerk sign-in, sign-up, user controls, and protected account page
 - Drizzle payment schema and generated PostgreSQL migration
@@ -41,8 +42,17 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 - PostHog browser analytics and Sentry client/server/edge error monitoring
 - Zero-configuration Vercel deployment and CodeRabbit pull-request review
 
-Product catalog data remains in memory until a Neon product migration is
-defined. Payment persistence uses Neon now.
+The household catalog lives in `src/server/queries/products.ts`. Its original
+WebP renders live in `public/products/`; no rendering library or external image
+service is required at runtime. Search matches names, descriptions, and categories.
+
+Product names and specifications remain in HTML rather than baked into the
+images, keeping small or floating lettering off the product artwork. When
+replacing renders in place, clear `.next/dev/cache/images` to refresh Next.js
+development image previews.
+
+Catalog data remains in memory; payment persistence uses Neon. Cart and checkout
+are not implemented.
 
 ## Environment
 
