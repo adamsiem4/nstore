@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { getCartLines } from "@/server/cart-lines";
 
 const categories = [
   "Kitchen appliances",
@@ -21,7 +22,9 @@ const navLinkClass = buttonVariants({
 });
 
 /** Store name, centered catalog nav, icon cluster — top row of the panel. */
-export function SiteHeader() {
+export async function SiteHeader() {
+  const count = (await getCartLines()).reduce((sum, line) => sum + line.quantity, 0);
+
   return (
     <header className="flex flex-wrap items-center gap-x-2 gap-y-3">
       <Link
@@ -88,10 +91,18 @@ export function SiteHeader() {
           </form>
         </details>
 
-        {/* ponytail: no cart yet — a count chip, not a dead link */}
-        <span className="inline-flex h-9 items-center gap-1.5 px-2 text-sm text-muted-foreground">
-          <ShoppingBagIcon className="size-4" />0
-        </span>
+        <Link
+          href="/cart"
+          aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
+          className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "relative")}
+        >
+          <ShoppingBagIcon />
+          {count > 0 && (
+            <span className="absolute right-0.5 bottom-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] leading-none font-medium text-primary-foreground tabular-nums">
+              {count}
+            </span>
+          )}
+        </Link>
 
         <Show when="signed-out">
           <Link

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/layout/header";
-import { Badge } from "@/components/ui/badge";
+import { AddToCartButton } from "@/components/store/cart";
 import { Separator } from "@/components/ui/separator";
 import { money } from "@/lib/utils";
 import { getProduct, getProducts } from "@/server/queries/products";
@@ -58,10 +58,7 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
           <p className="mt-6 max-w-lg text-lg leading-8 text-muted-foreground">
             {product.description}
           </p>
-          {/* ponytail: no cart yet — a chip, not a fake button */}
-          <Badge className="mt-10 h-12 rounded-lg px-8 text-base">
-            Add to cart
-          </Badge>
+          <AddToCartButton product={product} />
           <p className="mt-4 text-sm text-muted-foreground">
             Free shipping over €60 · 30-day returns
           </p>

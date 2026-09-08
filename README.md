@@ -35,6 +35,8 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 - Landing page, searchable 50-product catalog, and product detail pages
 - Six household categories with original 1536×1536, text-free 3D product renders
 - Shared storefront layout and shadcn/ui configuration
+- Product-card quick-add, cookie-backed `/cart`, quantity controls, and order summary
+- Stripe hosted checkout with delivery addresses and paid-return cart clearing
 - Clerk sign-in, sign-up, user controls, and protected account page
 - Drizzle payment schema and generated PostgreSQL migration
 - Stripe webhook signature verification and durable payment-status synchronization
@@ -51,8 +53,10 @@ images, keeping small or floating lettering off the product artwork. When
 replacing renders in place, clear `.next/dev/cache/images` to refresh Next.js
 development image previews.
 
-Catalog data remains in memory; payment persistence uses Neon. Cart and checkout
-are not implemented.
+Catalog data remains in memory; payment persistence uses Neon. Product-card adds
+stay on the catalog; product-detail adds open `/cart`. Shipping is free at checkout.
+Cancelled checkout preserves the cart; `/api/checkout/return` clears it only after
+Stripe confirms a paid session. Configure `STRIPE_SECRET_KEY` to enable payment.
 
 ## Environment
 
