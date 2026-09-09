@@ -22,11 +22,12 @@ export function ThemeToggle() {
             variant="ghost"
             size="icon-lg"
             aria-label="Choose color theme"
+            className="size-11 rounded-full focus-visible:ring-foreground"
           />
         }
       >
-        <SunIcon className="dark:hidden" />
-        <MoonIcon className="hidden dark:block" />
+        <SunIcon aria-hidden="true" className="dark:hidden" />
+        <MoonIcon aria-hidden="true" className="hidden dark:block" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-36">
         <DropdownMenuRadioGroup value={theme ?? "system"} onValueChange={setTheme}>

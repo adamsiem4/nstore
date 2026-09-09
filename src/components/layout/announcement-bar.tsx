@@ -1,55 +1,47 @@
 "use client";
 
-import { XIcon } from "lucide-react";
-import Link from "next/link";
+import { PauseIcon, PlayIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const messages = [
-  { label: "Free shipping on orders over €60" },
-  { label: "Home appliances & household goods", href: "/products" },
-  { label: "30-day returns" },
-  { label: "A little better, every day", href: "/products?q=Home%20comfort" },
+  "Free shipping on orders over €60",
+  "Home appliances & household goods",
+  "30-day returns",
+  "A little better, every day",
 ];
 
 /** Copies of the message list; the keyframes slide exactly one of them. */
 const COPIES = 6;
 
-/** Scrolling promo strip above the store panel. */
 export function AnnouncementBar() {
   // ponytail: dismissal lives in component state, so it returns on reload —
   // move it to a cookie only if that actually annoys someone
   const [dismissed, setDismissed] = useState(false);
+  const [paused, setPaused] = useState(false);
   if (dismissed) return null;
 
   return (
-    <div className="flex items-center gap-2 rounded-xl bg-foreground py-2 pr-1 pl-2 text-background">
-      {/* py-1: the clip box has to be taller than the line box or overflow-hidden
-          eats the link underlines */}
-      <div className="flex-1 overflow-hidden py-1">
-        <div className="flex w-max animate-marquee will-change-transform motion-reduce:animate-none">
+    <aside aria-label="Store announcements" className="flex items-center gap-2 rounded-xl bg-foreground py-1 pr-1 pl-3 text-background">
+      <div className="min-w-0 flex-1 overflow-hidden py-2">
+        <div
+          className="flex w-max animate-marquee will-change-transform motion-reduce:w-auto motion-reduce:animate-none motion-reduce:will-change-auto"
+          style={{ animationPlayState: paused ? "paused" : "running" }}
+        >
           {Array.from({ length: COPIES }, (_, copy) => (
             <ul
               key={copy}
-              aria-hidden={copy > 0}
-              className="flex shrink-0 items-center"
+              aria-hidden={copy > 0 ? true : undefined}
+              className={copy > 0
+                ? "flex shrink-0 items-center motion-reduce:hidden"
+                : "flex shrink-0 items-center motion-reduce:shrink motion-reduce:flex-wrap motion-reduce:gap-x-6 motion-reduce:gap-y-2"}
             >
-              {messages.map(({ label, href }) => (
+              {messages.map((label) => (
                 <li
                   key={label}
-                  className="px-28 text-xs font-medium tracking-[0.14em] whitespace-nowrap uppercase"
+                  className="px-28 text-xs font-medium tracking-[0.14em] whitespace-nowrap uppercase motion-reduce:px-0 motion-reduce:tracking-normal motion-reduce:whitespace-normal"
                 >
-                  {href ? (
-                    <Link
-                      href={href}
-                      tabIndex={copy > 0 ? -1 : undefined}
-                      className="underline decoration-1 underline-offset-4 hover:decoration-background/50"
-                    >
-                      {label}
-                    </Link>
-                  ) : (
-                    label
-                  )}
+                  {label}
                 </li>
               ))}
             </ul>
@@ -58,13 +50,22 @@ export function AnnouncementBar() {
       </div>
       <Button
         variant="ghost"
-        size="icon-sm"
+        size="icon-lg"
+        aria-label={paused ? "Resume announcements" : "Pause announcements"}
+        onClick={() => setPaused(!paused)}
+        className="size-11 shrink-0 rounded-full text-background hover:bg-background/15 hover:text-background focus-visible:ring-background motion-reduce:hidden"
+      >
+        {paused ? <PlayIcon aria-hidden="true" /> : <PauseIcon aria-hidden="true" />}
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon-lg"
         aria-label="Dismiss announcement"
         onClick={() => setDismissed(true)}
-        className="shrink-0 text-background hover:bg-background/15 hover:text-background"
+        className="size-11 shrink-0 rounded-full text-background hover:bg-background/15 hover:text-background focus-visible:ring-background"
       >
-        <XIcon />
+        <XIcon aria-hidden="true" />
       </Button>
-    </div>
+    </aside>
   );
 }
