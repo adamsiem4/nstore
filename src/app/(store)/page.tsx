@@ -235,10 +235,6 @@ export default async function HomePage() {
         </section>
       </main>
 
-      <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 text-sm">
-        <span className="font-semibold tracking-tight">nstore</span>
-        <p className="text-muted-foreground">A little better, every day.</p>
-      </footer>
     </div>
   );
 }
