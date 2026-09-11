@@ -1,9 +1,9 @@
 import type { CSSProperties } from "react";
 import { Show, UserButton } from "@clerk/nextjs";
-import { ChevronDownIcon, SearchIcon, ShoppingBagIcon, UserIcon } from "lucide-react";
+import { ChevronDownIcon, SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { getCartLines } from "@/server/cart-lines";
@@ -39,25 +39,30 @@ export async function SiteHeader() {
 
   return (
     <div className="relative flex flex-wrap items-center gap-x-1 gap-y-3 sm:gap-x-2">
-      <Link
-        href="/"
-        className="inline-flex min-h-11 items-center rounded-lg text-xl font-semibold tracking-tight outline-none hover:opacity-70 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-card"
-      >
-        n
-        <span className="grid grid-cols-[1fr] transition-[grid-template-columns] duration-300 ease-out group-data-[stuck]/header:grid-cols-[0fr] group-data-[stuck]/header:delay-300 motion-reduce:transition-none">
-          <span className="overflow-hidden">
-            {TAIL.map(({ letter, in: fadeIn, out }) => (
-              <span
-                key={letter}
-                style={{ "--in": `${fadeIn}ms`, "--out": `${out}ms` } as CSSProperties}
-                className="transition-opacity duration-150 ease-in-out [transition-delay:var(--in)] group-data-[stuck]/header:opacity-0 group-data-[stuck]/header:[transition-delay:var(--out)] motion-reduce:transition-none"
-              >
-                {letter}
-              </span>
-            ))}
+      {/* ponytail: an invisible copy holds the full width open, so the morph
+          collapses inside its own box and never shifts the nav or the icons */}
+      <div className="relative flex min-h-11 items-center text-xl font-semibold tracking-tight">
+        <span aria-hidden="true" className="invisible">nstore</span>
+        <Link
+          href="/"
+          className="absolute inset-0 inline-flex items-center rounded-lg outline-none transition-opacity hover:opacity-70 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-card"
+        >
+          n
+          <span className="grid grid-cols-[1fr] transition-[grid-template-columns] duration-300 ease-out group-data-[stuck]/header:grid-cols-[0fr] group-data-[stuck]/header:delay-300 motion-reduce:transition-none">
+            <span className="overflow-hidden">
+              {TAIL.map(({ letter, in: fadeIn, out }) => (
+                <span
+                  key={letter}
+                  style={{ "--in": `${fadeIn}ms`, "--out": `${out}ms` } as CSSProperties}
+                  className="transition-opacity duration-150 ease-in-out [transition-delay:var(--in)] group-data-[stuck]/header:opacity-0 group-data-[stuck]/header:[transition-delay:var(--out)] motion-reduce:transition-none"
+                >
+                  {letter}
+                </span>
+              ))}
+            </span>
           </span>
-        </span>
-      </Link>
+        </Link>
+      </div>
 
       <nav
         aria-label="Catalog"
@@ -113,43 +118,46 @@ export async function SiteHeader() {
         </details>
       </nav>
 
-      <div className="ml-auto flex items-center gap-0 sm:gap-0.5 xl:ml-0">
-        <ThemeToggle />
-
-        {/* ponytail: <details> is the whole search toggle — no state, no popover lib */}
-        <details name="store-tools">
-          <summary
-            aria-label="Search"
+      {/* ponytail: 40px boxes butted together — 44px ones read as scattered icons */}
+      <div className="ml-auto flex items-center gap-0 xl:ml-0">
+        {/* ponytail: a checkbox is the whole toggle — no state, no popover lib.
+            Unlike <details> the pill stays in the DOM when shut, so it can
+            swipe closed as smoothly as it opens. */}
+        <div data-search className="relative">
+          <input id="site-search" type="checkbox" aria-label="Search" className="peer sr-only" />
+          <label
+            htmlFor="site-search"
             className={cn(
               buttonVariants({ variant: "ghost", size: "icon-lg" }),
-              "size-11 cursor-pointer list-none rounded-full focus-visible:ring-foreground [&::-webkit-details-marker]:hidden",
+              "relative z-30 size-10 cursor-pointer rounded-full peer-focus-visible:ring-2 peer-focus-visible:ring-foreground",
             )}
           >
-            <SearchIcon aria-hidden="true" />
-          </summary>
+            <SearchIcon aria-hidden="true" data-icon="open" />
+            <XIcon aria-hidden="true" data-icon="close" />
+          </label>
           <form
             action="/products"
             role="search"
             aria-label="Search products"
-            className="absolute top-full right-0 z-20 mt-2 flex w-[min(20rem,calc(100vw-4rem))] items-center gap-2 rounded-xl border bg-popover p-2 shadow-md"
+            className="search-pill absolute top-1/2 left-[calc((var(--search-width)-2.5rem)*-1)] z-20 flex h-10 w-(--search-width) -translate-y-1/2 items-center gap-3 overflow-hidden rounded-full bg-muted pr-11 pl-4 ring-1 ring-foreground/10"
           >
+            <SearchIcon aria-hidden="true" className="size-5 shrink-0 text-muted-foreground" />
             <Input
               name="q"
               type="search"
-              placeholder="Search home essentials"
+              placeholder="Search"
               aria-label="Search home essentials"
-              className="h-11 min-w-0"
+              className="h-10 min-w-0 rounded-none border-0 bg-transparent px-0 text-base shadow-none focus-visible:border-0 focus-visible:ring-0 dark:bg-transparent [&::-webkit-search-cancel-button]:hidden"
             />
-            <Button type="submit" size="icon-lg" aria-label="Search" className="size-11 rounded-lg focus-visible:ring-foreground">
-              <SearchIcon aria-hidden="true" />
-            </Button>
+            <button type="submit" className="sr-only">
+              Search
+            </button>
           </form>
-        </details>
-
+        </div>
         <Link
           href="/cart"
           aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
-          className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "relative size-11 rounded-full focus-visible:ring-foreground")}
+          className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "relative size-10 rounded-full focus-visible:ring-foreground")}
         >
           <ShoppingBagIcon aria-hidden="true" />
           {count > 0 && (
@@ -158,18 +166,21 @@ export async function SiteHeader() {
             </span>
           )}
         </Link>
+        <ThemeToggle />
 
         <Show when="signed-out">
           <Link
             href="/sign-in"
             aria-label="Sign in"
-            className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "size-11 rounded-full focus-visible:ring-foreground")}
+            className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "size-10 rounded-full focus-visible:ring-foreground")}
           >
             <UserIcon aria-hidden="true" />
           </Link>
         </Show>
         <Show when="signed-in">
-          <UserButton />
+          <span className="flex size-10 items-center justify-center">
+            <UserButton />
+          </span>
         </Show>
       </div>
     </div>

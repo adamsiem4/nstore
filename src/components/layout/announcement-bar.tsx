@@ -1,6 +1,6 @@
 "use client";
 
-import { PauseIcon, PlayIcon, XIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -18,16 +18,12 @@ export function AnnouncementBar() {
   // ponytail: dismissal lives in component state, so it returns on reload —
   // move it to a cookie only if that actually annoys someone
   const [dismissed, setDismissed] = useState(false);
-  const [paused, setPaused] = useState(false);
   if (dismissed) return null;
 
   return (
     <aside aria-label="Store announcements" className="flex items-center gap-2 rounded-xl bg-foreground py-1 pr-1 pl-3 text-background">
       <div className="min-w-0 flex-1 overflow-hidden py-2">
-        <div
-          className="flex w-max animate-marquee will-change-transform motion-reduce:w-auto motion-reduce:animate-none motion-reduce:will-change-auto"
-          style={{ animationPlayState: paused ? "paused" : "running" }}
-        >
+        <div className="flex w-max animate-marquee will-change-transform motion-reduce:w-auto motion-reduce:animate-none motion-reduce:will-change-auto">
           {Array.from({ length: COPIES }, (_, copy) => (
             <ul
               key={copy}
@@ -39,7 +35,7 @@ export function AnnouncementBar() {
               {messages.map((label) => (
                 <li
                   key={label}
-                  className="px-28 text-xs font-medium tracking-[0.14em] whitespace-nowrap uppercase motion-reduce:px-0 motion-reduce:tracking-normal motion-reduce:whitespace-normal"
+                  className="px-40 text-xs font-medium tracking-[0.14em] whitespace-nowrap uppercase motion-reduce:px-0 motion-reduce:tracking-normal motion-reduce:whitespace-normal"
                 >
                   {label}
                 </li>
@@ -48,15 +44,6 @@ export function AnnouncementBar() {
           ))}
         </div>
       </div>
-      <Button
-        variant="ghost"
-        size="icon-lg"
-        aria-label={paused ? "Resume announcements" : "Pause announcements"}
-        onClick={() => setPaused(!paused)}
-        className="size-11 shrink-0 rounded-full text-background hover:bg-background/15 hover:text-background focus-visible:ring-background motion-reduce:hidden"
-      >
-        {paused ? <PlayIcon aria-hidden="true" /> : <PauseIcon aria-hidden="true" />}
-      </Button>
       <Button
         variant="ghost"
         size="icon-lg"

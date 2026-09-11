@@ -10,7 +10,7 @@
    therefore speed are identical on every viewport, and 5 spare copies keep the
    tail filled up to ~4000px wide. translate3d keeps it on the compositor. */
 @theme {
-  --animate-marquee: marquee 17s linear infinite;
+  --animate-marquee: marquee 26s linear infinite;
 
   @keyframes marquee {
     from {
@@ -18,6 +18,84 @@
     }
     to {
       transform: translate3d(-16.6667%, 0, 0);
+    }
+  }
+}
+
+/* ponytail: --search-width sets the pill's reach and its negative left offset,
+   so the right edge always lands on the toggle; the subtrahend is wordmark +
+   icon cluster + panel padding, which keeps the pill inside the panel on
+   phones. */
+@theme {
+  --search-width: min(20rem, calc(100vw - 14rem));
+}
+
+/* ponytail: the pill unrolls out of the icon — the clip is pinned on the right,
+   under the button, and the left edge sweeps outwards, then back the same way.
+   clip-path never touches layout, so the sweep stays smooth with a live input
+   inside. The pill's own fade only runs at the tail of the closing sweep and
+   instantly on the way open, so it is never a ghost mid-swipe; the contents
+   fade in behind the leading edge, and visibility rides the same clock to drop
+   the field out of the tab order once it is shut. */
+@layer components {
+  .search-pill {
+    visibility: hidden;
+    opacity: 0;
+    clip-path: inset(0 0 0 calc(100% - 2.5rem) round 9999px);
+    transition:
+      clip-path 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+      opacity 0.15s linear 0.35s,
+      visibility 0.45s;
+  }
+
+  [data-search]:has(input:checked) .search-pill {
+    visibility: visible;
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round 9999px);
+    transition-delay: 0s, 0s, 0s;
+  }
+
+  .search-pill :where(svg, input) {
+    opacity: 0;
+    transition: opacity 0.2s linear;
+  }
+
+  [data-search]:has(input:checked) .search-pill :where(svg, input) {
+    opacity: 1;
+    transition-delay: 0.18s;
+  }
+
+  [data-search] [data-icon="close"] {
+    display: none;
+  }
+
+  [data-search]:has(input:checked) [data-icon="open"] {
+    display: none;
+  }
+
+  [data-search]:has(input:checked) [data-icon="close"] {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .search-pill {
+      transition: none;
+    }
+  }
+}
+
+/* ponytail: on wide screens the pill overlays the centred catalog links, so
+   they step aside instead of being half-covered. Below xl the nav sits on its
+   own row and stays put. */
+@layer base {
+  @media (width >= 80rem) {
+    nav[aria-label="Catalog"] {
+      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    header:has([data-search] input:checked) nav[aria-label="Catalog"] {
+      opacity: 0;
+      pointer-events: none;
     }
   }
 }

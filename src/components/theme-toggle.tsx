@@ -22,7 +22,7 @@ export function ThemeToggle() {
             variant="ghost"
             size="icon-lg"
             aria-label="Choose color theme"
-            className="size-11 rounded-full focus-visible:ring-foreground"
+            className="size-10 rounded-full focus-visible:ring-foreground"
           />
         }
       >
