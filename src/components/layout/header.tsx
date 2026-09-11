@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Show, UserButton } from "@clerk/nextjs";
 import { ChevronDownIcon, SearchIcon, ShoppingBagIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
@@ -21,17 +22,41 @@ const navLinkClass = cn(
   "h-11 rounded-full px-3 text-xs tracking-[0.08em] text-muted-foreground uppercase focus-visible:ring-foreground",
 );
 
-/** Store name, centered catalog nav, icon cluster — top row of the panel. */
+// ponytail: fizik's logo morph in CSS — letters fade one by one, then the gap
+// closes; both directions reverse for free because they are transitions.
+// Fade-out runs nearest-letter-first, fade-in farthest-first, like the original.
+const TAIL = [
+  { letter: "s", in: 400, out: 0 },
+  { letter: "t", in: 325, out: 50 },
+  { letter: "o", in: 250, out: 150 },
+  { letter: "r", in: 175, out: 250 },
+  { letter: "e", in: 100, out: 350 },
+];
+
+/** Store name, centered catalog nav, icon cluster — the sticky panel's row. */
 export async function SiteHeader() {
   const count = (await getCartLines()).reduce((sum, line) => sum + line.quantity, 0);
 
   return (
-    <header className="relative flex flex-wrap items-center gap-x-1 gap-y-3 sm:gap-x-2">
+    <div className="relative flex flex-wrap items-center gap-x-1 gap-y-3 sm:gap-x-2">
       <Link
         href="/"
-        className="inline-flex min-h-11 items-center rounded-lg text-xl font-semibold tracking-tight outline-none transition-opacity hover:opacity-70 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-card"
+        className="inline-flex min-h-11 items-center rounded-lg text-xl font-semibold tracking-tight outline-none hover:opacity-70 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-card"
       >
-        nstore
+        n
+        <span className="grid grid-cols-[1fr] transition-[grid-template-columns] duration-300 ease-out group-data-[stuck]/header:grid-cols-[0fr] group-data-[stuck]/header:delay-300 motion-reduce:transition-none">
+          <span className="overflow-hidden">
+            {TAIL.map(({ letter, in: fadeIn, out }) => (
+              <span
+                key={letter}
+                style={{ "--in": `${fadeIn}ms`, "--out": `${out}ms` } as CSSProperties}
+                className="transition-opacity duration-150 ease-in-out [transition-delay:var(--in)] group-data-[stuck]/header:opacity-0 group-data-[stuck]/header:[transition-delay:var(--out)] motion-reduce:transition-none"
+              >
+                {letter}
+              </span>
+            ))}
+          </span>
+        </span>
       </Link>
 
       <nav
@@ -147,6 +172,6 @@ export async function SiteHeader() {
           <UserButton />
         </Show>
       </div>
-    </header>
+    </div>
   );
 }

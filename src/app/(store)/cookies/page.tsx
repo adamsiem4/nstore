@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { CookiePreferences } from "@/components/consent/cookie-preferences";
-import { SiteHeader } from "@/components/layout/header";
-import { Separator } from "@/components/ui/separator";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
@@ -11,16 +9,7 @@ export const metadata: Metadata = {
 export default function CookiesPage() {
   return (
     <div className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
-      <a
-        href="#cookies-content"
-        className="sr-only z-50 rounded-lg bg-primary px-5 py-3 font-medium text-primary-foreground focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:outline-2 focus:outline-offset-4 focus:outline-foreground"
-      >
-        Skip to content
-      </a>
-      <SiteHeader />
-      <Separator className="my-6 sm:my-8" />
-
-      <main id="cookies-content" tabIndex={-1} className="mx-auto w-full max-w-4xl flex-1 outline-none">
+      <main id="content" tabIndex={-1} className="mx-auto w-full max-w-4xl flex-1 outline-none">
         <p className="text-sm font-semibold tracking-[0.14em] text-muted-foreground uppercase">
           Cookie Policy
         </p>

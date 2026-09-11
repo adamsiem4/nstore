@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SiteHeader } from "@/components/layout/header";
 import { AddToCartButton } from "@/components/store/cart";
-import { Separator } from "@/components/ui/separator";
 import { money } from "@/lib/utils";
 import { getProduct, getProducts } from "@/server/queries/products";
 
@@ -28,9 +26,11 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
   if (!product) notFound();
 
   return (
-    <main className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
-      <SiteHeader />
-      <Separator className="my-6 sm:my-8" />
+    <main
+      id="content"
+      tabIndex={-1}
+      className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10"
+    >
       <article className="grid flex-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <Image
           src={product.image}

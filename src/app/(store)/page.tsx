@@ -8,9 +8,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { SiteHeader } from "@/components/layout/header";
 import { buttonVariants } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { cn, money } from "@/lib/utils";
 import { getProducts } from "@/server/queries/products";
 
@@ -21,16 +19,8 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
-      <a
-        href="#home-content"
-        className="sr-only z-50 rounded-lg bg-primary px-5 py-3 font-medium text-primary-foreground focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:outline-2 focus:outline-offset-4 focus:outline-foreground"
-      >
-        Skip to content
-      </a>
-      <SiteHeader />
-      <Separator className="mt-5 sm:mt-6" />
 
-      <main id="home-content" tabIndex={-1} className="outline-none">
+      <main id="content" tabIndex={-1} className="outline-none">
         <section
           aria-labelledby="home-heading"
           className="grid items-center gap-10 py-10 sm:py-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14 lg:py-14"

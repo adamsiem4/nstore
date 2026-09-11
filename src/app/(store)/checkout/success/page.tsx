@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SiteHeader } from "@/components/layout/header";
 import { buttonVariants } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { getStripe } from "@/server/stripe";
 
 export const metadata: Metadata = { title: "Order confirmed" };
@@ -26,9 +24,7 @@ export default async function CheckoutSuccessPage(
   }).format((session.amount_total ?? 0) / 100);
 
   return (
-    <main className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
-      <SiteHeader />
-      <Separator className="my-6 sm:my-8" />
+    <main id="content" tabIndex={-1} className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
       <div className="mx-auto flex max-w-lg flex-1 flex-col justify-center py-10 text-center">
         <p className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
           Order confirmed

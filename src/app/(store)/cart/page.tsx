@@ -2,10 +2,8 @@ import { MinusIcon, PlusIcon, ShoppingBagIcon, Trash2Icon } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { SiteHeader } from "@/components/layout/header";
 import { CartFormButton } from "@/components/store/cart";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { MAX_QTY } from "@/lib/cart";
 import { cn, money } from "@/lib/utils";
 import { getCartLines } from "@/server/cart-lines";
@@ -19,9 +17,7 @@ export default async function CartPage() {
   const subtotal = lines.reduce((sum, line) => sum + line.product.price * line.quantity, 0);
 
   return (
-    <main className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
-      <SiteHeader />
-      <Separator className="my-6 sm:my-8" />
+    <main id="content" tabIndex={-1} className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
       {count === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center py-16 text-center">
           <ShoppingBagIcon className="size-8 text-muted-foreground" />
