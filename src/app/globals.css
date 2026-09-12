@@ -84,22 +84,6 @@
   }
 }
 
-/* ponytail: on wide screens the pill overlays the centred catalog links, so
-   they step aside instead of being half-covered. Below xl the nav sits on its
-   own row and stays put. */
-@layer base {
-  @media (width >= 80rem) {
-    nav[aria-label="Catalog"] {
-      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    header:has([data-search] input:checked) nav[aria-label="Catalog"] {
-      opacity: 0;
-      pointer-events: none;
-    }
-  }
-}
-
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
