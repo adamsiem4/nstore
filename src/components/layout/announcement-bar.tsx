@@ -22,7 +22,7 @@ export function AnnouncementBar() {
 
   return (
     <aside aria-label="Store announcements" className="flex items-center gap-2 rounded-xl bg-foreground py-1 pr-1 pl-3 text-background">
-      <div className="min-w-0 flex-1 overflow-hidden py-2">
+      <div className="min-w-0 flex-1 overflow-hidden py-2 [mask-image:linear-gradient(to_right,transparent,black_1.5rem,black_calc(100%-1.5rem),transparent)]">
         <div className="flex w-max animate-marquee will-change-transform motion-reduce:w-auto motion-reduce:animate-none motion-reduce:will-change-auto">
           {Array.from({ length: COPIES }, (_, copy) => (
             <ul
