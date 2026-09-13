@@ -2,7 +2,6 @@ import type { CSSProperties } from "react";
 import { Show, UserButton } from "@clerk/nextjs";
 import { SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
 import Link from "next/link";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -137,8 +136,6 @@ export async function SiteHeader() {
             </span>
           )}
         </Link>
-        <ThemeToggle />
-
         <Show when="signed-out">
           <Link
             href="/sign-in"
@@ -224,7 +221,6 @@ export async function SiteHeader() {
               {cartLabel}
             </Link>
             <div className="ml-auto flex items-center gap-1">
-              <ThemeToggle />
               <Show when="signed-out">
                 <Link
                   href="/sign-in"

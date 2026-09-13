@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemePicker } from "@/components/theme-picker";
 
 // ponytail: About and FAQ are headings only — an empty column beats a dead link.
 // Drop entries in here when the pages exist; the grid needs no other change.
@@ -21,7 +22,7 @@ const linkClass =
 export function SiteFooter() {
   return (
     <footer className="rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
-      <div className="grid gap-x-8 gap-y-6 sm:grid-cols-3">
+      <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-4">
         {columns.map(({ heading, links }) => (
           <nav key={heading} aria-labelledby={`footer-${heading.toLowerCase()}`}>
             <h2
@@ -45,6 +46,18 @@ export function SiteFooter() {
             )}
           </nav>
         ))}
+
+        <section aria-labelledby="footer-appearance">
+          <h2
+            id="footer-appearance"
+            className="text-xs font-semibold tracking-[0.14em] uppercase"
+          >
+            Appearance
+          </h2>
+          <div className="mt-3">
+            <ThemePicker />
+          </div>
+        </section>
       </div>
 
       <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-1 border-t pt-6 text-sm sm:mt-10">
