@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { Show, UserButton } from "@clerk/nextjs";
-import { ChevronDownIcon, SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
+import { SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
@@ -36,9 +36,10 @@ const TAIL = [
 /** Store name, centered catalog nav, icon cluster — the sticky panel's row. */
 export async function SiteHeader() {
   const count = (await getCartLines()).reduce((sum, line) => sum + line.quantity, 0);
+  const cartLabel = `Cart, ${count} item${count === 1 ? "" : "s"}`;
 
   return (
-    <div className="relative flex flex-wrap items-center gap-x-1 gap-y-3 sm:gap-x-2">
+    <div className="flex items-center gap-x-1 sm:gap-x-2">
       {/* ponytail: an invisible copy holds the full width open, so the morph
           collapses inside its own box and never shifts the nav or the icons */}
       <div className="relative flex min-h-11 items-center text-xl font-semibold tracking-tight">
@@ -64,11 +65,8 @@ export async function SiteHeader() {
         </Link>
       </div>
 
-      <nav
-        aria-label="Catalog"
-        className="order-3 w-full xl:order-none xl:mx-auto xl:w-auto"
-      >
-        <ul className="hidden items-center gap-1 p-1 xl:flex">
+      <nav aria-label="Catalog" className="mx-auto hidden xl:block">
+        <ul className="flex items-center gap-1 p-1">
           <li>
             <Link
               href="/products"
@@ -88,38 +86,10 @@ export async function SiteHeader() {
             </li>
           ))}
         </ul>
-        <details name="store-tools" className="group/catalog relative xl:hidden">
-          <summary
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "h-11 w-full cursor-pointer list-none justify-between rounded-full px-4 focus-visible:ring-foreground [&::-webkit-details-marker]:hidden",
-            )}
-          >
-            Browse the shop
-            <ChevronDownIcon aria-hidden="true" className="transition-transform group-open/catalog:rotate-180" />
-          </summary>
-          <ul className="absolute inset-x-0 top-full z-20 mt-2 grid gap-1 rounded-xl border bg-popover p-2 shadow-md sm:grid-cols-2">
-            <li>
-              <Link href="/products" className={cn(navLinkClass, "w-full justify-start font-semibold text-foreground")}>
-                Shop all essentials
-              </Link>
-            </li>
-            {categories.map((category) => (
-              <li key={category}>
-                <Link
-                  href={`/products?q=${encodeURIComponent(category)}`}
-                  className={cn(navLinkClass, "w-full justify-start")}
-                >
-                  {category}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </details>
       </nav>
 
       {/* ponytail: 40px boxes butted together — 44px ones read as scattered icons */}
-      <div className="ml-auto flex items-center gap-0 xl:ml-0">
+      <div className="ml-auto hidden items-center gap-0 xl:flex">
         {/* ponytail: a checkbox is the whole toggle — no state, no popover lib.
             Unlike <details> the pill stays in the DOM when shut, so it can
             swipe closed as smoothly as it opens. */}
@@ -139,7 +109,7 @@ export async function SiteHeader() {
             action="/products"
             role="search"
             aria-label="Search products"
-            className="search-pill absolute top-1/2 left-[calc((var(--search-width)-2.5rem)*-1)] z-20 flex h-10 w-(--search-width) -translate-y-1/2 items-center gap-3 overflow-hidden rounded-full bg-muted pr-11 pl-4 ring-1 ring-foreground/10"
+            className="search-pill absolute top-1/2 left-[calc((var(--search-width)-2.5rem)*-1)] z-20 flex h-10 w-(--search-width) -translate-y-1/2 items-center gap-3 overflow-hidden rounded-full bg-foreground/5 pr-11 pl-4 ring-1 ring-foreground/10 backdrop-blur-md"
           >
             <SearchIcon aria-hidden="true" className="size-5 shrink-0 text-muted-foreground" />
             <Input
@@ -154,9 +124,10 @@ export async function SiteHeader() {
             </button>
           </form>
         </div>
+
         <Link
           href="/cart"
-          aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
+          aria-label={cartLabel}
           className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "relative size-10 rounded-full focus-visible:ring-foreground")}
         >
           <ShoppingBagIcon aria-hidden="true" />
@@ -182,6 +153,95 @@ export async function SiteHeader() {
             <UserButton />
           </span>
         </Show>
+      </div>
+
+      {/* ponytail: same checkbox trick as the search pill — the drawer animates
+          both ways because it never leaves the DOM, and the bars travel first,
+          then rotate into the cross. */}
+      <div data-menu className="ml-auto xl:hidden">
+        <input id="site-menu" type="checkbox" aria-label="Menu" className="peer sr-only" />
+        <label
+          htmlFor="site-menu"
+          className={cn(
+            buttonVariants({ variant: "ghost", size: "icon-lg" }),
+            "size-10 cursor-pointer flex-col gap-[5px] rounded-full peer-focus-visible:ring-2 peer-focus-visible:ring-foreground",
+          )}
+        >
+          <span aria-hidden="true" className="burger-line" />
+          <span aria-hidden="true" className="burger-line" />
+          <span aria-hidden="true" className="burger-line" />
+        </label>
+
+        {/* The header panel is the containing block, so the drawer spans it
+            exactly; the extra pixel is its border, and the top margin is that
+            pixel plus the layout gap, so the drawer sits in the panel rhythm. */}
+        <div className="site-menu absolute top-full -right-px -left-px z-30 mt-[9px] grid gap-2 rounded-xl border border-foreground/10 bg-card/60 p-3 shadow-xl backdrop-blur-xl backdrop-saturate-150 sm:mt-[13px]">
+          <form
+            action="/products"
+            role="search"
+            aria-label="Search products"
+            className="flex h-11 items-center gap-3 rounded-full bg-foreground/5 px-4 ring-1 ring-foreground/10"
+          >
+            <SearchIcon aria-hidden="true" className="size-5 shrink-0 text-muted-foreground" />
+            <Input
+              name="q"
+              type="search"
+              placeholder="Search"
+              aria-label="Search home essentials"
+              className="h-11 min-w-0 rounded-none border-0 bg-transparent px-0 text-base shadow-none focus-visible:border-0 focus-visible:ring-0 dark:bg-transparent [&::-webkit-search-cancel-button]:hidden"
+            />
+            <button type="submit" className="sr-only">
+              Search
+            </button>
+          </form>
+
+          <nav aria-label="Catalog">
+            <ul className="grid gap-1 sm:grid-cols-2">
+              <li>
+                <Link href="/products" className={cn(navLinkClass, "w-full justify-start font-semibold text-foreground")}>
+                  Shop all essentials
+                </Link>
+              </li>
+              {categories.map((category) => (
+                <li key={category}>
+                  <Link
+                    href={`/products?q=${encodeURIComponent(category)}`}
+                    className={cn(navLinkClass, "w-full justify-start")}
+                  >
+                    {category}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="flex items-center gap-1 border-t pt-2">
+            <Link
+              href="/cart"
+              className={cn(navLinkClass, "gap-2 normal-case tracking-normal text-foreground")}
+            >
+              <ShoppingBagIcon aria-hidden="true" />
+              {cartLabel}
+            </Link>
+            <div className="ml-auto flex items-center gap-1">
+              <ThemeToggle />
+              <Show when="signed-out">
+                <Link
+                  href="/sign-in"
+                  aria-label="Sign in"
+                  className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "size-10 rounded-full focus-visible:ring-foreground")}
+                >
+                  <UserIcon aria-hidden="true" />
+                </Link>
+              </Show>
+              <Show when="signed-in">
+                <span className="flex size-10 items-center justify-center">
+                  <UserButton />
+                </span>
+              </Show>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -28,9 +28,15 @@ export function StickyHeader({ children }: { children: ReactNode }) {
       {/* Out of flow on purpose: a flex child would eat a gap of its own and
           push the header away from the promo strip. */}
       <div ref={sentinel} aria-hidden="true" className="absolute top-0 h-px w-px" />
+      {/* ponytail: the glass lives on a pseudo-element, not the header itself.
+          An element with backdrop-filter becomes a backdrop root, which would
+          leave the drawer below it translucent but unblurred.
+          The right padding is 5px, not the left's 20/32/40: a trailing icon
+          button carries 12px of its own, so this lands its glyph on the same
+          line as the promo strip's dismiss glyph, 26px in at every width. */}
       <header
         data-stuck={stuck || undefined}
-        className="group/header sticky top-2 z-40 rounded-xl border bg-card/80 px-5 py-2 backdrop-blur-md transition-shadow duration-300 ease-out sm:top-3 sm:px-8 sm:py-3 lg:px-10 data-[stuck]:shadow-lg"
+        className="group/header sticky top-2 z-40 rounded-xl border py-2 pr-[5px] pl-5 transition-shadow duration-300 ease-out before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-card/80 before:backdrop-blur-md before:content-[''] sm:top-3 sm:py-3 sm:pl-8 lg:pl-10 data-[stuck]:shadow-lg"
       >
         {children}
       </header>
