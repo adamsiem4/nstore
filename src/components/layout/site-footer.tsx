@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { ThemePicker } from "@/components/theme-picker";
 
-// ponytail: About and FAQ are headings only — an empty column beats a dead link.
-// Drop entries in here when the pages exist; the grid needs no other change.
 const columns = [
-  { heading: "About", links: [] },
+  {
+    heading: "About",
+    links: [
+      { href: "/about", label: "About us" },
+      { href: "/mission", label: "Mission" },
+    ],
+  },
   {
     heading: "Legal",
     links: [

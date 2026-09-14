@@ -1,12 +1,22 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
 /** Pinned header panel; flags `data-stuck` once the page scrolls past the top. */
 export function StickyHeader({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const previousPathname = useRef(pathname);
   const sentinel = useRef<HTMLDivElement>(null);
   const [stuck, setStuck] = useState(false);
+
+  useEffect(() => {
+    if (previousPathname.current === pathname) return;
+    previousPathname.current = pathname;
+    // Page changes start above the shared header; hash links keep their target.
+    if (!window.location.hash) window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
 
   useEffect(() => {
     const target = sentinel.current;
