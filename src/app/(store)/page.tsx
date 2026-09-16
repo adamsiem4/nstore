@@ -22,7 +22,7 @@ export default async function HomePage() {
       <main id="content" tabIndex={-1} className="outline-none">
         <section
           aria-labelledby="home-heading"
-          className="relative isolate -mx-2 -mt-2 mb-10 flex min-h-[calc(100svh-var(--chrome)-var(--promo))] flex-col items-center justify-center overflow-hidden rounded-xl border px-6 py-16 text-center text-neutral-900 sm:-mx-5 sm:-mt-5 sm:mb-12 sm:px-10 sm:py-24 lg:-mx-7 lg:-mt-7 dark:text-white"
+          className="relative isolate -mx-2 -mt-2 flex min-h-[calc(100svh-var(--chrome)-var(--promo))] flex-col items-center justify-center overflow-hidden rounded-xl border px-6 py-16 text-center text-neutral-900 sm:-mx-5 sm:-mt-5 sm:px-10 sm:py-24 lg:-mx-7 lg:-mt-7 dark:text-white"
         >
           {/* ponytail: two <Image>s toggled by the dark class — a useTheme()
               client boundary would cost a hydration flash on the LCP element.
@@ -119,9 +119,13 @@ export default async function HomePage() {
               <ArrowRightIcon aria-hidden="true" />
             </Link>
           </div>
-          <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-            {products.slice(0, 4).map((product) => (
-              <li key={product.id}>
+          {/* ponytail: scroll-snap, not a carousel library — the overflow
+              container already gives drag, wheel, trackpad and keyboard
+              scrolling. The -m-2/p-2 pair keeps the card ring from clipping
+              without moving the row. */}
+          <ul className="-m-2 grid snap-x snap-mandatory auto-cols-[78%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain scroll-p-2 p-2 [scrollbar-width:thin] sm:auto-cols-[45%] sm:gap-4 lg:auto-cols-[calc((100%-3rem)/4)]">
+            {products.slice(0, 8).map((product) => (
+              <li key={product.id} className="snap-start">
                 <Link
                   href={`/products/${product.id}`}
                   className="group flex h-full flex-col rounded-xl border p-2.5 outline-none transition-[border-color,box-shadow] duration-200 hover:border-foreground/25 hover:shadow-md focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-card sm:p-3"
@@ -132,7 +136,7 @@ export default async function HomePage() {
                       alt=""
                       width={1536}
                       height={1536}
-                      sizes="(max-width: 1023px) 50vw, 25vw"
+                      sizes="(max-width: 639px) 78vw, (max-width: 1023px) 45vw, 25vw"
                       className="aspect-square w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-[1.035]"
                     />
                   </div>

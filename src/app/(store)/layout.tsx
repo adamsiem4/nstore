@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import type { ReactNode } from "react";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -7,7 +7,12 @@ import { StickyHeader } from "@/components/layout/sticky-header";
 import { PROMO_COOKIE } from "@/lib/promo";
 
 export default async function StoreLayout({ children }: { children: ReactNode }) {
-  const promoDismissed = (await cookies()).get(PROMO_COOKIE)?.value === "1";
+  const [jar, head] = await Promise.all([cookies(), headers()]);
+  // ponytail: Ctrl+F5 sends `Cache-Control: no-cache` (plain F5 sends
+  // `max-age=0`), so a hard reload is the reset gesture — render the strip
+  // and leave the cookie alone, no route handler to clear it.
+  const hardReload = head.get("cache-control")?.includes("no-cache") ?? false;
+  const showPromo = hardReload || jar.get(PROMO_COOKIE)?.value !== "1";
 
   // ponytail: --chrome is the measured gutter+header+gap+card-inset+gutter
   // above and below the panel; --promo flips off by itself when the strip
@@ -20,7 +25,7 @@ export default async function StoreLayout({ children }: { children: ReactNode })
       >
         Skip to content
       </a>
-      {!promoDismissed && <AnnouncementBar />}
+      {showPromo && <AnnouncementBar />}
       <StickyHeader>
         <SiteHeader />
       </StickyHeader>
