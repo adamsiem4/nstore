@@ -3,6 +3,7 @@
 import { XIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { PROMO_COOKIE } from "@/lib/promo";
 
 const messages = [
   "Free shipping on orders over €60",
@@ -15,8 +16,9 @@ const messages = [
 const COPIES = 6;
 
 export function AnnouncementBar() {
-  // ponytail: dismissal lives in component state, so it returns on reload —
-  // move it to a cookie only if that actually annoys someone
+  // ponytail: state hides it now, the cookie keeps it hidden — the layout
+  // reads that cookie server-side, so a dismissed strip is simply absent from
+  // the HTML instead of flashing until hydration.
   const [dismissed, setDismissed] = useState(false);
   if (dismissed) return null;
 
@@ -48,7 +50,10 @@ export function AnnouncementBar() {
         variant="ghost"
         size="icon-lg"
         aria-label="Dismiss announcement"
-        onClick={() => setDismissed(true)}
+        onClick={() => {
+          document.cookie = `${PROMO_COOKIE}=1; path=/; max-age=${60 * 60 * 24 * 30}; samesite=lax`;
+          setDismissed(true);
+        }}
         className="size-11 shrink-0 rounded-full text-background hover:bg-background/15 hover:text-background focus-visible:ring-background"
       >
         <XIcon aria-hidden="true" />

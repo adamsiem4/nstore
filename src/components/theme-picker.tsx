@@ -2,6 +2,7 @@
 
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 
 // ponytail: all three choices on screen, so there is nothing to open — a
@@ -12,12 +13,16 @@ const THEMES = [
   { value: "system", label: "System", Icon: MonitorIcon },
 ];
 
+const noStore = () => () => {};
+
 /** Segmented light/dark/system picker. */
 export function ThemePicker() {
   const { theme, setTheme } = useTheme();
-  // next-themes reports nothing until it has read storage; the provider's
-  // default is system, so say so instead of showing three unselected options.
-  const active = theme ?? "system";
+  // next-themes only knows the theme after it has read storage, so the server
+  // and the first client render must agree on "nothing selected" — guessing
+  // system here hydrated as aria-pressed="false" over a client-side true.
+  const hydrated = useSyncExternalStore(noStore, () => true, () => false);
+  const active = hydrated ? theme ?? "system" : null;
 
   return (
     <div
