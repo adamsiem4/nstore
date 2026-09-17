@@ -2,7 +2,6 @@ import {
   ArrowDownIcon,
   ArrowRightIcon,
   RotateCcwIcon,
-  SmileIcon,
   SparklesIcon,
   TruckIcon,
 } from "lucide-react";
@@ -22,7 +21,7 @@ export default async function HomePage() {
       <main id="content" tabIndex={-1} className="outline-none">
         <section
           aria-labelledby="home-heading"
-          className="relative isolate -mx-2 -mt-2 flex min-h-[calc(100svh-var(--chrome)-var(--promo))] flex-col items-center justify-center overflow-hidden rounded-xl border px-6 py-16 text-center text-neutral-900 sm:-mx-5 sm:-mt-5 sm:px-10 sm:py-24 lg:-mx-7 lg:-mt-7 dark:text-white"
+          className="relative isolate -mx-2 -mt-2 flex min-h-[calc(100svh-var(--chrome)-var(--promo))] flex-col items-center justify-center overflow-hidden rounded-xl border px-6 py-16 text-center text-hero-ink sm:-mx-5 sm:-mt-5 sm:px-10 sm:py-24 lg:-mx-7 lg:-mt-7"
         >
           {/* ponytail: two <Image>s toggled by the dark class — a useTheme()
               client boundary would cost a hydration flash on the LCP element.
@@ -44,26 +43,19 @@ export default async function HomePage() {
             sizes="100vw"
             className="-z-10 object-cover opacity-0 dark:opacity-100"
           />
-          {/* ponytail: scrim, not decoration — the dark mesh's teal streak is
-              3.2:1 against white text on its own, 7.4:1 under this scrim. The
-              light mesh carries dark text at 6.9:1, so it needs none. */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-10 hidden bg-black/40 dark:block"
-          />
-          <p className="inline-flex items-center gap-2 rounded-full border border-neutral-900/20 bg-white/45 px-3 py-2 text-xs font-medium tracking-wide dark:border-white/35 dark:bg-white/10">
-            <SparklesIcon aria-hidden="true" className="size-4" />
-            A little better, every day
-          </p>
+          {/* ponytail: colours come from --hero-* in globals.css, so the scrim
+              is one element with no dark: variant — it is transparent in
+              light, 40% black over the dark mesh. */}
+          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-hero-scrim" />
           <h1
             id="home-heading"
-            className="mt-6 text-5xl leading-[1.02] font-semibold tracking-[-0.055em] sm:text-7xl xl:text-[5.5rem]"
+            className="text-5xl leading-[1.02] font-semibold tracking-[-0.055em] sm:text-7xl xl:text-[5.5rem]"
           >
             Less chore.
             <br />
             More living.
           </h1>
-          <p className="mt-6 max-w-md text-pretty text-base leading-7 text-neutral-800 sm:text-lg sm:leading-8 dark:text-white/85">
+          <p className="mt-6 max-w-md text-pretty text-base leading-7 text-hero-ink-muted sm:text-lg sm:leading-8">
             Slow mornings. Big bakes. Fresh starts. Find home essentials that
             make your everyday a little more you.
           </p>
@@ -72,7 +64,7 @@ export default async function HomePage() {
               href="/products"
               className={cn(
                 buttonVariants(),
-                "h-12 w-full gap-3 rounded-full bg-neutral-900 px-6 text-sm text-white hover:bg-neutral-900/90 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent min-[420px]:w-auto dark:bg-white dark:text-neutral-900 dark:hover:bg-white/90 dark:focus-visible:ring-white",
+                "h-12 w-full gap-3 rounded-full bg-hero-cta px-6 text-sm text-hero-cta-ink hover:bg-hero-cta/90 focus-visible:ring-hero-cta focus-visible:ring-offset-2 focus-visible:ring-offset-transparent min-[420px]:w-auto",
               )}
             >
               Shop the essentials
@@ -82,17 +74,16 @@ export default async function HomePage() {
               href="#featured"
               className={cn(
                 buttonVariants({ variant: "outline" }),
-                "h-12 w-full gap-3 rounded-full border-neutral-900/35 bg-transparent px-6 text-sm text-neutral-900 hover:bg-neutral-900/10 hover:text-neutral-900 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent min-[420px]:w-auto dark:border-white/45 dark:text-white dark:hover:bg-white/10 dark:hover:text-white dark:focus-visible:ring-white",
+                // dark: overrides exist because the outline variant ships its
+                // own dark:border-input / dark:bg-input fills; tailwind-merge
+                // keeps the last class per property, so these win.
+                "h-12 w-full gap-3 rounded-full border-hero-line bg-transparent px-6 text-sm text-hero-ink hover:bg-hero-ink/10 hover:text-hero-ink focus-visible:ring-hero-cta focus-visible:ring-offset-2 focus-visible:ring-offset-transparent min-[420px]:w-auto dark:border-hero-line dark:bg-transparent dark:hover:bg-hero-ink/10",
               )}
             >
               Meet the favourites
               <ArrowDownIcon aria-hidden="true" className="size-4" />
             </a>
           </div>
-          <p className="mt-5 flex items-center gap-2 text-sm text-neutral-800 dark:text-white/80">
-            <SmileIcon aria-hidden="true" className="size-4 shrink-0" />
-            Good things for the place you call home.
-          </p>
         </section>
 
         <section
@@ -130,7 +121,7 @@ export default async function HomePage() {
                   href={`/products/${product.id}`}
                   className="group flex h-full flex-col rounded-xl border p-2.5 outline-none transition-[border-color,box-shadow] duration-200 hover:border-foreground/25 hover:shadow-md focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-card sm:p-3"
                 >
-                  <div className="overflow-hidden rounded-xl bg-[#f3f2ef]">
+                  <div className="overflow-hidden rounded-xl bg-product-shot">
                     <Image
                       src={product.image}
                       alt=""

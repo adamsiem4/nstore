@@ -149,19 +149,14 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
+  --color-hero-ink: var(--hero-ink);
+  --color-hero-ink-muted: var(--hero-ink-muted);
+  --color-hero-scrim: var(--hero-scrim);
+  --color-hero-cta: var(--hero-cta);
+  --color-hero-cta-ink: var(--hero-cta-ink);
+  --color-hero-line: var(--hero-line);
+  --color-product-shot: var(--product-shot);
+  --color-surface: var(--surface);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -192,76 +187,90 @@
 }
 
 
+/* Every colour in the app resolves to one of these tokens — change a mode by
+   editing its block and nothing else. Hex in each comment is what the oklch
+   renders to; edit either notation, both are valid CSS colours.
+
+   Light mode is a warm cream ramp on hue 65-74. The previous grey-beige ramp
+   is kept commented beside each token — swap the pairs back to revert.
+   No pure #ffffff. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  /* Surfaces */
+  /* was: oklch(0.921 0.0040 68)  #e7e4e2 */
+  --background: #f3ede7;                   /* warm cream canvas */
+  /* was: var(--product-shot)     #f4f2f0 */
+  --card: #fbf7f2;                         /* navbar, footer, page panel, product cards */
+  --surface: #f6efe8;                      /* sections and card interiors */
+  --product-shot: #f4f2f0;                 /* fixed: baked into every product .webp */
+  /* was: var(--card)             #f4f2f0 */
+  --popover: #fff9f3;                      /* dropdowns and menus */
+  /* was: oklch(0.921 0.0040 68)  #e7e4e2 */
+  --muted: #efe3d8;                        /* hover fills and subtle blocks */
+  --foreground: oklch(0.205 0.0045 68);    /* #191715  all text — 16.8:1 on --card */
+  --muted-foreground: oklch(0.452 0.0050 68); /* #585553  captions and prices — 6.9:1 on --card */
+  --card-foreground: var(--foreground);
+  --popover-foreground: var(--foreground);
+
+  /* Actions — the same ink and the same recessed surface, nothing new */
+  --primary: var(--foreground);            /* solid buttons, announcement strip */
+  --primary-foreground: var(--card);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--muted);
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.509 0.2086 28.51);/* #c10007  remove/danger — 6.0:1 on --card */
+
+  /* Lines and focus */
+  /* was: oklch(0.862 0.0050 68)  #d4d1ce */
+  --border: #decfc1;                       /* warm border, divider and field outline */
+  --input: var(--border);
+  --ring: var(--muted-foreground);
+
+  /* Home hero — over the mesh image, so only the alpha differs from the ink */
+  --hero-ink: var(--foreground);           /* 17.4:1 over the brightest pixel of the light mesh */
+  --hero-ink-muted: var(--muted-foreground);
+  --hero-scrim: transparent;               /* light mesh needs none; see .dark */
+  --hero-cta: var(--foreground);
+  --hero-cta-ink: var(--card);
+  --hero-line: oklch(0.205 0.0045 68 / 40%); /* #191715 40%  outline CTA border */
+
   /* 4px = Fluent's in-page radius (Win11/Brave reserve 8px for the window
      frame itself, and the panel now sits in a gutter wider than that frame
      radius, so it is its own surface). Whole shadcn scale derives from this. */
   --radius: 0.25rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: oklch(0.145 0 0);          /* #0a0a0a  canvas */
+  --foreground: oklch(0.965 0.0045 78.30); /* #f5f3f0  body text — 15.7:1 on --card */
+  --card: oklch(0.218 0.0019 286.24);      /* #1a1a1b  panels — 3.4x the canvas luminance */
+  --card-foreground: oklch(0.965 0.0045 78.30); /* #f5f3f0 */
+  --popover: oklch(0.218 0.0019 286.24);   /* #1a1a1b */
+  --popover-foreground: oklch(0.965 0.0045 78.30); /* #f5f3f0 */
+  --muted: oklch(0.289 0.0018 286.29);     /* #2b2b2c */
+  --surface: oklch(0.252 0.0019 286.26); /* #222223  sections and card interiors */
+  --muted-foreground: oklch(0.751 0.0121 71.86); /* #b3ada6  7.8:1 on --card */
+
+  --primary: oklch(0.965 0.0045 78.30);    /* #f5f3f0 */
+  --primary-foreground: oklch(0.206 0.0066 78.17); /* #191714 */
+  --secondary: oklch(0.289 0.0018 286.29); /* #2b2b2c */
+  --secondary-foreground: oklch(0.965 0.0045 78.30); /* #f5f3f0 */
+  --accent: oklch(0.289 0.0018 286.29);    /* #2b2b2c */
+  --accent-foreground: oklch(0.965 0.0045 78.30); /* #f5f3f0 */
+  --destructive: oklch(0.712 0.1812 22.84);/* #ff6b6b  6.3:1 on --card */
+
+  --border: oklch(0.965 0.0045 78.30 / 18%); /* #f5f3f0 18%  was 10%, near-invisible on #1a1a1b */
+  --input: oklch(0.965 0.0045 78.30 / 24%);  /* #f5f3f0 24% */
+  --ring: oklch(0.751 0.0121 71.86);       /* #b3ada6  focus ring */
+
+  --hero-ink: oklch(0.971 0.0045 78.30);   /* #f7f5f2 */
+  --hero-ink-muted: oklch(0.971 0.0045 78.30 / 88%); /* #f7f5f2 88% */
+  /* The dark mesh's brightest pixel is 3.2:1 against this ink on its own and
+     7.7:1 under the scrim — do not lower it without re-measuring. */
+  --hero-scrim: oklch(0 0 0 / 45%);        /* #000000 45% */
+  --hero-cta: oklch(0.965 0.0045 78.30);   /* #f5f3f0  solid CTA fill */
+  --hero-cta-ink: oklch(0.206 0.0066 78.17); /* #191714  solid CTA label */
+  --hero-line: oklch(0.965 0.0045 78.30 / 55%); /* #f5f3f0 55%  outline CTA border */
 }
 
 @layer base {
