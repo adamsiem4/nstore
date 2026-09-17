@@ -9,6 +9,7 @@ const catalog: Product[] = [
     description: "A 4.5L tilt-head mixer with a brushed-steel bowl, wire whisk, and six-speed control. A locking bowl base, easy-grip handle, and rubber feet keep everyday baking steady.",
     category: "Kitchen appliances",
     image: "/products/sage-stand-mixer.webp",
+    color: "#aab1ae",
     price: 249,
   },
   {
@@ -17,6 +18,7 @@ const catalog: Product[] = [
     description: "A 1.8L rice cooker with a removable non-stick pot, digital cooking timer, and keep-warm mode. A hinged lid, steam-release vent, and carry handle make serving simple.",
     category: "Kitchen appliances",
     image: "/products/digital-rice-cooker.webp",
+    color: "#d6d3cc",
     price: 79,
   },
   {
@@ -25,6 +27,7 @@ const catalog: Product[] = [
     description: "A 2L clear work bowl with stainless-steel chopping blades, a feed tube, and pulse control. Volume markings, an easy-grip handle, and an interlocking lid help with everyday prep.",
     category: "Kitchen appliances",
     image: "/products/compact-food-processor.webp",
+    color: "#636c6b",
     price: 99,
   },
   {
@@ -33,6 +36,7 @@ const catalog: Product[] = [
     description: "Deep-grid non-stick plates for two Belgian-style waffles, with adjustable browning and ready lights. A hinged cream housing and cool-touch handle keep breakfast uncomplicated.",
     category: "Kitchen appliances",
     image: "/products/belgian-waffle-maker.webp",
+    color: "#2d3230",
     price: 59,
   },
   {
@@ -41,6 +45,7 @@ const catalog: Product[] = [
     description: "A six-cup aluminium moka pot with a faceted boiler, hinged lid, and heat-resistant handle. A brass safety valve and tapered spout finish this stovetop classic; not for induction.",
     category: "Cookware",
     image: "/products/stovetop-moka-pot.webp",
+    color: "#8d9190",
     price: 39,
   },
   {
@@ -49,6 +54,7 @@ const catalog: Product[] = [
     description: "A 32cm cream ceramic oven dish with fluted walls, a generous rolled rim, and integrated handles. The softly speckled glaze takes roasted vegetables and baked pasta straight to the table.",
     category: "Cookware",
     image: "/products/fluted-baking-dish.webp",
+    color: "#e9e4d6",
     price: 32,
   },
   {
@@ -57,6 +63,7 @@ const catalog: Product[] = [
     description: "A 24cm brushed-steel colander with fine drainage holes, a rolled rim, and two riveted handles. A raised foot ring keeps rinsed produce clear of the sink.",
     category: "Cookware",
     image: "/products/stainless-colander.webp",
+    color: "#acb0b1",
     price: 24,
   },
   {
@@ -65,6 +72,7 @@ const catalog: Product[] = [
     description: "Five stainless-steel knives—chef's, bread, santoku, utility, and paring—in a grained acacia block. Riveted handles, polished bolsters, and angled slots keep the daily tools organised.",
     category: "Cookware",
     image: "/products/acacia-knife-block.webp",
+    color: "#edd7ba",
     price: 89,
   },
   {
@@ -73,6 +81,7 @@ const catalog: Product[] = [
     description: "A two-level wire dish drainer with plate slots, a removable utensil cup, and a ribbed tray with a pouring spout. Rubber feet protect the worktop. Tableware not included.",
     category: "Cleaning",
     image: "/products/countertop-dish-rack.webp",
+    color: "#d0d0cd",
     price: 45,
   },
   {
@@ -81,6 +90,7 @@ const catalog: Product[] = [
     description: "A compact bamboo dustpan and matching hand brush with dense bristles, a flexible rubber lip, and a hanging loop. Warm wood grain makes the quick sweep feel less like a chore.",
     category: "Cleaning",
     image: "/products/bamboo-dustpan-set.webp",
+    color: "#ead4b6",
     price: 19,
   },
   {
@@ -89,6 +99,7 @@ const catalog: Product[] = [
     description: "A 400ml ribbed ceramic dispenser with a polished-metal pump, screw-on collar, and gently speckled cream glaze. Refill with liquid hand soap and keep the sink area tidy.",
     category: "Cleaning",
     image: "/products/refillable-soap-dispenser.webp",
+    color: "#d9d7d0",
     price: 22,
   },
   {
@@ -97,6 +108,7 @@ const catalog: Product[] = [
     description: "A USB-C rechargeable fabric shaver with a perforated steel head, removable lint chamber, and comfortable grip. Refresh suitable knitwear with a light touch; test a hidden area first.",
     category: "Laundry",
     image: "/products/rechargeable-fabric-shaver.webp",
+    color: "#afb4b3",
     price: 29,
   },
   {
@@ -105,6 +117,7 @@ const catalog: Product[] = [
     description: "Six beechwood hangers with curved shoulders, trouser bars, and brushed-metal swivel hooks. Shoulder notches and smooth natural grain help keep the wardrobe in good order.",
     category: "Laundry",
     image: "/products/wooden-hanger-set.webp",
+    color: "#e6ceb1",
     price: 25,
   },
   {
@@ -113,6 +126,7 @@ const catalog: Product[] = [
     description: "A bamboo frame holds two removable 40L linen bags for lights and darks. Open tops, stitched carry handles, and capped feet make sorting and moving the next load straightforward.",
     category: "Laundry",
     image: "/products/compartment-laundry-sorter.webp",
+    color: "#d0c7b9",
     price: 69,
   },
   {
@@ -121,6 +135,7 @@ const catalog: Product[] = [
     description: "Twelve refillable glass jars with metal screw lids on a two-tier wood-and-steel turntable. Labelled fronts keep favourite seasonings easy to reach. Spices not included.",
     category: "Storage",
     image: "/products/rotating-spice-rack.webp",
+    color: "#acafac",
     price: 49,
   },
   {
@@ -129,6 +144,7 @@ const catalog: Product[] = [
     description: "Four clear pantry containers in 500ml, 900ml, 1.4L, and 2L sizes, with clip-lock lids and silicone gaskets. Stackable shapes bring order to dry ingredients. Food not included.",
     category: "Storage",
     image: "/products/airtight-food-container-set.webp",
+    color: "#d8cfb5",
     price: 35,
   },
   {
@@ -137,6 +153,7 @@ const catalog: Product[] = [
     description: "A 45cm woven ottoman with a removable, linen-padded lid and low wooden feet. A textured seat for the living room, with a concealed compartment for throws and everyday extras.",
     category: "Storage",
     image: "/products/woven-storage-ottoman.webp",
+    color: "#cfb38d",
     price: 89,
   },
   {
@@ -145,6 +162,7 @@ const catalog: Product[] = [
     description: "A compact dehumidifier rated up to 12L per day, with a 2L removable tank, adjustable humidity target, and full-tank shut-off. A digital display and castors make room-to-room use simple.",
     category: "Home comfort",
     image: "/products/digital-dehumidifier.webp",
+    color: "#d6d4cd",
     price: 159,
   },
   {
@@ -153,6 +171,7 @@ const catalog: Product[] = [
     description: "A 150ml ultrasonic aroma diffuser with a fluted sage ceramic cover, wood-grain base, and automatic shut-off when empty. Add a few drops of suitable essential oil; oil not included.",
     category: "Home comfort",
     image: "/products/ribbed-ceramic-diffuser.webp",
+    color: "#b6c7b8",
     price: 39,
   },
   {
@@ -161,6 +180,7 @@ const catalog: Product[] = [
     description: "An articulated cream reading lamp with tension springs, adjustable pivots, and a warm-white LED diffuser. A weighted base and fabric-wrapped cord finish a focused little pool of light.",
     category: "Home comfort",
     image: "/products/adjustable-reading-lamp.webp",
+    color: "#d1d1cd",
     price: 69,
   },
   {
@@ -169,6 +189,7 @@ const catalog: Product[] = [
     description: "A 5L countertop air fryer with a digital timer, adjustable temperature up to 200°C, and a removable non-stick basket. Crisp dinners, less fuss.",
     category: "Kitchen appliances",
     image: "/products/sage-air-fryer.webp",
+    color: "#98a898",
     price: 119,
   },
   {
@@ -177,6 +198,7 @@ const catalog: Product[] = [
     description: "A 1.7L kettle with a stainless-steel interior, easy-pour spout, 360° base, and automatic shut-off. A softer start to your morning.",
     category: "Kitchen appliances",
     image: "/products/cream-electric-kettle.webp",
+    color: "#d6d4cd",
     price: 49,
   },
   {
@@ -185,6 +207,7 @@ const catalog: Product[] = [
     description: "Wide slots for sourdough, six browning settings, and a removable crumb tray. Finished in warm cream with brushed-metal details.",
     category: "Kitchen appliances",
     image: "/products/two-slice-toaster.webp",
+    color: "#d8d5ce",
     price: 59,
   },
   {
@@ -193,6 +216,7 @@ const catalog: Product[] = [
     description: "A compact 15-bar espresso machine with a steam wand, removable drip tray, and 1.2L water tank. Your daily coffee ritual, at home.",
     category: "Kitchen appliances",
     image: "/products/compact-espresso-machine.webp",
+    color: "#99a999",
     price: 189,
   },
   {
@@ -201,6 +225,7 @@ const catalog: Product[] = [
     description: "A 1.5L glass jug, stainless-steel blades, and three speeds with pulse control. Blend smoothies, sauces, and soups once cooled.",
     category: "Kitchen appliances",
     image: "/products/glass-jug-blender.webp",
+    color: "#646d6c",
     price: 69,
   },
   {
@@ -209,6 +234,7 @@ const catalog: Product[] = [
     description: "A 4L enamelled cast-iron casserole in warm terracotta. A close-fitting lid and generous handles take slow-cooked meals from hob to table.",
     category: "Cookware",
     image: "/products/cast-iron-casserole.webp",
+    color: "#e9b593",
     price: 79,
   },
   {
@@ -217,6 +243,7 @@ const catalog: Product[] = [
     description: "A 28cm frying pan with a smooth ceramic cooking surface, sage exterior, and comfortable wood handle. Made for everyday hob cooking; hand-wash only.",
     category: "Cookware",
     image: "/products/ceramic-frying-pan.webp",
+    color: "#cfd2cb",
     price: 39,
   },
   {
@@ -225,6 +252,7 @@ const catalog: Product[] = [
     description: "A 2L stainless-steel saucepan with a fitted lid, long handle, and layered base for even heating. For sauces, grains, and smaller portions.",
     category: "Cookware",
     image: "/products/stainless-saucepan.webp",
+    color: "#acb0b0",
     price: 45,
   },
   {
@@ -233,6 +261,7 @@ const catalog: Product[] = [
     description: "A 40 × 28cm bamboo prep board with a juice groove and carry handle. A warm, hard-wearing surface for chopping and serving; hand-wash and dry upright.",
     category: "Cookware",
     image: "/products/bamboo-chopping-board.webp",
+    color: "#d09c6c",
     price: 24,
   },
   {
@@ -241,6 +270,7 @@ const catalog: Product[] = [
     description: "Twelve pieces for four people: four dinner plates, four bowls, and four mugs. Warm cream stoneware with a softly glazed finish.",
     category: "Cookware",
     image: "/products/stoneware-dinner-set.webp",
+    color: "#d8d4cb",
     price: 64,
   },
   {
@@ -249,6 +279,7 @@ const catalog: Product[] = [
     description: "A lightweight rechargeable vacuum with a motorised floor head, washable filter, and removable dust cup. Up to 40 minutes of cleaning in standard mode.",
     category: "Cleaning",
     image: "/products/cordless-stick-vacuum.webp",
+    color: "#cdd3cb",
     price: 159,
   },
   {
@@ -257,6 +288,7 @@ const catalog: Product[] = [
     description: "A low-profile robot vacuum with room mapping, edge brushes, and automatic return to its charging dock. A little help keeping everyday dust under control.",
     category: "Cleaning",
     image: "/products/robot-vacuum.webp",
+    color: "#c8d3c8",
     price: 229,
   },
   {
@@ -265,6 +297,7 @@ const catalog: Product[] = [
     description: "A slim spray mop with a 500ml refillable bottle, swivel head, and washable microfibre pad. For quick clean-ups on sealed hard floors.",
     category: "Cleaning",
     image: "/products/spray-mop.webp",
+    color: "#cbd5cd",
     price: 29,
   },
   {
@@ -273,6 +306,7 @@ const catalog: Product[] = [
     description: "A portable 1L steam cleaner with a flexible hose and detail nozzle. Loosen grime on sealed tiles and suitable hard surfaces without detergent.",
     category: "Cleaning",
     image: "/products/steam-cleaner.webp",
+    color: "#d0d4cc",
     price: 89,
   },
   {
@@ -281,6 +315,7 @@ const catalog: Product[] = [
     description: "A 30L cream bin with a soft-closing lid, foot pedal, and removable inner bucket. A clean-lined essential that keeps hands free.",
     category: "Cleaning",
     image: "/products/pedal-bin.webp",
+    color: "#d3d5cc",
     price: 49,
   },
   {
@@ -289,6 +324,7 @@ const catalog: Product[] = [
     description: "A 2,400W steam iron with a pointed soleplate, variable steam, and an easy-fill water tank. Adjustable heat for your garment's care label.",
     category: "Laundry",
     image: "/products/steam-iron.webp",
+    color: "#d3d7cf",
     price: 45,
   },
   {
@@ -297,6 +333,7 @@ const catalog: Product[] = [
     description: "A compact steamer with a removable 250ml water tank and comfortable grip. Refresh hanging garments and soften creases without setting up a board.",
     category: "Laundry",
     image: "/products/handheld-garment-steamer.webp",
+    color: "#cdd6ce",
     price: 39,
   },
   {
@@ -305,6 +342,7 @@ const catalog: Product[] = [
     description: "An airy, freestanding drying rack with fold-out wings and 18m of hanging space. Folds flat between wash days, with capped feet to protect floors.",
     category: "Laundry",
     image: "/products/folding-drying-rack.webp",
+    color: "#ced2cf",
     price: 49,
   },
   {
@@ -313,6 +351,7 @@ const catalog: Product[] = [
     description: "A 60L woven hamper with a fitted lid, carry handles, and removable cotton liner. Natural texture that keeps the wash-day pile out of sight.",
     category: "Laundry",
     image: "/products/woven-laundry-hamper.webp",
+    color: "#d2b38d",
     price: 35,
   },
   {
@@ -321,6 +360,7 @@ const catalog: Product[] = [
     description: "A 110 × 34cm padded board with adjustable height, a cotton cover, and a metal iron rest. Folds away neatly when the last shirt is done.",
     category: "Laundry",
     image: "/products/ironing-board.webp",
+    color: "#cfd1cf",
     price: 59,
   },
   {
@@ -329,6 +369,7 @@ const catalog: Product[] = [
     description: "Three clear glass pantry jars in 600ml, 900ml, and 1.2L sizes. Bamboo lids with silicone seals keep dry ingredients tidy and easy to find.",
     category: "Storage",
     image: "/products/glass-storage-jars.webp",
+    color: "#cadbd5",
     price: 29,
   },
   {
@@ -337,6 +378,7 @@ const catalog: Product[] = [
     description: "A warm bamboo bread box with a smooth roll-top door and easy-grip handle. Keep loaves and pastries together without crowding the worktop.",
     category: "Storage",
     image: "/products/bamboo-bread-box.webp",
+    color: "#ebd8b4",
     price: 39,
   },
   {
@@ -345,6 +387,7 @@ const catalog: Product[] = [
     description: "A set of three ventilated baskets with carry handles and stackable rims. Sort pantry staples, bathroom essentials, or the things that never have a home.",
     category: "Storage",
     image: "/products/stackable-storage-baskets.webp",
+    color: "#ced4cc",
     price: 25,
   },
   {
@@ -353,6 +396,7 @@ const catalog: Product[] = [
     description: "Five open bamboo trays in complementary sizes. Arrange them to bring a little order to cutlery, utensils, stationery, or everyday odds and ends.",
     category: "Storage",
     image: "/products/modular-drawer-organiser.webp",
+    color: "#ecd5ac",
     price: 19,
   },
   {
@@ -361,6 +405,7 @@ const catalog: Product[] = [
     description: "A slim three-tier metal trolley with raised tray edges, a push handle, and four castors. Keep kitchen supplies close, then wheel them out of the way.",
     category: "Storage",
     image: "/products/kitchen-storage-trolley.webp",
+    color: "#cbd4cd",
     price: 69,
   },
   {
@@ -369,6 +414,7 @@ const catalog: Product[] = [
     description: "A compact air purifier with a replaceable HEPA filter, three fan speeds, and a dimmable status display. Sized for bedrooms and home offices up to 25m².",
     category: "Home comfort",
     image: "/products/hepa-air-purifier.webp",
+    color: "#d6d3cc",
     price: 129,
   },
   {
@@ -377,6 +423,7 @@ const catalog: Product[] = [
     description: "A 30cm sage desk fan with three speeds, an adjustable tilt, and side-to-side oscillation. A weighted base keeps the breeze steady.",
     category: "Home comfort",
     image: "/products/oscillating-table-fan.webp",
+    color: "#cdd2cf",
     price: 49,
   },
   {
@@ -385,6 +432,7 @@ const catalog: Product[] = [
     description: "A compact 1,500W ceramic heater with two heat settings, a carry handle, and tip-over protection. For supervised use on a clear, level floor.",
     category: "Home comfort",
     image: "/products/ceramic-space-heater.webp",
+    color: "#d9d6cd",
     price: 59,
   },
   {
@@ -393,6 +441,7 @@ const catalog: Product[] = [
     description: "A 2L cool-mist humidifier with adjustable output, an easy-clean tank, and automatic shut-off when empty. Quiet comfort for your bedside or desk.",
     category: "Home comfort",
     image: "/products/ultrasonic-humidifier.webp",
+    color: "#d1d7ce",
     price: 45,
   },
   {
@@ -401,6 +450,7 @@ const catalog: Product[] = [
     description: "A sculptural terracotta dome lamp with a warm-white LED light and in-line switch. A soft pool of light for reading corners and bedside tables.",
     category: "Home comfort",
     image: "/products/dome-table-lamp.webp",
+    color: "#ecc8b2",
     price: 39,
   },
 ];

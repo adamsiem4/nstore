@@ -7,8 +7,10 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { DragRow } from "@/components/store/drag-row";
+import { ProductCard } from "@/components/store/product-card";
 import { buttonVariants } from "@/components/ui/button";
-import { cn, money } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { getProducts } from "@/server/queries/products";
 
 export default async function HomePage() {
@@ -110,39 +112,17 @@ export default async function HomePage() {
               <ArrowRightIcon aria-hidden="true" />
             </Link>
           </div>
-          {/* ponytail: scroll-snap, not a carousel library — the overflow
-              container already gives drag, wheel, trackpad and keyboard
-              scrolling. The -m-2/p-2 pair keeps the card ring from clipping
+          {/* ponytail: scroll-snap, not a carousel library — wheel, touch and
+              keyboard come free from the overflow container; DragRow only adds
+              mouse drag. The -m-2/p-2 pair keeps the card ring from clipping
               without moving the row. */}
-          <ul className="-m-2 grid snap-x snap-mandatory auto-cols-[78%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain scroll-p-2 p-2 [scrollbar-width:thin] sm:auto-cols-[45%] sm:gap-4 lg:auto-cols-[calc((100%-3rem)/4)]">
+          <DragRow className="-m-2 grid snap-x snap-mandatory auto-cols-[78%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain scroll-p-2 p-2 [scrollbar-width:none] sm:auto-cols-[45%] sm:gap-4 lg:auto-cols-[calc((100%-3rem)/4)] [&::-webkit-scrollbar]:hidden">
             {products.slice(0, 8).map((product) => (
               <li key={product.id} className="snap-start">
-                <Link
-                  href={`/products/${product.id}`}
-                  className="group flex h-full flex-col rounded-xl border p-2.5 outline-none transition-[border-color,box-shadow] duration-200 hover:border-foreground/25 hover:shadow-md focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-card sm:p-3"
-                >
-                  <div className="overflow-hidden rounded-xl bg-product-shot">
-                    <Image
-                      src={product.image}
-                      alt=""
-                      width={1536}
-                      height={1536}
-                      sizes="(max-width: 639px) 78vw, (max-width: 1023px) 45vw, 25vw"
-                      className="aspect-square w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-[1.035]"
-                    />
-                  </div>
-                  <div className="px-1 pt-4">
-                    <p className="text-xs text-muted-foreground">{product.category}</p>
-                    <h3 className="mt-1 text-sm leading-6 font-medium sm:text-base">{product.name}</h3>
-                  </div>
-                  <div className="mt-auto flex items-center justify-between gap-2 px-1 pt-2 pb-1">
-                    <p className="text-sm text-muted-foreground">{money.format(product.price)}</p>
-                    <ArrowRightIcon aria-hidden="true" className="size-4 shrink-0 transition-transform duration-200 motion-safe:group-hover:translate-x-1" />
-                  </div>
-                </Link>
+                <ProductCard product={product} />
               </li>
             ))}
-          </ul>
+          </DragRow>
         </section>
 
         <section aria-labelledby="categories-heading" className="rounded-xl bg-muted/60 p-5 sm:p-8">

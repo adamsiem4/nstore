@@ -9,6 +9,7 @@ const kettle: Product = {
   description: "Boils water",
   category: "Kitchen appliances",
   image: "/products/kettle.webp",
+  color: "#d6d4cd",
   price: 49,
 };
 
