@@ -2,8 +2,8 @@ import type { CSSProperties } from "react";
 import { Show, UserButton } from "@clerk/nextjs";
 import { SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { pillButtonVariants } from "@/components/ui/pill-button";
 import { cn } from "@/lib/utils";
 import { getCartLines } from "@/server/cart-lines";
 
@@ -16,10 +16,10 @@ const categories = [
   "Home comfort",
 ];
 
-const navLinkClass = cn(
-  buttonVariants({ variant: "ghost" }),
-  "h-11 rounded-full px-3 text-xs tracking-[0.08em] text-muted-foreground uppercase focus-visible:ring-foreground",
-);
+const navLinkClass = pillButtonVariants({
+  variant: "ghost",
+  className: "h-11 px-3 text-xs tracking-[0.08em] text-muted-foreground uppercase focus-visible:ring-foreground",
+});
 
 // ponytail: fizik's logo morph in CSS — letters fade one by one, then the gap
 // closes; both directions reverse for free because they are transitions.
@@ -96,10 +96,11 @@ export async function SiteHeader() {
           <input id="site-search" type="checkbox" aria-label="Search" className="peer sr-only" />
           <label
             htmlFor="site-search"
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "icon-lg" }),
-              "relative z-30 size-10 cursor-pointer rounded-full peer-focus-visible:ring-2 peer-focus-visible:ring-foreground",
-            )}
+            className={pillButtonVariants({
+              variant: "ghost",
+              size: "icon-lg",
+              className: "relative z-30 size-10 cursor-pointer peer-focus-visible:ring-2 peer-focus-visible:ring-foreground",
+            })}
           >
             <SearchIcon aria-hidden="true" data-icon="open" />
             <XIcon aria-hidden="true" data-icon="close" />
@@ -127,7 +128,7 @@ export async function SiteHeader() {
         <Link
           href="/cart"
           aria-label={cartLabel}
-          className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "relative size-10 rounded-full focus-visible:ring-foreground")}
+          className={pillButtonVariants({ variant: "ghost", size: "icon-lg", className: "relative size-10 focus-visible:ring-foreground" })}
         >
           <ShoppingBagIcon aria-hidden="true" />
           {count > 0 && (
@@ -140,7 +141,7 @@ export async function SiteHeader() {
           <Link
             href="/sign-in"
             aria-label="Sign in"
-            className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "size-10 rounded-full focus-visible:ring-foreground")}
+            className={pillButtonVariants({ variant: "ghost", size: "icon-lg", className: "size-10 focus-visible:ring-foreground" })}
           >
             <UserIcon aria-hidden="true" />
           </Link>
@@ -159,10 +160,11 @@ export async function SiteHeader() {
         <input id="site-menu" type="checkbox" aria-label="Menu" className="peer sr-only" />
         <label
           htmlFor="site-menu"
-          className={cn(
-            buttonVariants({ variant: "ghost", size: "icon-lg" }),
-            "size-10 cursor-pointer flex-col gap-[5px] rounded-full peer-focus-visible:ring-2 peer-focus-visible:ring-foreground",
-          )}
+          className={pillButtonVariants({
+            variant: "ghost",
+            size: "icon-lg",
+            className: "size-10 cursor-pointer flex-col gap-[5px] peer-focus-visible:ring-2 peer-focus-visible:ring-foreground",
+          })}
         >
           <span aria-hidden="true" className="burger-line" />
           <span aria-hidden="true" className="burger-line" />
@@ -225,7 +227,7 @@ export async function SiteHeader() {
                 <Link
                   href="/sign-in"
                   aria-label="Sign in"
-                  className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "size-10 rounded-full focus-visible:ring-foreground")}
+                  className={pillButtonVariants({ variant: "ghost", size: "icon-lg", className: "size-10 focus-visible:ring-foreground" })}
                 >
                   <UserIcon aria-hidden="true" />
                 </Link>

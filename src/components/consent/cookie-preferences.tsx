@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { Button } from "@/components/ui/button";
+import { SoftPillButton } from "@/components/ui/pill-button";
 import { getConsent, setConsent, subscribeConsent } from "@/lib/consent";
 
 /** Show and update the visitor's optional analytics choice. */
@@ -23,28 +23,28 @@ export function CookiePreferences() {
         Current choice: <span className="font-medium text-foreground">{status}</span>
       </p>
       <div className="mt-5 grid gap-2 sm:grid-cols-3">
-        <Button
+        <SoftPillButton
           type="button"
           className="h-11 w-full focus-visible:ring-foreground"
           onClick={() => setConsent("granted")}
         >
           Accept analytics
-        </Button>
-        <Button
+        </SoftPillButton>
+        <SoftPillButton
           type="button"
           className="h-11 w-full focus-visible:ring-foreground"
           onClick={() => setConsent("denied")}
         >
           Reject analytics
-        </Button>
-        <Button
+        </SoftPillButton>
+        <SoftPillButton
           type="button"
           variant="outline"
           className="h-11 w-full focus-visible:ring-foreground"
           onClick={() => setConsent(null)}
         >
           Clear choice
-        </Button>
+        </SoftPillButton>
       </div>
     </section>
   );

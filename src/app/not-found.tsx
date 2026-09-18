@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { pillButtonVariants } from "@/components/ui/pill-button";
 
 export default function NotFound() {
   return (
@@ -10,9 +10,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/products"
-        className={buttonVariants({
-          className: "mt-8 h-12 px-8 text-base",
-        })}
+        className={pillButtonVariants({ className: "mt-8 h-12 px-8 text-base" })}
       >
         Back to shop
       </Link>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { buttonVariants } from "@/components/ui/button";
+import { pillButtonVariants } from "@/components/ui/pill-button";
 import { getStripe } from "@/server/stripe";
 
 export const metadata: Metadata = { title: "Order confirmed" };
@@ -53,7 +53,7 @@ export default async function CheckoutSuccessPage(
           ))}
         </ul>
 
-        <Link href="/products" className={buttonVariants({ className: "mt-8 self-center" })}>
+        <Link href="/products" className={pillButtonVariants({ className: "mt-8 self-center" })}>
           Keep shopping
         </Link>
       </div>

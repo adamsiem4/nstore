@@ -2,7 +2,7 @@
 
 import { XIcon } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { PillButton } from "@/components/ui/pill-button";
 import { PROMO_COOKIE } from "@/lib/promo";
 
 const messages = [
@@ -46,7 +46,7 @@ export function AnnouncementBar() {
           ))}
         </div>
       </div>
-      <Button
+      <PillButton
         variant="ghost"
         size="icon-lg"
         aria-label="Dismiss announcement"
@@ -54,10 +54,10 @@ export function AnnouncementBar() {
           document.cookie = `${PROMO_COOKIE}=1; path=/; max-age=${60 * 60 * 24 * 30}; samesite=lax`;
           setDismissed(true);
         }}
-        className="size-11 shrink-0 rounded-full text-background hover:bg-background/15 hover:text-background focus-visible:ring-background"
+        className="size-11 shrink-0 text-background hover:bg-background/15 hover:text-background focus-visible:ring-background"
       >
         <XIcon aria-hidden="true" />
-      </Button>
+      </PillButton>
     </aside>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { SoftPillButton } from "@/components/ui/pill-button";
 import { getConsent, setConsent, subscribeConsent } from "@/lib/consent";
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
@@ -41,20 +41,20 @@ export function CookieBanner() {
         .
       </p>
       <div className="mt-4 grid grid-cols-2 gap-2">
-        <Button
+        <SoftPillButton
           type="button"
           className="w-full focus-visible:ring-foreground"
           onClick={() => setConsent("denied")}
         >
           Reject
-        </Button>
-        <Button
+        </SoftPillButton>
+        <SoftPillButton
           type="button"
           className="w-full focus-visible:ring-foreground"
           onClick={() => setConsent("granted")}
         >
           Accept
-        </Button>
+        </SoftPillButton>
       </div>
     </div>
   );

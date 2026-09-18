@@ -9,8 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { DragRow } from "@/components/store/drag-row";
 import { ProductCard } from "@/components/store/product-card";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { pillButtonVariants } from "@/components/ui/pill-button";
 import { getProducts } from "@/server/queries/products";
 
 export default async function HomePage() {
@@ -64,23 +63,22 @@ export default async function HomePage() {
           <div className="mt-8 flex w-full flex-wrap justify-center gap-3">
             <Link
               href="/products"
-              className={cn(
-                buttonVariants(),
-                "h-12 w-full gap-3 rounded-full bg-hero-cta px-6 text-sm text-hero-cta-ink hover:bg-hero-cta/90 focus-visible:ring-hero-cta focus-visible:ring-offset-2 focus-visible:ring-offset-transparent min-[420px]:w-auto",
-              )}
+              className={pillButtonVariants({
+                className: "h-12 w-full gap-3 bg-hero-cta px-6 text-sm text-hero-cta-ink hover:bg-hero-cta/90 focus-visible:ring-hero-cta focus-visible:ring-offset-2 focus-visible:ring-offset-transparent min-[420px]:w-auto",
+              })}
             >
               Shop the essentials
               <ArrowRightIcon aria-hidden="true" className="size-4" />
             </Link>
             <a
               href="#featured"
-              className={cn(
-                buttonVariants({ variant: "outline" }),
+              className={pillButtonVariants({
+                variant: "outline",
                 // dark: overrides exist because the outline variant ships its
                 // own dark:border-input / dark:bg-input fills; tailwind-merge
                 // keeps the last class per property, so these win.
-                "h-12 w-full gap-3 rounded-full border-hero-line bg-transparent px-6 text-sm text-hero-ink hover:bg-hero-ink/10 hover:text-hero-ink focus-visible:ring-hero-cta focus-visible:ring-offset-2 focus-visible:ring-offset-transparent min-[420px]:w-auto dark:border-hero-line dark:bg-transparent dark:hover:bg-hero-ink/10",
-              )}
+                className: "h-12 w-full gap-3 border-hero-line bg-transparent px-6 text-sm text-hero-ink hover:bg-hero-ink/10 hover:text-hero-ink focus-visible:ring-hero-cta focus-visible:ring-offset-2 focus-visible:ring-offset-transparent min-[420px]:w-auto dark:border-hero-line dark:bg-transparent dark:hover:bg-hero-ink/10",
+              })}
             >
               Meet the favourites
               <ArrowDownIcon aria-hidden="true" className="size-4" />
@@ -103,10 +101,10 @@ export default async function HomePage() {
             </div>
             <Link
               href="/products"
-              className={cn(
-                buttonVariants({ variant: "outline" }),
-                "h-11 gap-3 rounded-full px-5 focus-visible:ring-foreground",
-              )}
+              className={pillButtonVariants({
+                variant: "outline",
+                className: "h-11 gap-3 px-5 focus-visible:ring-foreground",
+              })}
             >
               Shop all essentials
               <ArrowRightIcon aria-hidden="true" />
@@ -137,10 +135,10 @@ export default async function HomePage() {
               <li key={category}>
                 <Link
                   href={`/products?q=${encodeURIComponent(category)}`}
-                  className={cn(
-                    buttonVariants({ variant: "outline" }),
-                    "h-11 gap-3 rounded-full px-4 focus-visible:ring-foreground",
-                  )}
+                  className={pillButtonVariants({
+                    variant: "outline",
+                    className: "h-11 gap-3 px-4 focus-visible:ring-foreground",
+                  })}
                 >
                   {category}
                   <ArrowRightIcon aria-hidden="true" />

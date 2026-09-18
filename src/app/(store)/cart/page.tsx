@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CartFormButton } from "@/components/store/cart";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { SoftPillButton, pillButtonVariants } from "@/components/ui/pill-button";
 import { MAX_QTY } from "@/lib/cart";
-import { cn, money } from "@/lib/utils";
+import { money } from "@/lib/utils";
 import { getCartLines } from "@/server/cart-lines";
 import { startCheckout } from "@/server/checkout";
 
@@ -28,7 +28,7 @@ export default async function CartPage() {
           <p className="mt-1 text-sm text-muted-foreground">
             Suspiciously light. Nothing rattles when you shake it.
           </p>
-          <Link href="/products" className={cn(buttonVariants(), "mt-8 h-12 rounded-lg px-8 text-base")}>
+          <Link href="/products" className={pillButtonVariants({ className: "mt-8 h-12 px-8 text-base" })}>
             Continue shopping
           </Link>
         </div>
@@ -64,7 +64,7 @@ export default async function CartPage() {
                       Total: {money.format(product.price * quantity)}
                     </p>
                     <div className="mt-4 flex items-center gap-2">
-                      <div className="flex items-center gap-1 rounded-lg bg-muted p-1">
+                      <div className="flex items-center gap-1 rounded-full bg-muted p-1">
                         <CartFormButton id={product.id} delta={-1} variant="outline" label={`One less ${product.name}`}>
                           <MinusIcon />
                         </CartFormButton>
@@ -110,9 +110,9 @@ export default async function CartPage() {
               </div>
             </dl>
             <form action={startCheckout} className="mt-5">
-              <Button type="submit" className="h-12 w-full rounded-lg text-base">
+              <SoftPillButton type="submit" className="h-12 w-full text-base">
                 Proceed to checkout
-              </Button>
+              </SoftPillButton>
             </form>
             <p className="mt-3 text-xs text-muted-foreground">Secure payment by Stripe · 30-day returns</p>
           </aside>
