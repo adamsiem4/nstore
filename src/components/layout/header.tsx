@@ -21,6 +21,17 @@ const navLinkClass = pillButtonVariants({
   className: "h-11 px-3 text-xs tracking-[0.08em] text-muted-foreground uppercase focus-visible:ring-foreground",
 });
 
+// ponytail: the catalog row as data — the fold needs an index to stagger on,
+// and the hidden width-holder has to render the exact same labels.
+const CATALOG = [
+  { href: "/products", label: "Shop", lead: true },
+  ...categories.map((category) => ({
+    href: `/products?q=${encodeURIComponent(category)}`,
+    label: category,
+    lead: false,
+  })),
+];
+
 // ponytail: fizik's logo morph in CSS — letters fade one by one, then the gap
 // closes; both directions reverse for free because they are transitions.
 // Fade-out runs nearest-letter-first, fade-in farthest-first, like the original.
@@ -39,13 +50,16 @@ export async function SiteHeader() {
 
   return (
     <div className="flex items-center gap-x-1 sm:gap-x-2">
-      {/* ponytail: an invisible copy holds the full width open, so the morph
-          collapses inside its own box and never shifts the nav or the icons */}
-      <div className="relative flex min-h-11 items-center text-xl font-semibold tracking-tight">
-        <span aria-hidden="true" className="invisible">nstore</span>
+      {/* ponytail: the wordmark is its own zero-basis side, so the tail can
+          collapse without moving anything: the nav sits between two equal
+          flex-1 sides and therefore on the panel's centre line, and no
+          invisible copy is left holding a gap open where "store" used to be.
+          aria-label, because split letters are announced as "n store". */}
+      <div className="flex min-h-11 flex-1 items-center text-xl font-semibold tracking-tight">
         <Link
           href="/"
-          className="absolute inset-0 inline-flex items-center rounded-lg outline-none transition-opacity hover:opacity-70 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-card"
+          aria-label="nstore"
+          className="inline-flex min-h-11 items-center rounded-lg outline-none transition-opacity hover:opacity-70 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-card"
         >
           n
           <span className="grid grid-cols-[1fr] transition-[grid-template-columns] duration-300 ease-out group-data-[stuck]/header:grid-cols-[0fr] group-data-[stuck]/header:delay-300 motion-reduce:transition-none">
@@ -64,23 +78,45 @@ export async function SiteHeader() {
         </Link>
       </div>
 
-      <nav aria-label="Catalog" className="mx-auto hidden xl:block">
-        <ul className="flex items-center gap-1 p-1">
-          <li>
-            <Link
-              href="/products"
-              className={cn(navLinkClass, "font-semibold text-foreground")}
-            >
-              Shop
-            </Link>
-          </li>
-          {categories.map((category) => (
-            <li key={category}>
+      {/* ponytail: when the search pill unrolls it used to slide over the last
+          two labels and leave them half-eaten, so each label now folds down to
+          its initial ahead of the glass — right to left, one 45ms beat apart,
+          and back the other way when the pill retreats. The invisible copy
+          holds the closed width: without it the row would re-centre as it
+          shrinks and carry the initials rightwards into the pill. Same
+          aria-label reason as the wordmark: "K" plus "itchen appliances" is
+          announced as two words without it. */}
+      <nav aria-label="Catalog" className="relative hidden shrink-0 xl:block">
+        <ul aria-hidden="true" className="invisible flex items-center gap-1 p-1">
+          {CATALOG.map(({ href, label, lead }) => (
+            <li key={href} className={cn(navLinkClass, "shrink-0", lead && "font-semibold")}>
+              {label}
+            </li>
+          ))}
+        </ul>
+        <ul className="absolute inset-0 flex items-center gap-1 p-1">
+          {CATALOG.map(({ href, label, lead }, index) => (
+            <li key={href} className="shrink-0">
               <Link
-                href={`/products?q=${encodeURIComponent(category)}`}
-                className={navLinkClass}
+                href={href}
+                aria-label={label}
+                className={cn(
+                  navLinkClass,
+                  // the initial and its tail are one word, not two flex items
+                  "gap-0",
+                  lead && "font-semibold text-foreground",
+                )}
               >
-                {category}
+                {label.slice(0, 1)}
+                <span
+                  style={{
+                    "--fold": `${(CATALOG.length - 1 - index) * 45}ms`,
+                    "--unfold": `${index * 45}ms`,
+                  } as CSSProperties}
+                  className="catalog-tail"
+                >
+                  <span>{label.slice(1)}</span>
+                </span>
               </Link>
             </li>
           ))}
@@ -88,7 +124,7 @@ export async function SiteHeader() {
       </nav>
 
       {/* ponytail: 40px boxes butted together — 44px ones read as scattered icons */}
-      <div className="ml-auto hidden items-center gap-0 xl:flex">
+      <div className="hidden flex-1 items-center justify-end gap-0 xl:flex">
         {/* ponytail: a checkbox is the whole toggle — no state, no popover lib.
             Unlike <details> the pill stays in the DOM when shut, so it can
             swipe closed as smoothly as it opens. */}
