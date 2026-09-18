@@ -77,6 +77,29 @@
     display: block;
   }
 
+  /* ponytail: an fr track again — grid-template-columns animates, so a label
+     can fold to its initial without the row reflowing or a single length being
+     hardcoded. The tail's own fade finishes first, so the clip never bites a
+     half-drawn glyph. --fold runs the wave right-to-left as the pill opens,
+     --unfold plays it back left-to-right as the pill shuts. */
+  .catalog-tail {
+    display: grid;
+    grid-template-columns: 1fr;
+    transition:
+      grid-template-columns 0.3s cubic-bezier(0.32, 0.72, 0, 1) var(--unfold, 0ms),
+      opacity 0.15s linear var(--unfold, 0ms);
+  }
+
+  .catalog-tail > span {
+    overflow: hidden;
+  }
+
+  header:has(#site-search:checked) .catalog-tail {
+    grid-template-columns: 0fr;
+    opacity: 0;
+    transition-delay: var(--fold, 0ms), var(--fold, 0ms);
+  }
+
   /* ponytail: individual translate/rotate properties instead of one transform,
      so the two halves of the fold can be ordered: opening, the bars slide to
      the middle and only then rotate; closing runs the same beats backwards.
@@ -138,6 +161,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .search-pill,
+    .catalog-tail,
     .burger-line,
     .site-menu {
       transition: none;
