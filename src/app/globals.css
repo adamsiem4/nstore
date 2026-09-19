@@ -163,6 +163,9 @@
   --color-hero-cta-ink: var(--hero-cta-ink);
   --color-hero-line: var(--hero-line);
   --color-product-shot: var(--product-shot);
+  --color-shot-ink: var(--shot-ink);
+  --color-shot-ink-muted: var(--shot-ink-muted);
+  --color-shot-line: var(--shot-line);
   --color-surface: var(--surface);
   --color-ring: var(--ring);
   --color-input: var(--input);
@@ -209,6 +212,13 @@
   --card: #fbf7f2;                         /* navbar, footer, page panel, product cards */
   --surface: #f6efe8;                      /* sections and card interiors */
   --product-shot: #f4f2f0;                 /* fixed: baked into every product .webp */
+  /* The shot's backdrop is baked into the .webp, so the tile that frames it is
+     the same colour in both modes — and so is the ink on it. These four are
+     deliberately absent from .dark: a dark tile would draw a border around
+     every product where light mode has none. */
+  --shot-ink: oklch(0.205 0.0045 68);      /* #191715  16.1:1 on --product-shot */
+  --shot-ink-muted: oklch(0.452 0.0050 68);/* #585553  6.6:1 on --product-shot */
+  --shot-line: #decfc1;                    /* quick-add outline on the tile */
   /* was: var(--card)             #f4f2f0 */
   --popover: #fff9f3;                      /* dropdowns and menus */
   /* was: oklch(0.921 0.0040 68)  #e7e4e2 */

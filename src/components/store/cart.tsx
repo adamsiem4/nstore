@@ -45,12 +45,22 @@ export function AddToCartButton({ product }: { product: Product }) {
   );
 }
 
+/**
+ * Sits on the product tile, which keeps the light palette in both modes — so
+ * the outline variant's dark: fills are overridden rather than inherited.
+ */
 export function QuickAddButton({ product }: { product: Product }) {
   return (
     <form action={updateCart}>
       <input type="hidden" name="id" value={product.id} />
       <input type="hidden" name="delta" value="1" />
-      <PillButton type="submit" variant="outline" size="sm" aria-label={`Add ${product.name} to cart`}>
+      <PillButton
+        type="submit"
+        variant="outline"
+        size="sm"
+        aria-label={`Add ${product.name} to cart`}
+        className="border-shot-line bg-transparent text-shot-ink hover:bg-shot-ink/10 hover:text-shot-ink focus-visible:ring-shot-ink dark:border-shot-line dark:bg-transparent dark:hover:bg-shot-ink/10"
+      >
         <PlusIcon />
         Add
       </PillButton>

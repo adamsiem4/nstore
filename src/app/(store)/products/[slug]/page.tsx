@@ -79,7 +79,7 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
           height={1536}
           sizes="(max-width: 1023px) 100vw, 50vw"
           preload
-          className="aspect-square w-full rounded-xl bg-product-shot object-cover dark:bg-surface"
+          className="aspect-square w-full rounded-xl bg-product-shot object-cover"
         />
 
         <div>

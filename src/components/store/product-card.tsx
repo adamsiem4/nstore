@@ -6,13 +6,14 @@ import type { Product } from "@/types/product";
 
 export function ProductCard({ product }: { product: Product }) {
   return (
-    <article className="flex h-full flex-col rounded-xl bg-product-shot p-2 dark:bg-surface">
+    <article className="flex h-full flex-col rounded-xl bg-product-shot p-2 text-shot-ink">
       <Link
         href={`/products/${product.id}`}
-        className="flex flex-1 flex-col rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-product-shot dark:focus-visible:ring-offset-surface"
+        className="flex flex-1 flex-col rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-shot-ink focus-visible:ring-offset-2 focus-visible:ring-offset-product-shot"
       >
-        {/* The shot's own backdrop is --product-shot, so in light mode the
-            image dissolves into the card and only the corner radius shows. */}
+        {/* The shot's own backdrop is --product-shot and so is the tile, in
+            both modes — the image dissolves into it and only the corner
+            radius shows. */}
         <Image
           src={product.image}
           alt={product.name}
@@ -24,14 +25,14 @@ export function ProductCard({ product }: { product: Product }) {
         <span
           aria-hidden="true"
           style={{ backgroundColor: product.color }}
-          className="mt-4 ml-1 block size-2.5 rounded-full ring-1 ring-foreground/15"
+          className="mt-4 ml-1 block size-2.5 rounded-full ring-1 ring-shot-ink/15"
         />
         <h2 className="mt-3 px-1 text-sm font-semibold tracking-wide uppercase">
           {product.name}
         </h2>
         {/* ponytail: first sentence, truncated by CSS — the catalog copy is
             spec-first, so sentence one is the one-line summary. */}
-        <p className="mt-1 truncate px-1 font-mono text-xs text-muted-foreground">
+        <p className="mt-1 truncate px-1 font-mono text-xs text-shot-ink-muted">
           {product.description.split(". ")[0]}
         </p>
       </Link>
