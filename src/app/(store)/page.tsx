@@ -22,7 +22,7 @@ export default async function HomePage() {
       <main id="content" tabIndex={-1} className="outline-none">
         <section
           aria-labelledby="home-heading"
-          className="relative isolate -mx-2 -mt-2 flex min-h-[calc(100svh-var(--chrome)-var(--promo))] flex-col items-center justify-center overflow-hidden rounded-xl border px-6 py-16 text-center text-hero-ink sm:-mx-5 sm:-mt-5 sm:px-10 sm:py-24 lg:-mx-7 lg:-mt-7"
+          className="relative isolate -mx-2 -mt-2 flex min-h-[calc(100svh-var(--chrome))] flex-col items-center justify-center overflow-hidden rounded-xl border px-6 py-16 text-center text-hero-ink sm:-mx-5 sm:-mt-5 sm:px-10 sm:py-24 lg:-mx-7 lg:-mt-7"
         >
           {/* ponytail: two <Image>s toggled by the dark class — a useTheme()
               client boundary would cost a hydration flash on the LCP element.

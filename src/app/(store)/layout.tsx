@@ -1,31 +1,20 @@
-import { cookies, headers } from "next/headers";
 import type { ReactNode } from "react";
-import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/header";
 import { StickyHeader } from "@/components/layout/sticky-header";
-import { PROMO_COOKIE } from "@/lib/promo";
 
-export default async function StoreLayout({ children }: { children: ReactNode }) {
-  const [jar, head] = await Promise.all([cookies(), headers()]);
-  // ponytail: Ctrl+F5 sends `Cache-Control: no-cache` (plain F5 sends
-  // `max-age=0`), so a hard reload is the reset gesture — render the strip
-  // and leave the cookie alone, no route handler to clear it.
-  const hardReload = head.get("cache-control")?.includes("no-cache") ?? false;
-  const showPromo = hardReload || jar.get(PROMO_COOKIE)?.value !== "1";
-
+export default function StoreLayout({ children }: { children: ReactNode }) {
   // ponytail: --chrome is the measured gutter+header+gap+card-inset+gutter
-  // above and below the panel; --promo flips off by itself when the strip
-  // unmounts, so the hero can fill the viewport without a resize listener.
+  // above and below the panel, so the hero can fill the viewport exactly
+  // without a resize listener.
   return (
-    <div className="flex min-h-svh w-full flex-col gap-2 p-2 [--chrome:99px] [--promo:0px] sm:gap-3 sm:p-3 sm:[--chrome:127px] [&:has(>aside)]:[--promo:64px]">
+    <div className="flex min-h-svh w-full flex-col gap-2 p-2 [--chrome:99px] sm:gap-3 sm:p-3 sm:[--chrome:127px]">
       <a
         href="#content"
         className="sr-only z-50 rounded-full bg-primary px-5 py-3 font-medium text-primary-foreground focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:outline-2 focus:outline-offset-4 focus:outline-foreground"
       >
         Skip to content
       </a>
-      {showPromo && <AnnouncementBar />}
       <StickyHeader>
         <SiteHeader />
       </StickyHeader>

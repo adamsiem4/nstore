@@ -47,12 +47,6 @@ export default function CookiesPage() {
                   <td className="px-4 py-4 text-muted-foreground">30 days</td>
                 </tr>
                 <tr className="border-t">
-                  <th scope="row" className="px-4 py-4 font-mono font-medium">promo-dismissed</th>
-                  <td className="px-4 py-4 text-muted-foreground">Keeps the announcement strip closed after you dismiss it.</td>
-                  <td className="px-4 py-4 text-muted-foreground">Strictly necessary first-party cookie</td>
-                  <td className="px-4 py-4 text-muted-foreground">30 days</td>
-                </tr>
-                <tr className="border-t">
                   <th scope="row" className="px-4 py-4 font-mono font-medium">__session, __client_uat</th>
                   <td className="px-4 py-4 text-muted-foreground">Maintain and refresh your Clerk sign-in session.</td>
                   <td className="px-4 py-4 text-muted-foreground">Strictly necessary first-party cookies</td>

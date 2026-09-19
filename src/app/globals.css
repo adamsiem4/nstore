@@ -5,23 +5,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ponytail: CSS marquee. The track holds the message list 6x at natural width,
-   so one keyframe cycle slides exactly one copy (100% / 6) — distance and
-   therefore speed are identical on every viewport, and 5 spare copies keep the
-   tail filled up to ~4000px wide. translate3d keeps it on the compositor. */
-@theme {
-  --animate-marquee: marquee 26s linear infinite;
-
-  @keyframes marquee {
-    from {
-      transform: translate3d(0, 0, 0);
-    }
-    to {
-      transform: translate3d(-16.6667%, 0, 0);
-    }
-  }
-}
-
 /* ponytail: --search-width sets the pill's reach and its negative left offset,
    so the right edge always lands on the toggle; the subtrahend is wordmark +
    icon cluster + panel padding, which keeps the pill inside the panel on
@@ -236,7 +219,7 @@
   --popover-foreground: var(--foreground);
 
   /* Actions — the same ink and the same recessed surface, nothing new */
-  --primary: var(--foreground);            /* solid buttons, announcement strip */
+  --primary: var(--foreground);            /* solid buttons */
   --primary-foreground: var(--card);
   --secondary: var(--muted);
   --secondary-foreground: var(--foreground);

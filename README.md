@@ -40,7 +40,7 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 
 ## Implemented
 
-- Responsive landing page with keyboard navigation, pausable announcements, and reduced-motion support
+- Responsive landing page with keyboard navigation and reduced-motion support
 - Searchable 50-product catalog and product detail pages
 - Six household categories with original 1536×1536, text-free 3D product renders
 - Shared storefront layout and shadcn/ui configuration
