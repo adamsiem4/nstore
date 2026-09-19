@@ -41,7 +41,7 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 ## Implemented
 
 - Responsive landing page with keyboard navigation and reduced-motion support
-- Searchable 50-product catalog and product detail pages
+- Searchable 50-product catalog, and product pages with key details, a specification table, materials, box contents, and care
 - Six household categories with original 1536×1536, text-free 3D product renders
 - Shared storefront layout and shadcn/ui configuration
 - Product-card quick-add, cookie-backed `/cart`, quantity controls, and order summary

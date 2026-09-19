@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "bun src/lib/cart.check.ts && bun src/server/queries/products.check.ts && bun --conditions=react-server src/app/api/webhooks/stripe/route.check.ts && bun --conditions=react-server src/app/api/checkout/return/route.check.js",
+    "test": "bun src/lib/cart.check.ts && bun src/server/queries/products.check.ts && bun src/server/queries/product-details.check.ts && bun --conditions=react-server src/app/api/webhooks/stripe/route.check.ts && bun --conditions=react-server src/app/api/checkout/return/route.check.js",
     "db:generate": "bunx drizzle-kit generate",
     "db:migrate": "bunx drizzle-kit migrate",
     "db:studio": "bunx drizzle-kit studio"
