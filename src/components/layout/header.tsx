@@ -47,6 +47,11 @@ const TAIL = [
 export async function SiteHeader() {
   const count = (await getCartLines()).reduce((sum, line) => sum + line.quantity, 0);
   const cartLabel = `Cart, ${count} item${count === 1 ? "" : "s"}`;
+  const badge = count > 0 ? (
+    <span aria-hidden="true" className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-none font-medium text-primary-foreground tabular-nums">
+      {count > 9 ? "9+" : count}
+    </span>
+  ) : null;
 
   return (
     <div className="flex items-center gap-x-1 sm:gap-x-2">
@@ -167,11 +172,7 @@ export async function SiteHeader() {
           className={pillButtonVariants({ variant: "ghost", size: "icon-lg", className: "relative size-10 focus-visible:ring-foreground" })}
         >
           <ShoppingBagIcon aria-hidden="true" />
-          {count > 0 && (
-            <span className="absolute right-0.5 bottom-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] leading-none font-medium text-primary-foreground tabular-nums">
-              {count}
-            </span>
-          )}
+          {badge && <span className="absolute right-0 bottom-0.5">{badge}</span>}
         </Link>
         <Show when="signed-out">
           <Link
@@ -253,10 +254,12 @@ export async function SiteHeader() {
           <div className="flex items-center gap-1 border-t pt-2">
             <Link
               href="/cart"
+              aria-label={cartLabel}
               className={cn(navLinkClass, "gap-2 normal-case tracking-normal text-foreground")}
             >
               <ShoppingBagIcon aria-hidden="true" />
-              {cartLabel}
+              Cart
+              {badge}
             </Link>
             <div className="ml-auto flex items-center gap-1">
               <Show when="signed-out">

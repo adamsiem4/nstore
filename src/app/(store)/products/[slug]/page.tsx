@@ -183,7 +183,7 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
           >
             More in {product.category.toLowerCase()}
           </h2>
-          <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((item) => (
               <li key={item.id}>
                 <ProductCard product={item} />
