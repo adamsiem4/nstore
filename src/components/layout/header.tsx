@@ -3,7 +3,7 @@ import { Show, UserButton } from "@clerk/nextjs";
 import { SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import { pillButtonVariants } from "@/components/ui/pill-button";
+import { PillButton, pillButtonVariants } from "@/components/ui/pill-button";
 import { cn } from "@/lib/utils";
 import { getCartLines } from "@/server/cart-lines";
 
@@ -155,9 +155,9 @@ export async function SiteHeader() {
               aria-label="Search home essentials"
               className="h-10 min-w-0 rounded-none border-0 bg-transparent px-0 text-base shadow-none focus-visible:border-0 focus-visible:ring-0 dark:bg-transparent [&::-webkit-search-cancel-button]:hidden"
             />
-            <button type="submit" className="sr-only">
+            <PillButton type="submit" className="sr-only">
               Search
-            </button>
+            </PillButton>
           </form>
         </div>
 
@@ -225,9 +225,9 @@ export async function SiteHeader() {
               aria-label="Search home essentials"
               className="h-11 min-w-0 rounded-none border-0 bg-transparent px-0 text-base shadow-none focus-visible:border-0 focus-visible:ring-0 dark:bg-transparent [&::-webkit-search-cancel-button]:hidden"
             />
-            <button type="submit" className="sr-only">
+            <PillButton type="submit" className="sr-only">
               Search
-            </button>
+            </PillButton>
           </form>
 
           <nav aria-label="Catalog">

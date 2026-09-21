@@ -46,15 +46,16 @@ export function AddToCartButton({ product }: { product: Product }) {
 }
 
 /**
- * Sits on the product tile, which keeps the light palette in both modes — so
- * the outline variant's dark: fills are overridden rather than inherited.
+ * Sits on the product tile at the same 12px radius as the product page's "Add
+ * to cart", and keeps the light palette in both modes — so the outline
+ * variant's dark: fills are overridden rather than inherited.
  */
 export function QuickAddButton({ product }: { product: Product }) {
   return (
     <form action={updateCart}>
       <input type="hidden" name="id" value={product.id} />
       <input type="hidden" name="delta" value="1" />
-      <PillButton
+      <SoftPillButton
         type="submit"
         variant="outline"
         size="sm"
@@ -63,7 +64,7 @@ export function QuickAddButton({ product }: { product: Product }) {
       >
         <PlusIcon />
         Add
-      </PillButton>
+      </SoftPillButton>
     </form>
   );
 }

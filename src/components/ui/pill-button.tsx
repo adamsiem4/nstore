@@ -31,9 +31,4 @@ function pillButtonVariants({ className, ...variants }: PillClasses = {}) {
   return cn(buttonVariants(variants), PILL, className);
 }
 
-/** `SoftPillButton`'s classes for links and labels. */
-function softPillButtonVariants({ className, ...variants }: PillClasses = {}) {
-  return cn(buttonVariants(variants), SOFT, className);
-}
-
-export { PillButton, SoftPillButton, pillButtonVariants, softPillButtonVariants };
+export { PillButton, SoftPillButton, pillButtonVariants };
