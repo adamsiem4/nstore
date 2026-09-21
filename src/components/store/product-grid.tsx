@@ -8,9 +8,9 @@ export function ProductGrid({ products }: { products: Product[] }) {
     // sentence — one column would push the page 600px wide on a phone.
     // minmax(0,1fr) floors the track at zero and lets truncate do its job.
     <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {products.map((product) => (
+      {products.map((product, index) => (
         <li key={product.id}>
-          <ProductCard product={product} />
+          <ProductCard product={product} eager={index === 0} />
         </li>
       ))}
     </ul>

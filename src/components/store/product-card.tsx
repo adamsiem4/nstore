@@ -4,7 +4,14 @@ import { QuickAddButton } from "@/components/store/cart";
 import { money } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  eager = false,
+}: {
+  product: Product;
+  /** first card in a grid: it is the LCP element, so it must not lazy-load */
+  eager?: boolean;
+}) {
   return (
     <article className="flex h-full flex-col rounded-xl bg-product-shot p-2 text-shot-ink">
       <Link
@@ -20,6 +27,8 @@ export function ProductCard({ product }: { product: Product }) {
           width={1536}
           height={1536}
           sizes="(max-width: 639px) 78vw, (max-width: 1023px) 45vw, 25vw"
+          loading={eager ? "eager" : "lazy"}
+          fetchPriority={eager ? "high" : "auto"}
           className="aspect-square w-full rounded-md object-cover"
         />
         <span

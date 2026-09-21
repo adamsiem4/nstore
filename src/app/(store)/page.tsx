@@ -27,12 +27,17 @@ export default async function HomePage() {
           {/* ponytail: two <Image>s toggled by the dark class — a useTheme()
               client boundary would cost a hydration flash on the LCP element.
               Opacity, not `hidden`: a display:none fill image measures 0px
-              wide and next/image then warns about `sizes`. */}
+              wide and next/image then warns about `sizes`.
+              Both sit in the viewport, so both download whatever `loading`
+              says; eager only stops the LCP element going through the lazy
+              path, and fetchPriority replaces `priority`, deprecated in 16.
+              `preload` stays off: that one really would add two <link>s. */}
           <Image
             src="/hero-gradient-light.webp"
             alt=""
             fill
-            priority
+            loading="eager"
+            fetchPriority="high"
             sizes="100vw"
             className="-z-10 object-cover dark:opacity-0"
           />
@@ -40,7 +45,8 @@ export default async function HomePage() {
             src="/hero-gradient-dark.webp"
             alt=""
             fill
-            priority
+            loading="eager"
+            fetchPriority="high"
             sizes="100vw"
             className="-z-10 object-cover opacity-0 dark:opacity-100"
           />
