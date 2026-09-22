@@ -1,5 +1,6 @@
 import { PlusIcon } from "lucide-react";
-import { PillButton, SoftPillButton } from "@/components/ui/pill-button";
+import { CartSubmitButton } from "@/components/store/cart-submit-button";
+import { PillButton } from "@/components/ui/pill-button";
 import { money } from "@/lib/utils";
 import { updateCart } from "@/server/cart";
 import type { Product } from "@/types/product";
@@ -37,10 +38,10 @@ export function AddToCartButton({ product }: { product: Product }) {
       <input type="hidden" name="id" value={product.id} />
       <input type="hidden" name="delta" value="1" />
       <input type="hidden" name="next" value="/cart" />
-      <SoftPillButton type="submit" className="h-12 w-full justify-between px-6 text-base">
+      <CartSubmitButton className="h-12 w-full justify-between px-6 text-base">
         <span>Add to cart</span>
         <span className="tabular-nums">{money.format(product.price)}</span>
-      </SoftPillButton>
+      </CartSubmitButton>
     </form>
   );
 }
@@ -55,8 +56,8 @@ export function QuickAddButton({ product }: { product: Product }) {
     <form action={updateCart}>
       <input type="hidden" name="id" value={product.id} />
       <input type="hidden" name="delta" value="1" />
-      <SoftPillButton
-        type="submit"
+      <CartSubmitButton
+        compact
         variant="outline"
         size="sm"
         aria-label={`Add ${product.name} to cart`}
@@ -64,7 +65,7 @@ export function QuickAddButton({ product }: { product: Product }) {
       >
         <PlusIcon />
         Add
-      </SoftPillButton>
+      </CartSubmitButton>
     </form>
   );
 }
