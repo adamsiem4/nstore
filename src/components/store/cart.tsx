@@ -63,7 +63,7 @@ export function QuickAddButton({ product }: { product: Product }) {
         aria-label={`Add ${product.name} to cart`}
         className="border-shot-line bg-transparent text-shot-ink hover:bg-shot-ink/10 hover:text-shot-ink focus-visible:ring-shot-ink dark:border-shot-line dark:bg-transparent dark:hover:bg-shot-ink/10"
       >
-        <PlusIcon />
+        <PlusIcon className="size-3" />
         Add
       </CartSubmitButton>
     </form>

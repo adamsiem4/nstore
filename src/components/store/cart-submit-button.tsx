@@ -56,7 +56,11 @@ export function CartSubmitButton({
         }}
         className={cn(
           "relative overflow-hidden duration-200 active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100",
-          compact && "min-w-24",
+          // Compact sits on the product tile beside a 12px mono price, so it
+          // drops to that type scale. min-w is the widest state measured at
+          // this scale — "Added" is 8 + 12 + 6 + 36.5 + 8 = 70.5px — rounded
+          // to the 4px grid, so none of the four states resize the button.
+          compact && "h-7 min-w-18 gap-1.5 px-2 text-xs",
           (pending || added) && "disabled:opacity-100",
           className,
           added &&
@@ -82,27 +86,29 @@ export function CartSubmitButton({
           )}
         >
           <LoaderCircleIcon
-            className={cn("size-4", pending && "animate-spin motion-reduce:animate-none")}
+            className={cn(compact ? "size-3" : "size-4", pending && "animate-spin motion-reduce:animate-none")}
           />
         </span>
         <span
           aria-hidden="true"
           className={cn(
-            "pointer-events-none absolute inset-0 flex items-center justify-center gap-2 transition-[opacity,translate] duration-200 ease-out motion-reduce:transition-none",
+            "pointer-events-none absolute inset-0 flex items-center justify-center transition-[opacity,translate] duration-200 ease-out motion-reduce:transition-none",
+            compact ? "gap-1.5" : "gap-2",
             added ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0",
           )}
         >
-          <CheckIcon className="size-4" />
+          <CheckIcon className={compact ? "size-3" : "size-4"} />
           <span>{compact ? "Added" : "Added to cart"}</span>
         </span>
         <span
           aria-hidden="true"
           className={cn(
-            "pointer-events-none absolute inset-0 flex items-center justify-center gap-2 transition-[opacity,translate] duration-200 ease-out motion-reduce:transition-none",
+            "pointer-events-none absolute inset-0 flex items-center justify-center transition-[opacity,translate] duration-200 ease-out motion-reduce:transition-none",
+            compact ? "gap-1.5" : "gap-2",
             failed ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0",
           )}
         >
-          <XIcon className="size-4" />
+          <XIcon className={compact ? "size-3" : "size-4"} />
           <span>{compact ? "Retry" : "Try again"}</span>
         </span>
       </SoftPillButton>
