@@ -16,7 +16,10 @@ const columns = [
       { href: "/cookies", label: "Cookie Policy" },
     ],
   },
-  { heading: "FAQ", links: [] },
+  {
+    heading: "FAQ",
+    links: [{ href: "/faq", label: "All questions" }],
+  },
 ] satisfies { heading: string; links: { href: string; label: string }[] }[];
 
 const linkClass =
@@ -35,19 +38,15 @@ export function SiteFooter() {
             >
               {heading}
             </h2>
-            {links.length === 0 ? (
-              <p className="mt-3 text-sm text-muted-foreground">Coming soon.</p>
-            ) : (
-              <ul className="mt-1 text-sm">
-                {links.map(({ href, label }) => (
-                  <li key={href}>
-                    <Link href={href} className={linkClass}>
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <ul className="mt-1 text-sm">
+              {links.map(({ href, label }) => (
+                <li key={href}>
+                  <Link href={href} className={linkClass}>
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </nav>
         ))}
 
