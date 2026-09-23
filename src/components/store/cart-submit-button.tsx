@@ -3,6 +3,7 @@
 import { CheckIcon, LoaderCircleIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type ComponentProps, startTransition, useEffect, useState } from "react";
+import { openCart } from "@/components/store/cart-drawer";
 import { SoftPillButton } from "@/components/ui/pill-button";
 import { cn } from "@/lib/utils";
 import { addToCart } from "@/server/cart";
@@ -25,10 +26,10 @@ export function CartSubmitButton({
 
   useEffect(() => {
     if (!confirmation || confirmation === "pending") return;
-    const timeout = window.setTimeout(() => {
-      if (confirmation === "cart") router.push("/cart");
-      else setConfirmation(null);
-    }, failed ? 3000 : 2000);
+    // The drawer slides in over the product at once; the button keeps its
+    // "Added" beat behind the backdrop. No drawer on this page: open /cart.
+    if (confirmation === "cart" && !openCart()) router.push("/cart");
+    const timeout = window.setTimeout(() => setConfirmation(null), failed ? 3000 : 2000);
     return () => window.clearTimeout(timeout);
   }, [confirmation, failed, router]);
 

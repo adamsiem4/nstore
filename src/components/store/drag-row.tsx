@@ -66,7 +66,10 @@ export function DragRow({
         event.preventDefault();
         event.stopPropagation();
       }}
-      className={cn("cursor-grab touch-pan-y select-none active:cursor-grabbing", className)}
+      // relative: the cards' sr-only status spans are absolutely positioned,
+      // and without a positioned scroller they escape it and widen the page
+      // (or the cart drawer) by the row's full scroll length.
+      className={cn("relative cursor-grab touch-pan-y select-none active:cursor-grabbing", className)}
     >
       {children}
     </ul>

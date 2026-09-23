@@ -44,7 +44,7 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 - Searchable 50-product catalog, and product pages with key details, a specification table, materials, box contents, and care
 - Six household categories with original 1536×1536, text-free 3D product renders
 - Shared storefront layout and shadcn/ui configuration
-- Product-card quick-add with animated purple success/red error feedback, cookie-backed `/cart`, quantity controls, and order summary
+- Product-card quick-add with animated purple success/red error feedback, a slide-out cart drawer, cookie-backed `/cart`, quantity controls, a free-shipping countdown, in-cart suggestions, and order summary
 - Stripe hosted checkout with delivery addresses and paid-return cart clearing
 - Clerk sign-in, sign-up, user controls, and protected account page
 - Drizzle payment schema and generated PostgreSQL migration
@@ -63,11 +63,15 @@ replacing renders in place, clear `.next/dev/cache/images` to refresh Next.js
 development image previews.
 
 Catalog data remains in memory; payment persistence uses Neon. Product-card adds
-stay on the catalog; product-detail adds show confirmation before opening `/cart`.
+stay on the catalog; product-detail adds show confirmation and slide the cart
+drawer open. The header bag opens the same drawer — a native modal `<dialog>` —
+whose "View cart" link leads to the full `/cart` page, which also serves direct
+visits and no-JS form posts.
 Buttons respond immediately on click, hold bright purple success feedback for two
 seconds, and show red retry feedback for three seconds on failure. Feedback uses
 global color tokens in both themes and respects reduced-motion preferences.
-Shipping is free at checkout.
+Orders from €60 ship free; below that, Stripe Checkout adds a €4.95 flat rate,
+and the cart counts down to the threshold.
 Cancelled checkout preserves the cart; `/api/checkout/return` clears it only after
 Stripe confirms a paid session. Configure `STRIPE_SECRET_KEY` to enable payment.
 

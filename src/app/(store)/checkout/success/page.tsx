@@ -18,10 +18,12 @@ export default async function CheckoutSuccessPage(
 
   if (!session || session.payment_status !== "paid") notFound();
 
-  const total = new Intl.NumberFormat("en-IE", {
+  const currency = new Intl.NumberFormat("en-IE", {
     style: "currency",
     currency: session.currency ?? "eur",
-  }).format((session.amount_total ?? 0) / 100);
+  });
+  const total = currency.format((session.amount_total ?? 0) / 100);
+  const shipping = session.shipping_cost?.amount_total;
 
   return (
     <main id="content" tabIndex={-1} className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
@@ -51,6 +53,14 @@ export default async function CheckoutSuccessPage(
               </span>
             </li>
           ))}
+          {shipping !== undefined && (
+            <li className="flex items-center justify-between gap-4 border-b pb-2">
+              <span>Shipping</span>
+              <span className="tabular-nums text-muted-foreground">
+                {shipping ? currency.format(shipping / 100) : "Free"}
+              </span>
+            </li>
+          )}
         </ul>
 
         <Link href="/products" className={pillButtonVariants({ className: "mt-8 self-center" })}>

@@ -2,10 +2,14 @@ import type { CSSProperties } from "react";
 import { Show, UserButton } from "@clerk/nextjs";
 import { SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
 import Link from "next/link";
+import { CartSheet } from "@/components/store/cart";
+import { CartDrawer, CartLink } from "@/components/store/cart-drawer";
 import { Input } from "@/components/ui/input";
 import { PillButton, pillButtonVariants } from "@/components/ui/pill-button";
+import { suggest, totals } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 import { getCartLines } from "@/server/cart-lines";
+import { getProducts } from "@/server/queries/products";
 
 const categories = [
   "Kitchen appliances",
@@ -45,7 +49,8 @@ const TAIL = [
 
 /** Store name, centered catalog nav, icon cluster — the sticky panel's row. */
 export async function SiteHeader() {
-  const count = (await getCartLines()).reduce((sum, line) => sum + line.quantity, 0);
+  const [lines, catalog] = await Promise.all([getCartLines(), getProducts()]);
+  const { count } = totals(lines);
   const cartLabel = `Cart, ${count} item${count === 1 ? "" : "s"}`;
   const badge = count > 0 ? (
     <span aria-hidden="true" className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-none font-medium text-primary-foreground tabular-nums">
@@ -166,14 +171,13 @@ export async function SiteHeader() {
           </form>
         </div>
 
-        <Link
-          href="/cart"
+        <CartLink
           aria-label={cartLabel}
           className={pillButtonVariants({ variant: "ghost", size: "icon-lg", className: "relative size-10 focus-visible:ring-foreground" })}
         >
           <ShoppingBagIcon aria-hidden="true" />
           {badge && <span className="absolute right-0 bottom-0.5">{badge}</span>}
-        </Link>
+        </CartLink>
         <Show when="signed-out">
           <Link
             href="/sign-in"
@@ -252,15 +256,14 @@ export async function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-1 border-t pt-2">
-            <Link
-              href="/cart"
+            <CartLink
               aria-label={cartLabel}
               className={cn(navLinkClass, "gap-2 normal-case tracking-normal text-foreground")}
             >
               <ShoppingBagIcon aria-hidden="true" />
               Cart
               {badge}
-            </Link>
+            </CartLink>
             <div className="ml-auto flex items-center gap-1">
               <Show when="signed-out">
                 <Link
@@ -280,6 +283,10 @@ export async function SiteHeader() {
           </div>
         </div>
       </div>
+
+      <CartDrawer count={count}>
+        <CartSheet lines={lines} picks={suggest(lines, catalog)} />
+      </CartDrawer>
     </div>
   );
 }

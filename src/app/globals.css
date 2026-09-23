@@ -310,6 +310,13 @@
   }
 }
 
+/* ponytail: a modal <dialog> makes the page inert but not still — this holds
+   the scroll. No scrollbar-gutter: a reserved gutter pushes the fixed drawer
+   off its 8px shell gutter, a worse look than the page nudging under the dim. */
+html:has(dialog:modal) {
+  overflow: hidden;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;

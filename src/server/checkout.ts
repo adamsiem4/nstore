@@ -3,7 +3,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { toLineItems } from "@/lib/cart";
+import { toLineItems, totals } from "@/lib/cart";
 import { getCartLines } from "@/server/cart-lines";
 import { getStripe } from "@/server/stripe";
 
@@ -13,6 +13,7 @@ export async function startCheckout() {
 
   if (lines.length === 0) return;
 
+  const { shipping } = totals(lines);
   const { userId } = await auth();
   const user = userId ? await currentUser() : null;
   const email = user?.primaryEmailAddress?.emailAddress;
@@ -34,6 +35,16 @@ export async function startCheckout() {
     shipping_address_collection: {
       allowed_countries: ["IE", "GB", "DE", "FR", "ES", "IT", "NL", "BE", "AT", "PT", "PL", "SE", "DK", "FI"],
     },
+    // Same figure the cart showed: €4.95 under €60, free from there.
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          display_name: shipping ? "Standard shipping" : "Free shipping",
+          fixed_amount: { amount: shipping, currency: "eur" },
+        },
+      },
+    ],
   });
 
   if (!session.url) throw new Error("Stripe returned a session without a URL");
