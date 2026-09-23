@@ -214,8 +214,11 @@ export async function SiteHeader() {
 
         {/* The header panel is the containing block, so the drawer spans it
             exactly; the extra pixel is its border, and the top margin is that
-            pixel plus the layout gap, so the drawer sits in the panel rhythm. */}
-        <div className="site-menu absolute top-full -right-px -left-px z-30 mt-[9px] grid gap-2 rounded-xl border border-foreground/10 bg-card/60 p-3 shadow-xl backdrop-blur-xl backdrop-saturate-150 sm:mt-[13px]">
+            pixel plus the layout gap, so the drawer sits in the panel rhythm.
+            ponytail: opaque, not glass — Chromium drops backdrop-filter on an
+            element that transitions transform, so the drawer shipped as 60%
+            tint with the product grid legible straight through it. */}
+        <div className="site-menu absolute top-full -right-px -left-px z-30 mt-[9px] grid gap-2 rounded-xl border border-foreground/10 bg-card p-3 shadow-xl sm:mt-[13px]">
           <form
             action="/products"
             role="search"

@@ -7,9 +7,10 @@ import { pillButtonVariants } from "@/components/ui/pill-button";
 export default function StoreLayout({ children }: { children: ReactNode }) {
   // ponytail: --chrome is the measured gutter+header+gap+card-inset+gutter
   // above and below the panel, so the hero can fill the viewport exactly
-  // without a resize listener.
+  // without a resize listener. The header grows 8px at xl, where the catalog
+  // nav appears — below that it is 70px, so sm..lg gets its own value.
   return (
-    <div className="flex min-h-svh w-full flex-col gap-2 p-2 [--chrome:99px] sm:gap-3 sm:p-3 sm:[--chrome:127px]">
+    <div className="flex min-h-svh w-full flex-col gap-2 p-2 [--chrome:99px] sm:gap-3 sm:p-3 sm:[--chrome:119px] xl:[--chrome:127px]">
       <a
         href="#content"
         className={pillButtonVariants({

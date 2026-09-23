@@ -311,10 +311,17 @@
 }
 
 /* ponytail: a modal <dialog> makes the page inert but not still — this holds
-   the scroll. No scrollbar-gutter: a reserved gutter pushes the fixed drawer
-   off its 8px shell gutter, a worse look than the page nudging under the dim. */
+   the scroll. Hiding the overflow also takes a classic scrollbar away, and the
+   page slides into the 15px it freed; a gutter reserved for exactly that width
+   keeps the page and the fixed drawer where they were. Only classic-scrollbar
+   platforms get the class (see openCart) — reserving on overlay scrollbars
+   would invent the very jump this removes. */
 html:has(dialog:modal) {
   overflow: hidden;
+}
+
+html.scrollbar-takes-space:has(dialog:modal) {
+  scrollbar-gutter: stable;
 }
 
 @media (prefers-reduced-motion: no-preference) {
