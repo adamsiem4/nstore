@@ -2,10 +2,11 @@ import { MinusIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import { QuantityButton, RemoveLineButton } from "@/components/store/cart-line-actions";
 import { CartSubmitButton } from "@/components/store/cart-submit-button";
 import { DragRow } from "@/components/store/drag-row";
 import { ProductCard } from "@/components/store/product-card";
-import { PillButton, SoftPillButton } from "@/components/ui/pill-button";
+import { SoftPillButton } from "@/components/ui/pill-button";
 import { type CartLine, FREE_SHIPPING_CENTS, MAX_QTY, totals } from "@/lib/cart";
 import { cn, money } from "@/lib/utils";
 import { updateCart } from "@/server/cart";
@@ -14,18 +15,18 @@ import type { Product } from "@/types/product";
 
 const euros = (cents: number) => money.format(cents / 100);
 
-/** One hidden-field form per cart mutation. */
+/** One hidden-field form per cart mutation; the button reports its pending. */
 export function CartFormButton({
   id,
   delta,
   label,
   ...button
-}: { id: string; delta: number; label: string } & ComponentProps<typeof PillButton>) {
+}: { id: string; delta: number; label: string } & ComponentProps<typeof QuantityButton>) {
   return (
     <form action={updateCart}>
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="delta" value={delta} />
-      <PillButton type="submit" variant="ghost" size="icon-sm" aria-label={label} {...button} />
+      <QuantityButton aria-label={label} {...button} />
     </form>
   );
 }
@@ -124,16 +125,7 @@ export function CartLineList({ lines, className }: { lines: CartLine[]; classNam
                   <PlusIcon aria-hidden="true" />
                 </CartFormButton>
               </div>
-              <CartFormButton
-                id={product.id}
-                delta={-MAX_QTY}
-                label={`Remove ${product.name}`}
-                variant="link"
-                size="xs"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Remove
-              </CartFormButton>
+              <RemoveLineButton id={product.id} name={product.name} />
               {quantity > 1 && (
                 // A phone-width line has no room for it beside the stepper.
                 <p className="ml-auto hidden font-mono text-xs whitespace-nowrap text-muted-foreground tabular-nums @sm:block">
