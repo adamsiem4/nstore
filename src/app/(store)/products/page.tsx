@@ -16,11 +16,7 @@ export default async function ProductsPage({
   const products = await getProducts(query);
 
   return (
-    <main
-      id="content"
-      tabIndex={-1}
-      className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10"
-    >
+    <>
       <p className="text-sm font-semibold tracking-[0.14em] text-muted-foreground uppercase">
         Home appliances &amp; household goods
       </p>
@@ -40,6 +36,6 @@ export default async function ProductsPage({
           </p>
         )}
       </div>
-    </main>
+    </>
   );
 }

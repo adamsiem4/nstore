@@ -15,8 +15,10 @@ export default async function CartPage() {
   const itemLabel = `${count} ${count === 1 ? "item" : "items"}`;
   const picks = suggest(lines, catalog);
 
+  // Phones get 12px of panel padding here, not the layout's 20px: the cart
+  // lines need the width, so the wrapper bleeds 8px back into the panel.
   return (
-    <main id="content" tabIndex={-1} className="flex flex-1 flex-col rounded-xl border bg-card p-3 sm:p-8 lg:p-10">
+    <div className="-m-2 flex flex-1 flex-col sm:m-0">
       {lines.length === 0 ? (
         <>
           <div className="flex flex-1 flex-col items-center justify-center py-16 text-center">
@@ -53,6 +55,6 @@ export default async function CartPage() {
           <CartSuggestions heading="Pairs well with" products={picks} className="mt-12" />
         </>
       )}
-    </main>
+    </div>
   );
 }

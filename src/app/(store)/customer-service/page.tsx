@@ -114,28 +114,26 @@ export default async function CustomerServicePage() {
   ];
 
   return (
-    <div className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
-      <main id="content" tabIndex={-1} className="mx-auto w-full max-w-3xl flex-1 outline-none">
-        <p className="text-center text-sm font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-          Customer service
-        </p>
-        <h1 className="mt-3 text-center text-4xl font-semibold tracking-tight sm:text-5xl">
-          What do you want to know?
-        </h1>
+    <div className="mx-auto w-full max-w-3xl flex-1">
+      <p className="text-center text-sm font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+        Customer service
+      </p>
+      <h1 className="mt-3 text-center text-4xl font-semibold tracking-tight sm:text-5xl">
+        What do you want to know?
+      </h1>
 
-        <HelpCenter topics={topics} />
+      <HelpCenter topics={topics} />
 
-        <p className="mt-12 border-t pt-6 text-muted-foreground">
-          Still stuck? The contact address is on our{" "}
-          <Link
-            href="/privacy"
-            className="rounded-sm underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
-          >
-            Privacy Policy
-          </Link>{" "}
-          page.
-        </p>
-      </main>
+      <p className="mt-12 border-t pt-6 text-muted-foreground">
+        Still stuck? The contact address is on our{" "}
+        <Link
+          href="/privacy"
+          className="rounded-sm underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
+        >
+          Privacy Policy
+        </Link>{" "}
+        page.
+      </p>
     </div>
   );
 }

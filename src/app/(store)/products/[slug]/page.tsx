@@ -40,11 +40,7 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
     .slice(0, 3);
 
   return (
-    <main
-      id="content"
-      tabIndex={-1}
-      className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10"
-    >
+    <>
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <li>
@@ -192,6 +188,6 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
           </ul>
         </section>
       )}
-    </main>
+    </>
   );
 }

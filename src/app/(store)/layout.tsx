@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { SiteFooter } from "@/components/layout/site-footer";
-import { SiteHeader } from "@/components/layout/header";
+import { SiteHeader } from "@/components/layout/site-header";
 import { StickyHeader } from "@/components/layout/sticky-header";
 import { pillButtonVariants } from "@/components/ui/pill-button";
 
@@ -23,7 +23,14 @@ export default function StoreLayout({ children }: { children: ReactNode }) {
       <StickyHeader>
         <SiteHeader />
       </StickyHeader>
-      {children}
+      {/* The skip link's target lives beside it, so no page can forget it. */}
+      <main
+        id="content"
+        tabIndex={-1}
+        className="flex flex-1 flex-col rounded-xl border bg-card p-5 outline-none sm:p-8 lg:p-10"
+      >
+        {children}
+      </main>
       <SiteFooter />
     </div>
   );

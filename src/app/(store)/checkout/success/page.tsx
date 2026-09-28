@@ -26,47 +26,45 @@ export default async function CheckoutSuccessPage(
   const shipping = session.shipping_cost?.amount_total;
 
   return (
-    <main id="content" tabIndex={-1} className="flex flex-1 flex-col rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
-      <div className="mx-auto flex max-w-lg flex-1 flex-col justify-center py-10 text-center">
-        <p className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
-          Order confirmed
-        </p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-          Thanks{session.customer_details?.name ? `, ${session.customer_details.name}` : ""}.
-        </h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          We charged {total}
-          {session.customer_details?.email ? ` and emailed ${session.customer_details.email}` : ""}.
-        </p>
+    <div className="mx-auto flex max-w-lg flex-1 flex-col justify-center py-10 text-center">
+      <p className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
+        Order confirmed
+      </p>
+      <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+        Thanks{session.customer_details?.name ? `, ${session.customer_details.name}` : ""}.
+      </h1>
+      <p className="mt-4 text-lg text-muted-foreground">
+        We charged {total}
+        {session.customer_details?.email ? ` and emailed ${session.customer_details.email}` : ""}.
+      </p>
 
-        <ul className="mt-8 flex flex-col gap-2 text-left text-sm">
-          {session.line_items?.data.map((item) => (
-            <li key={item.id} className="flex items-center justify-between gap-4 border-b pb-2">
-              <span>
-                {item.quantity}× {item.description}
-              </span>
-              <span className="tabular-nums text-muted-foreground">
-                {new Intl.NumberFormat("en-IE", {
-                  style: "currency",
-                  currency: item.currency,
-                }).format(item.amount_total / 100)}
-              </span>
-            </li>
-          ))}
-          {shipping !== undefined && (
-            <li className="flex items-center justify-between gap-4 border-b pb-2">
-              <span>Shipping</span>
-              <span className="tabular-nums text-muted-foreground">
-                {shipping ? currency.format(shipping / 100) : "Free"}
-              </span>
-            </li>
-          )}
-        </ul>
+      <ul className="mt-8 flex flex-col gap-2 text-left text-sm">
+        {session.line_items?.data.map((item) => (
+          <li key={item.id} className="flex items-center justify-between gap-4 border-b pb-2">
+            <span>
+              {item.quantity}× {item.description}
+            </span>
+            <span className="tabular-nums text-muted-foreground">
+              {new Intl.NumberFormat("en-IE", {
+                style: "currency",
+                currency: item.currency,
+              }).format(item.amount_total / 100)}
+            </span>
+          </li>
+        ))}
+        {shipping !== undefined && (
+          <li className="flex items-center justify-between gap-4 border-b pb-2">
+            <span>Shipping</span>
+            <span className="tabular-nums text-muted-foreground">
+              {shipping ? currency.format(shipping / 100) : "Free"}
+            </span>
+          </li>
+        )}
+      </ul>
 
-        <Link href="/products" className={pillButtonVariants({ className: "mt-8 self-center" })}>
-          Keep shopping
-        </Link>
-      </div>
-    </main>
+      <Link href="/products" className={pillButtonVariants({ className: "mt-8 self-center" })}>
+        Keep shopping
+      </Link>
+    </div>
   );
 }
