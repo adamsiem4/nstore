@@ -2,7 +2,7 @@ import { MinusIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
-import { QuantityButton, RemoveLineButton } from "@/components/store/cart-line-actions";
+import { ClearCartButton, QuantityButton, RemoveLineButton } from "@/components/store/cart-line-actions";
 import { CartSubmitButton } from "@/components/store/cart-submit-button";
 import { DragRow } from "@/components/store/drag-row";
 import { ProductCard } from "@/components/store/product-card";
@@ -76,67 +76,73 @@ export function ShippingProgress({ subtotal, className }: { subtotal: number; cl
 /** Lines drawn like the product tile: shot backdrop, colourway dot, mono figures. */
 export function CartLineList({ lines, className }: { lines: CartLine[]; className?: string }) {
   return (
-    <ul aria-label="Cart items" className={cn("@container divide-y border-y", className)}>
-      {lines.map(({ product, quantity }) => (
-        <li key={product.id} className="flex gap-4 py-4">
-          {/* Same destination as the name beside it; one tab stop is enough. */}
-          <Link href={`/products/${product.id}`} tabIndex={-1} aria-hidden="true" className="shrink-0">
-            <Image
-              src={product.image}
-              alt=""
-              width={256}
-              height={256}
-              sizes="112px"
-              className="size-20 rounded-lg bg-product-shot object-cover @lg:size-28"
-            />
-          </Link>
-          <div className="flex min-w-0 flex-1 flex-col">
-            <div className="flex items-baseline justify-between gap-3">
-              <Link
-                href={`/products/${product.id}`}
-                className="rounded-sm text-sm font-semibold tracking-wide uppercase outline-none hover:underline focus-visible:ring-2 focus-visible:ring-foreground"
-              >
-                {product.name}
-              </Link>
-              <p className="shrink-0 font-mono text-xs tabular-nums">
-                {money.format(product.price * quantity)}
-              </p>
-            </div>
-            <p className="mt-1 flex items-center gap-2 font-mono text-xs text-muted-foreground">
-              <span
-                aria-hidden="true"
-                style={{ backgroundColor: product.color }}
-                className="size-2.5 shrink-0 rounded-full ring-1 ring-foreground/15"
+    <div className={className}>
+      <ul aria-label="Cart items" className="@container divide-y border-y">
+        {lines.map(({ product, quantity }) => (
+          <li key={product.id} className="flex gap-4 py-4">
+            {/* Same destination as the name beside it; one tab stop is enough. */}
+            <Link href={`/products/${product.id}`} tabIndex={-1} aria-hidden="true" className="shrink-0">
+              <Image
+                src={product.image}
+                alt=""
+                width={256}
+                height={256}
+                sizes="112px"
+                className="size-20 rounded-lg bg-product-shot object-cover @lg:size-28"
               />
-              <span className="truncate">{product.description.split(". ")[0]}</span>
-            </p>
-            <div className="mt-auto flex items-center gap-2 pt-3">
-              <div role="group" aria-label={`Quantity for ${product.name}`} className="flex items-center rounded-full border">
-                <CartFormButton id={product.id} delta={-1} label={`One less ${product.name}`}>
-                  <MinusIcon aria-hidden="true" />
-                </CartFormButton>
-                <span className="w-6 text-center font-mono text-xs tabular-nums">{quantity}</span>
-                <CartFormButton
-                  id={product.id}
-                  delta={1}
-                  label={`One more ${product.name}`}
-                  disabled={quantity >= MAX_QTY}
+            </Link>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="flex items-baseline justify-between gap-3">
+                <Link
+                  href={`/products/${product.id}`}
+                  className="rounded-sm text-sm font-semibold tracking-wide uppercase outline-none hover:underline focus-visible:ring-2 focus-visible:ring-foreground"
                 >
-                  <PlusIcon aria-hidden="true" />
-                </CartFormButton>
-              </div>
-              <RemoveLineButton id={product.id} name={product.name} />
-              {quantity > 1 && (
-                // A phone-width line has no room for it beside the stepper.
-                <p className="ml-auto hidden font-mono text-xs whitespace-nowrap text-muted-foreground tabular-nums @sm:block">
-                  {money.format(product.price)} each
+                  {product.name}
+                </Link>
+                <p className="shrink-0 font-mono text-xs tabular-nums">
+                  {money.format(product.price * quantity)}
                 </p>
-              )}
+              </div>
+              <p className="mt-1 flex items-center gap-2 font-mono text-xs text-muted-foreground">
+                <span
+                  aria-hidden="true"
+                  style={{ backgroundColor: product.color }}
+                  className="size-2.5 shrink-0 rounded-full ring-1 ring-foreground/15"
+                />
+                <span className="truncate">{product.description.split(". ")[0]}</span>
+              </p>
+              <div className="mt-auto flex items-center gap-2 pt-3">
+                <div role="group" aria-label={`Quantity for ${product.name}`} className="flex items-center rounded-full border">
+                  <CartFormButton id={product.id} delta={-1} label={`One less ${product.name}`}>
+                    <MinusIcon aria-hidden="true" />
+                  </CartFormButton>
+                  <span className="w-6 text-center font-mono text-xs tabular-nums">{quantity}</span>
+                  <CartFormButton
+                    id={product.id}
+                    delta={1}
+                    label={`One more ${product.name}`}
+                    disabled={quantity >= MAX_QTY}
+                  >
+                    <PlusIcon aria-hidden="true" />
+                  </CartFormButton>
+                </div>
+                <RemoveLineButton id={product.id} name={product.name} />
+                {quantity > 1 && (
+                  // A phone-width line has no room for it beside the stepper.
+                  <p className="ml-auto hidden font-mono text-xs whitespace-nowrap text-muted-foreground tabular-nums @sm:block">
+                    {money.format(product.price)} each
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-        </li>
-      ))}
-    </ul>
+          </li>
+        ))}
+      </ul>
+      {/* Under the lines, not beside checkout: nobody should hit it aiming to pay. */}
+      <div className="mt-2 flex justify-end">
+        <ClearCartButton />
+      </div>
+    </div>
   );
 }
 

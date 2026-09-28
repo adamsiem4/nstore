@@ -39,3 +39,8 @@ export async function updateCart(formData: FormData) {
   // ponytail: one literal destination prevents an open redirect from a crafted form.
   if (changed && formData.get("next") === "/cart") redirect("/cart");
 }
+
+/** Empties the whole cart; the page re-renders from the missing cookie. */
+export async function clearCart() {
+  (await cookies()).delete(CART_COOKIE);
+}
