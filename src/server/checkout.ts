@@ -3,7 +3,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { toLineItems, totals } from "@/lib/cart";
+import { SHIPPING_COUNTRIES, toLineItems, totals } from "@/lib/cart";
 import { getCartLines } from "@/server/cart-lines";
 import { getStripe } from "@/server/stripe";
 
@@ -32,9 +32,7 @@ export async function startCheckout() {
     },
     success_url: `${origin}/api/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/cart`,
-    shipping_address_collection: {
-      allowed_countries: ["IE", "GB", "DE", "FR", "ES", "IT", "NL", "BE", "AT", "PT", "PL", "SE", "DK", "FI"],
-    },
+    shipping_address_collection: { allowed_countries: SHIPPING_COUNTRIES },
     // Same figure the cart showed: €4.95 under €60, free from there.
     shipping_options: [
       {

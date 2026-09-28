@@ -17,8 +17,12 @@ const columns = [
     ],
   },
   {
-    heading: "FAQ",
-    links: [{ href: "/faq", label: "All questions" }],
+    heading: "Customer service",
+    links: [
+      { href: "/customer-service#faq", label: "FAQ" },
+      { href: "/customer-service#shipping", label: "Shipping" },
+      { href: "/customer-service#returns", label: "Returns" },
+    ],
   },
 ] satisfies { heading: string; links: { href: string; label: string }[] }[];
 
@@ -31,9 +35,9 @@ export function SiteFooter() {
     <footer className="rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
       <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-4">
         {columns.map(({ heading, links }) => (
-          <nav key={heading} aria-labelledby={`footer-${heading.toLowerCase()}`}>
+          <nav key={heading} aria-labelledby={`footer-${heading.toLowerCase().replaceAll(" ", "-")}`}>
             <h2
-              id={`footer-${heading.toLowerCase()}`}
+              id={`footer-${heading.toLowerCase().replaceAll(" ", "-")}`}
               className="text-xs font-semibold tracking-[0.14em] uppercase"
             >
               {heading}

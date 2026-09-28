@@ -13,6 +13,11 @@ export const MAX_QTY = 99;
 export const FREE_SHIPPING_CENTS = 6000;
 export const SHIPPING_CENTS = 495;
 
+/** Where checkout accepts a delivery address; customer service lists the same. */
+export const SHIPPING_COUNTRIES: Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[] = [
+  "IE", "GB", "DE", "FR", "ES", "IT", "NL", "BE", "AT", "PT", "PL", "SE", "DK", "FI",
+];
+
 /** Untrusted cookie in, sane cart out. */
 export function parseCart(raw: string | undefined): Cart {
   if (!raw) return {};
