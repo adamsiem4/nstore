@@ -1,9 +1,37 @@
 import {
   integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+import type { ProductDetails } from "@/types/product";
+
+/** Catalog; `bun run db:seed` loads it from src/server/db/seed/. */
+export const products = pgTable("products", {
+  id: text("id").primaryKey(),
+  /** curated grid order */
+  position: integer("position").notNull(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  category: text("category").notNull(),
+  image: text("image").notNull(),
+  color: text("color").notNull(),
+  /** whole euros, same as Product["price"] */
+  price: integer("price").notNull(),
+});
+
+/** One sheet per product, kept apart so grids and carts never load spec tables. */
+export const productDetails = pgTable("product_details", {
+  productId: text("product_id")
+    .primaryKey()
+    .references(() => products.id, { onDelete: "cascade" }),
+  highlights: jsonb("highlights").$type<ProductDetails["highlights"]>().notNull(),
+  specs: jsonb("specs").$type<ProductDetails["specs"]>().notNull(),
+  materials: text("materials").array().notNull(),
+  inBox: text("in_box").array().notNull(),
+  care: text("care").notNull(),
+});
 
 export const payments = pgTable("payments", {
   id: text("stripe_payment_intent_id").primaryKey(),

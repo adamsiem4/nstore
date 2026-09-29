@@ -47,13 +47,13 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 - Product-card quick-add with animated purple success/red error feedback, a slide-out cart drawer, cookie-backed `/cart`, quantity controls, a free-shipping countdown, in-cart suggestions, and order summary
 - Stripe hosted checkout with delivery addresses and paid-return cart clearing
 - Clerk sign-in, sign-up, user controls, and protected account page
-- Drizzle payment schema and generated PostgreSQL migration
+- Drizzle catalog (`products` + `product_details`) and payment schemas with generated PostgreSQL migrations and an atomic seed script
 - Stripe webhook signature verification and durable payment-status synchronization
 - Idempotent Resend payment-confirmation emails
 - PostHog browser analytics and Sentry client/server/edge error monitoring
 - Zero-configuration Vercel deployment and CodeRabbit pull-request review
 
-The household catalog lives in `src/server/queries/products.ts`. Its original
+Catalog reads go through `src/server/queries/`. Its original
 WebP renders live in `public/products/`; no rendering library or external image
 service is required at runtime. Search matches names, descriptions, and categories.
 
@@ -62,9 +62,10 @@ images, keeping small or floating lettering off the product artwork. When
 replacing renders in place, clear `.next/dev/cache/images` to refresh Next.js
 development image previews.
 
-Catalog data remains in memory; payment persistence uses Neon. Product-card adds
-stay on the catalog; product-detail adds show confirmation and slide the cart
-drawer open. The header bag opens the same drawer — a native modal `<dialog>` —
+Catalog and payment data both live in Neon via Drizzle; catalog source data is in
+`src/server/db/seed/`. Product-card adds stay on the catalog; product-detail adds
+show confirmation and slide the cart drawer open. The header bag opens the same
+drawer — a native modal `<dialog>` —
 whose "View cart" link leads to the full `/cart` page, which also serves direct
 visits and no-JS form posts.
 Buttons respond immediately on click, hold bright purple success feedback for two
@@ -102,6 +103,7 @@ failing silently.
 ```bash
 bun install
 bun run db:migrate
+bun run db:seed
 bun run dev
 ```
 
@@ -113,6 +115,15 @@ bun run lint
 bunx tsc --noEmit
 bun run build
 ```
+
+## Database
+
+- Schema: `src/server/db/schema.ts`
+- Queries: `src/server/queries/`
+- Schema changes: edit the schema → `bun run db:generate` → review SQL in `drizzle/` → `bun run db:migrate`
+- Catalog changes: edit `src/server/db/seed/*` → `bun run db:seed`; it replaces `products` and `product_details` in one transaction, leaving payments untouched
+- Browse data: `bun run db:studio`
+- `bun run test` reads the seeded database
 
 Add shadcn/ui components with:
 

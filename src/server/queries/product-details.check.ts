@@ -1,4 +1,4 @@
-// ponytail: assert script, not a test framework — run with `bun run test`
+// ponytail: needs DATABASE_URL and a seeded database (`bun run db:migrate && bun run db:seed`)
 import assert from "node:assert/strict";
 import { getProductDetails } from "./product-details";
 import { getProducts } from "./products";

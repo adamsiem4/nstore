@@ -8,6 +8,13 @@
       "when": 1788358039878,
       "tag": "0000_fixed_katie_power",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790674960818,
+      "tag": "0001_catalog",
+      "breakpoints": true
     }
   ]
 }
