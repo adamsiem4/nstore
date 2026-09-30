@@ -1,6 +1,7 @@
 "use client";
 
 import { LoaderCircleIcon } from "lucide-react";
+import posthog from "posthog-js";
 import { type ComponentProps, type ReactNode, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { PillButton } from "@/components/ui/pill-button";
@@ -139,7 +140,16 @@ function ConfirmAction({
 
 export function RemoveLineButton({ id, name }: { id: string; name: string }) {
   return (
-    <ConfirmAction action={updateCart} label="Remove" confirm="Yes, remove" subject={name}>
+    <ConfirmAction
+      // Client wrapper is safe: the form only exists after a JS click arms it.
+      action={async (formData) => {
+        await updateCart(formData);
+        posthog.capture("Product Removed", { product_id: id, name });
+      }}
+      label="Remove"
+      confirm="Yes, remove"
+      subject={name}
+    >
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="delta" value={-MAX_QTY} />
     </ConfirmAction>

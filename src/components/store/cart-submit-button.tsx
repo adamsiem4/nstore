@@ -50,7 +50,13 @@ export function CartSubmitButton({
           startTransition(async () => {
             try {
               const changed = await addToCart(formData);
-              if (changed) posthog.capture("Product Added", { product_id: formData.get("id"), quantity: 1 });
+              if (changed) {
+                posthog.capture("Product Added", {
+                  product_id: formData.get("id"),
+                  quantity: 1,
+                  source: formData.get("source"),
+                });
+              }
               setConfirmation(changed ? (formData.get("next") === "/cart" ? "cart" : "stay") : "error");
             } catch {
               setConfirmation("error");

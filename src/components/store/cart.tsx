@@ -36,6 +36,7 @@ export function AddToCartButton({ product }: { product: Product }) {
       <input type="hidden" name="id" value={product.id} />
       <input type="hidden" name="delta" value="1" />
       <input type="hidden" name="next" value="/cart" />
+      <input type="hidden" name="source" value="product_page" />
       <CartSubmitButton className="h-12 w-full justify-between px-6 text-base">
         <span>Add to cart</span>
         <span className="tabular-nums">{money.format(product.price)}</span>
@@ -200,7 +201,7 @@ export function CartSuggestions({
       <DragRow className="-m-2 mt-2 grid snap-x snap-mandatory auto-cols-[62%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain scroll-p-2 p-2 [scrollbar-width:none] @sm:auto-cols-[46%] @2xl:auto-cols-[31%] @4xl:auto-cols-[calc((100%-2.25rem)/4)] [&::-webkit-scrollbar]:hidden">
         {products.map((product) => (
           <li key={product.id} className="snap-start">
-            <ProductCard product={product} />
+            <ProductCard product={product} source="cart_suggestion" />
           </li>
         ))}
       </DragRow>

@@ -11,11 +11,12 @@ import type { Product } from "@/types/product";
  * to cart", and keeps the light palette in both modes — so the outline
  * variant's dark: fills are overridden rather than inherited.
  */
-function QuickAddButton({ product }: { product: Product }) {
+function QuickAddButton({ product, source }: { product: Product; source: string }) {
   return (
     <form action={updateCart}>
       <input type="hidden" name="id" value={product.id} />
       <input type="hidden" name="delta" value="1" />
+      <input type="hidden" name="source" value={source} />
       <CartSubmitButton
         compact
         variant="outline"
@@ -33,10 +34,13 @@ function QuickAddButton({ product }: { product: Product }) {
 export function ProductCard({
   product,
   eager = false,
+  source = "product_card",
 }: {
   product: Product;
   /** first card in a grid: it is the LCP element, so it must not lazy-load */
   eager?: boolean;
+  /** analytics: where the quick add happened; the event's path tells pages apart */
+  source?: string;
 }) {
   return (
     <article className="flex h-full flex-col rounded-xl bg-product-shot p-2 text-shot-ink">
@@ -73,7 +77,7 @@ export function ProductCard({
       </Link>
       <div className="mt-4 flex items-center justify-between gap-3 px-1 pb-1">
         <p className="font-mono text-xs tabular-nums">{money.format(product.price)}</p>
-        <QuickAddButton product={product} />
+        <QuickAddButton product={product} source={source} />
       </div>
     </article>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CaptureEvent } from "@/components/analytics/capture-event";
 import { ProductGrid } from "@/components/store/product-grid";
 import { getProducts } from "@/server/queries/products";
 
@@ -17,6 +18,9 @@ export default async function ProductsPage({
 
   return (
     <>
+      {query && (
+        <CaptureEvent event="Products Searched" properties={{ query, results: products.length }} />
+      )}
       <p className="text-sm font-semibold tracking-[0.14em] text-muted-foreground uppercase">
         Home appliances &amp; household goods
       </p>
