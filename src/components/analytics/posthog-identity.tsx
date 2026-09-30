@@ -12,7 +12,9 @@ export function PostHogIdentity() {
 
     if (isSignedIn) {
       posthog.identify(user.id);
-    } else {
+    } else if (posthog._isIdentified()) {
+      // Only on sign-out: resetting every anonymous page load would split a
+      // guest into a new person after each full reload, e.g. the Stripe return.
       posthog.reset();
     }
   }, [isLoaded, isSignedIn, user]);

@@ -3,10 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { ClearCartButton, QuantityButton, RemoveLineButton } from "@/components/store/cart-line-actions";
-import { CartSubmitButton } from "@/components/store/cart-submit-button";
+import { CartSubmitButton, CheckoutButton } from "@/components/store/cart-submit-button";
 import { DragRow } from "@/components/store/drag-row";
 import { ProductCard } from "@/components/store/product-card";
-import { SoftPillButton } from "@/components/ui/pill-button";
 import { type CartLine, FREE_SHIPPING_CENTS, MAX_QTY, totals } from "@/lib/cart";
 import { cn, money } from "@/lib/utils";
 import { updateCart } from "@/server/cart";
@@ -168,10 +167,10 @@ export function CartSummary({
         <dd className="text-right font-mono tabular-nums">{shipping ? euros(shipping) : "Free"}</dd>
       </dl>
       <form action={startCheckout} className="mt-5">
-        <SoftPillButton type="submit" className="h-12 w-full justify-between px-6 text-base">
+        <CheckoutButton total={total} className="h-12 w-full justify-between px-6 text-base">
           <span>Check out</span>
           <span className="tabular-nums">{euros(total)}</span>
-        </SoftPillButton>
+        </CheckoutButton>
       </form>
       {children}
       <p className="mt-3 text-xs text-muted-foreground">

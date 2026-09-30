@@ -2,6 +2,7 @@
 
 import { CheckIcon, LoaderCircleIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 import { type ComponentProps, startTransition, useEffect, useState } from "react";
 import { openCart } from "@/components/store/cart-drawer";
 import { SoftPillButton } from "@/components/ui/pill-button";
@@ -49,6 +50,7 @@ export function CartSubmitButton({
           startTransition(async () => {
             try {
               const changed = await addToCart(formData);
+              if (changed) posthog.capture("Product Added", { product_id: formData.get("id"), quantity: 1 });
               setConfirmation(changed ? (formData.get("next") === "/cart" ? "cart" : "stay") : "error");
             } catch {
               setConfirmation("error");
@@ -117,5 +119,21 @@ export function CartSubmitButton({
         {failed ? "Could not add to cart. Try again." : added ? "Added to cart" : pending ? "Adding to cart" : ""}
       </span>
     </>
+  );
+}
+
+/** Checkout submit; the funnel step is sent at once because the page leaves for Stripe. */
+export function CheckoutButton({
+  total,
+  ...props
+}: Omit<ComponentProps<typeof SoftPillButton>, "onClick" | "type"> & { total: number }) {
+  return (
+    <SoftPillButton
+      {...props}
+      type="submit"
+      onClick={() =>
+        posthog.capture("Checkout Started", { value: total / 100, currency: "EUR" }, { send_instantly: true })
+      }
+    />
   );
 }

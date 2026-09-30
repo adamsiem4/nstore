@@ -1,6 +1,8 @@
+import { createHash } from "node:crypto";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CaptureEvent } from "@/components/analytics/capture-event";
 import { pillButtonVariants } from "@/components/ui/pill-button";
 import { getStripe } from "@/server/stripe";
 
@@ -24,9 +26,30 @@ export default async function CheckoutSuccessPage(
   });
   const total = currency.format((session.amount_total ?? 0) / 100);
   const shipping = session.shipping_cost?.amount_total;
+  // ponytail: one uuid per Stripe session, so a reload re-sends the same event
+  // and PostHog storage dedupes it (eventually, same day; not instantly).
+  const eventId = createHash("sha256")
+    .update(session.id)
+    .digest("hex")
+    .replace(/^(.{8})(.{4})(.{4})(.{4})(.{12}).*/, "$1-$2-$3-$4-$5");
 
   return (
     <div className="mx-auto flex max-w-lg flex-1 flex-col justify-center py-10 text-center">
+      <CaptureEvent
+        event="Order Completed"
+        uuid={eventId}
+        properties={{
+          order_id: session.id,
+          total: (session.amount_total ?? 0) / 100,
+          revenue: (session.amount_subtotal ?? 0) / 100,
+          shipping: (shipping ?? 0) / 100,
+          currency: session.currency?.toUpperCase(),
+          products: session.line_items?.data.map((item) => ({
+            name: item.description,
+            quantity: item.quantity,
+          })),
+        }}
+      />
       <p className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
         Order confirmed
       </p>

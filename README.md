@@ -50,7 +50,7 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 - Drizzle catalog (`products` + `product_details`) and payment schemas with generated PostgreSQL migrations and an atomic seed script
 - Stripe webhook signature verification and durable payment-status synchronization
 - Idempotent Resend payment-confirmation emails
-- PostHog browser analytics and Sentry client/server/edge error monitoring
+- Consent-gated PostHog analytics (pageviews, autocapture, Clerk identity, `Product Added` / `Checkout Started` / `Order Completed` ecommerce events) and Sentry client/server/edge error monitoring
 - Zero-configuration Vercel deployment and CodeRabbit pull-request review
 
 Catalog reads go through `src/server/queries/`. Its original
