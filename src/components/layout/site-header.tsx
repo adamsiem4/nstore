@@ -1,7 +1,8 @@
 import type { CSSProperties } from "react";
-import { Show, UserButton } from "@clerk/nextjs";
+import { Show } from "@clerk/nextjs";
 import { SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
 import Link from "next/link";
+import { AccountButton } from "@/components/layout/account-button";
 import { CartSheet } from "@/components/store/cart";
 import { CartDrawer, CartLink } from "@/components/store/cart-drawer";
 import { Input } from "@/components/ui/input";
@@ -189,7 +190,7 @@ export async function SiteHeader() {
         </Show>
         <Show when="signed-in">
           <span className="flex size-10 items-center justify-center">
-            <UserButton />
+            <AccountButton />
           </span>
         </Show>
       </div>
@@ -279,7 +280,7 @@ export async function SiteHeader() {
               </Show>
               <Show when="signed-in">
                 <span className="flex size-10 items-center justify-center">
-                  <UserButton />
+                  <AccountButton />
                 </span>
               </Show>
             </div>
