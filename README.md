@@ -46,7 +46,7 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 - Shared storefront layout and shadcn/ui configuration
 - Product-card quick-add with animated purple success/red error feedback, a slide-out cart drawer, cookie-backed `/cart`, quantity controls, a free-shipping countdown, in-cart suggestions, and order summary
 - Stripe hosted checkout with delivery addresses and paid-return cart clearing
-- Clerk sign-in, sign-up, user controls, protected account page, and a signed-in `/orders` history (linked from the user menu) built from webhook-recorded payments
+- Clerk sign-in, sign-up, desktop user menu, a protected `/account` page (orders, Clerk profile at `/account/profile` and security at `/account/profile/security` restyled to match the store, sign out) that the mobile menu and "Manage account" link to, and a signed-in `/orders` history built from webhook-recorded payments
 - Drizzle catalog (`products` + `product_details`) and payment schemas with generated PostgreSQL migrations and an atomic seed script
 - Stripe webhook signature verification and durable payment-status synchronization
 - Idempotent Resend payment-confirmation emails

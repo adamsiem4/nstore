@@ -270,18 +270,16 @@ export async function SiteHeader() {
             </CartLink>
             <div className="ml-auto flex items-center gap-1">
               <Show when="signed-out">
-                <Link
-                  href="/sign-in"
-                  aria-label="Sign in"
-                  className={pillButtonVariants({ variant: "ghost", size: "icon-lg", className: "size-10 focus-visible:ring-foreground" })}
-                >
+                <Link href="/sign-in" className={cn(navLinkClass, "gap-2 normal-case tracking-normal text-foreground")}>
                   <UserIcon aria-hidden="true" />
+                  Sign in
                 </Link>
               </Show>
               <Show when="signed-in">
-                <span className="flex size-10 items-center justify-center">
-                  <AccountButton />
-                </span>
+                <Link href="/account" className={cn(navLinkClass, "gap-2 normal-case tracking-normal text-foreground")}>
+                  <UserIcon aria-hidden="true" />
+                  Account
+                </Link>
               </Show>
             </div>
           </div>
