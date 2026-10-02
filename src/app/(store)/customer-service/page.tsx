@@ -41,7 +41,7 @@ export default async function CustomerServicePage() {
           id: "account",
           question: "Do I need an account to order?",
           answer:
-            "No. You can fill your basket and check out as a guest. An account only adds a saved profile you can reach from [your account page](/account).",
+            "No. You can fill your basket and check out as a guest. An account adds your order history and saved delivery addresses, both on [your account page](/account).",
         },
         {
           id: "basket",
@@ -82,7 +82,7 @@ export default async function CustomerServicePage() {
           id: "address",
           question: "Where do I enter my delivery address?",
           answer:
-            "On the Stripe payment page, after you press Check out. Stripe asks for your delivery address together with your payment details.",
+            "On the Stripe payment page, after you press Check out. Stripe asks for your delivery address together with your payment details. If you are signed in and have a default address under [your addresses](/account/addresses), it is already filled in.",
         },
       ],
     },

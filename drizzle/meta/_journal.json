@@ -15,6 +15,13 @@
       "when": 1790674960818,
       "tag": "0001_catalog",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790944384469,
+      "tag": "0002_addresses",
+      "breakpoints": true
     }
   ]
 }

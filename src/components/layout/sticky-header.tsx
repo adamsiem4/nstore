@@ -45,7 +45,13 @@ export function StickyHeader({ children }: { children: ReactNode }) {
           The right padding is 5px, not the left's 20/32/40: a trailing icon
           button carries 12px of its own, so its glyph lands 26px in at every
           width, optically level with the wordmark on the left. */}
+      {/* The header outlives client navigation, so the burger's checkbox would
+          stay checked after a pick; any link click inside unchecks it. */}
       <header
+        onClick={(event) => {
+          const menu = document.getElementById("site-menu");
+          if (menu instanceof HTMLInputElement && (event.target as Element).closest("a")) menu.checked = false;
+        }}
         data-stuck={stuck || undefined}
         className="group/header sticky top-2 z-40 rounded-xl border py-2 pr-[5px] pl-5 transition-shadow duration-300 ease-out before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-card/80 before:backdrop-blur-md before:content-[''] sm:top-3 sm:py-3 sm:pl-8 lg:pl-10 data-[stuck]:shadow-lg"
       >

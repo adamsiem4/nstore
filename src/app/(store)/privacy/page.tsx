@@ -60,8 +60,10 @@ export default function PrivacyPage() {
             address and order-message contents to send transactional updates.
           </li>
           <li>
-            <strong className="text-foreground">Catalog and order storage:</strong> Neon Postgres
-            stores catalog and order records. Data is held in an EU region when the Neon project is
+            <strong className="text-foreground">Catalog, order and address storage:</strong> Neon
+            Postgres stores catalog and order records and the delivery addresses you save to your
+            account. When you check out with a default address, it is also sent to Stripe so the
+            payment page can fill it in. Data is held in an EU region when the Neon project is
             configured for one.
           </li>
           <li>
@@ -114,7 +116,8 @@ export default function PrivacyPage() {
           Retention
         </h2>
         <p className="leading-7 text-muted-foreground">
-          Order records are kept for applicable statutory accounting periods. Optional analytics
+          Order records are kept for applicable statutory accounting periods. Saved addresses are
+          kept until you remove them from your account. Optional analytics
           is tied to your consent and is no longer collected after you withdraw it; PostHog data is
           retained according to the configured analytics retention period.
         </p>
