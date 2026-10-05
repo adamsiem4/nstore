@@ -72,13 +72,13 @@ export async function SiteHeader() {
           className="inline-flex min-h-11 items-center rounded-lg outline-none transition-opacity hover:opacity-70 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-card"
         >
           n
-          <span className="grid grid-cols-[1fr] transition-[grid-template-columns] duration-300 ease-out group-data-[stuck]/header:grid-cols-[0fr] group-data-[stuck]/header:delay-300 motion-reduce:transition-none">
+          <span className="grid grid-cols-[1fr] transition-[grid-template-columns] duration-300 ease-out group-data-stuck/header:grid-cols-[0fr] group-data-stuck/header:delay-300 motion-reduce:transition-none">
             <span className="overflow-hidden">
               {TAIL.map(({ letter, in: fadeIn, out }) => (
                 <span
                   key={letter}
                   style={{ "--in": `${fadeIn}ms`, "--out": `${out}ms` } as CSSProperties}
-                  className="transition-opacity duration-150 ease-in-out [transition-delay:var(--in)] group-data-[stuck]/header:opacity-0 group-data-[stuck]/header:[transition-delay:var(--out)] motion-reduce:transition-none"
+                  className="transition-opacity duration-150 ease-in-out [transition-delay:var(--in)] group-data-stuck/header:opacity-0 group-data-stuck/header:[transition-delay:var(--out)] motion-reduce:transition-none"
                 >
                   {letter}
                 </span>
@@ -155,7 +155,7 @@ export async function SiteHeader() {
             action="/products"
             role="search"
             aria-label="Search products"
-            className="search-pill absolute top-1/2 left-[calc((var(--search-width)-2.5rem)*-1)] z-20 flex h-10 w-(--search-width) -translate-y-1/2 items-center gap-3 overflow-hidden rounded-full bg-foreground/5 pr-11 pl-4 ring-1 ring-foreground/10 backdrop-blur-md"
+            className="search-pill absolute top-1/2 -left-[(var(--search-width)-2.5rem)] z-20 flex h-10 w-(--search-width) -translate-y-1/2 items-center gap-3 overflow-hidden rounded-full bg-foreground/5 pr-11 pl-4 ring-1 ring-foreground/10 backdrop-blur-md"
           >
             <SearchIcon aria-hidden="true" className="size-5 shrink-0 text-muted-foreground" />
             <Input
@@ -209,7 +209,7 @@ export async function SiteHeader() {
           className={pillButtonVariants({
             variant: "ghost",
             size: "icon-lg",
-            className: "size-10 cursor-pointer flex-col gap-[5px] peer-focus-visible:ring-2 peer-focus-visible:ring-foreground",
+            className: "size-10 cursor-pointer flex-col gap-1.25 peer-focus-visible:ring-2 peer-focus-visible:ring-foreground",
           })}
         >
           <span aria-hidden="true" className="burger-line" />
@@ -223,7 +223,7 @@ export async function SiteHeader() {
             ponytail: opaque, not glass — Chromium drops backdrop-filter on an
             element that transitions transform, so the drawer shipped as 60%
             tint with the product grid legible straight through it. */}
-        <div className="site-menu absolute top-full -right-px -left-px z-30 mt-[9px] grid gap-2 rounded-xl border border-foreground/10 bg-card p-3 shadow-xl sm:mt-[13px]">
+        <div className="site-menu absolute top-full -right-px -left-px z-30 mt-2.25 grid gap-2 rounded-xl border border-foreground/10 bg-card p-3 shadow-xl sm:mt-3.25">
           <form
             action="/products"
             role="search"

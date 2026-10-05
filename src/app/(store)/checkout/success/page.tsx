@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { Show } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -53,12 +54,10 @@ export default async function CheckoutSuccessPage(
       <p className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
         Order confirmed
       </p>
-      <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-        Thanks{session.customer_details?.name ? `, ${session.customer_details.name}` : ""}.
-      </h1>
+      <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">Thanks for your order</h1>
       <p className="mt-4 text-lg text-muted-foreground">
         We charged {total}
-        {session.customer_details?.email ? ` and emailed ${session.customer_details.email}` : ""}.
+        {session.customer_details?.email ? ` and emailed ${session.customer_details.email}` : ""}
       </p>
 
       <ul className="mt-8 flex flex-col gap-2 text-left text-sm">
@@ -85,9 +84,17 @@ export default async function CheckoutSuccessPage(
         )}
       </ul>
 
-      <Link href="/products" className={pillButtonVariants({ className: "mt-8 self-center" })}>
-        Keep shopping
-      </Link>
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <Link href="/products" className={pillButtonVariants({ className: "h-12 px-8 text-base" })}>
+          Continue shopping
+        </Link>
+        {/* Guests have no order history; /orders asks them to sign in. */}
+        <Show when="signed-in">
+          <Link href="/orders" className={pillButtonVariants({ variant: "ghost", className: "h-12 px-6 text-base" })}>
+            View orders
+          </Link>
+        </Show>
+      </div>
     </div>
   );
 }
