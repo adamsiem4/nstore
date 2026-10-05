@@ -1,8 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
 import { desc, eq } from "drizzle-orm";
-import { ChevronLeftIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AccountShell } from "@/components/layout/account-shell";
 import { Badge } from "@/components/ui/badge";
 import { deleteAddress, setDefaultAddress } from "@/server/addresses";
 import { getDb } from "@/server/db";
@@ -24,17 +25,7 @@ export default async function AddressesPage() {
     .orderBy(desc(addresses.isDefault), addresses.createdAt);
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col">
-      <Link
-        href="/account"
-        className="-ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-lg pr-2 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground"
-      >
-        <ChevronLeftIcon aria-hidden="true" className="size-4" />
-        Account
-      </Link>
-      <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Your addresses</h1>
-      <p className="mt-3 text-muted-foreground">Checkout fills in your default address for you.</p>
-
+    <AccountShell title="Your addresses" description="Checkout fills in your default address for you.">
       <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <li>
           <Link
@@ -87,6 +78,6 @@ export default async function AddressesPage() {
           );
         })}
       </ul>
-    </div>
+    </AccountShell>
   );
 }

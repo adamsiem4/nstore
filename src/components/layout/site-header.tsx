@@ -1,8 +1,7 @@
 import type { CSSProperties } from "react";
-import { Show } from "@clerk/nextjs";
+import { Show, UserAvatar } from "@clerk/nextjs";
 import { SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
 import Link from "next/link";
-import { AccountButton } from "@/components/layout/account-button";
 import { CartSheet } from "@/components/store/cart";
 import { CartDrawer, CartLink } from "@/components/store/cart-drawer";
 import { Input } from "@/components/ui/input";
@@ -189,9 +188,14 @@ export async function SiteHeader() {
           </Link>
         </Show>
         <Show when="signed-in">
-          <span className="flex size-10 items-center justify-center">
-            <AccountButton />
-          </span>
+          {/* Our /account page, not Clerk's popover menu. */}
+          <Link
+            href="/account"
+            aria-label="Account"
+            className={pillButtonVariants({ variant: "ghost", size: "icon-lg", className: "size-10 focus-visible:ring-foreground" })}
+          >
+            <UserAvatar />
+          </Link>
         </Show>
       </div>
 

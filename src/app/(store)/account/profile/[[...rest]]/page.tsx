@@ -1,7 +1,6 @@
 import { UserProfile } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
-import { ChevronLeftIcon } from "lucide-react";
-import Link from "next/link";
+import { AccountShell } from "@/components/layout/account-shell";
 
 // ponytail: Clerk keeps the forms (name, avatar, email, phone, password,
 // sessions, delete account); we strip its card and navbar so it reads as our
@@ -14,14 +13,7 @@ export default async function AccountProfilePage() {
   await auth.protect();
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col">
-      <Link
-        href="/account"
-        className="-ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-lg pr-2 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground"
-      >
-        <ChevronLeftIcon aria-hidden="true" className="size-4" />
-        Account
-      </Link>
+    <AccountShell>
       <UserProfile
         appearance={{
           variables: { fontSize: "0.9375rem" },
@@ -50,6 +42,6 @@ export default async function AccountProfilePage() {
           },
         }}
       />
-    </div>
+    </AccountShell>
   );
 }

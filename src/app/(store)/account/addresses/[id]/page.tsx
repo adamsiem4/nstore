@@ -1,9 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
-import { ChevronLeftIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AccountShell } from "@/components/layout/account-shell";
 import { Input } from "@/components/ui/input";
 import { PillButton, pillButtonVariants } from "@/components/ui/pill-button";
 import { SHIPPING_COUNTRIES } from "@/lib/cart";
@@ -35,19 +35,8 @@ export default async function AddressFormPage(props: PageProps<"/account/address
   const isDefault = address ? address.isDefault : !saved.some((entry) => entry.isDefault);
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-1 flex-col">
-      <Link
-        href="/account/addresses"
-        className="-ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-lg pr-2 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground"
-      >
-        <ChevronLeftIcon aria-hidden="true" className="size-4" />
-        Your addresses
-      </Link>
-      <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-        {address ? "Edit address" : "Add address"}
-      </h1>
-
-      <form action={saveAddress} className="mt-8 grid gap-5">
+    <AccountShell back={{ href: "/account/addresses", label: "Your addresses" }} title={address ? "Edit address" : "Add address"}>
+      <form action={saveAddress} className="mt-8 grid max-w-lg gap-5">
         {address && <input type="hidden" name="id" value={address.id} />}
         <label className={labelClass}>
           Country
@@ -130,6 +119,6 @@ export default async function AddressFormPage(props: PageProps<"/account/address
           </Link>
         </div>
       </form>
-    </div>
+    </AccountShell>
   );
 }

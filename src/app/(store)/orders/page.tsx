@@ -1,14 +1,15 @@
 import { auth } from "@clerk/nextjs/server";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { PackageIcon } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { pillButtonVariants } from "@/components/ui/pill-button";
+import { AccountShell } from "@/components/layout/account-shell";
 import { getDb } from "@/server/db";
-import { payments } from "@/server/db/schema";
+import { payments, products } from "@/server/db/schema";
 import { getStripe } from "@/server/stripe";
 
-export const metadata: Metadata = { title: "My orders" };
+export const metadata: Metadata = { title: "Your orders" };
 
 const date = new Intl.DateTimeFormat("en-IE", { dateStyle: "medium" });
 const money = (cents: number, currency: string) =>
@@ -42,55 +43,94 @@ export default async function OrdersPage() {
     ),
   );
 
-  if (orders.length === 0) {
-    return (
-      <div className="flex flex-1 flex-col items-center justify-center py-16 text-center">
-        <PackageIcon aria-hidden="true" className="size-8 text-muted-foreground" />
-        <h1 className="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">My orders</h1>
-        <p className="mt-4 text-lg text-muted-foreground">You haven&apos;t placed an order yet.</p>
-        <Link href="/products" className={pillButtonVariants({ className: "mt-8 h-12 px-8 text-base" })}>
-          Start shopping
-        </Link>
-      </div>
-    );
-  }
+  // Stripe line items only carry the product name; match it back to the
+  // catalog for the photo and link. Renamed or removed products show text only.
+  const names = [...new Set(items.flat().map((item) => item.description).filter((name) => name !== null))];
+  const catalog = names.length
+    ? await getDb()
+        .select({ id: products.id, name: products.name, image: products.image })
+        .from(products)
+        .where(inArray(products.name, names))
+    : [];
+  const byName = new Map(catalog.map((product) => [product.name, product]));
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col">
-      <h1 className="flex flex-wrap items-baseline gap-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-        My orders
-        <span className="text-muted-foreground">{orders.length}</span>
-      </h1>
-
-      <ol className="mt-8 flex flex-col gap-4">
+    <AccountShell title="Your orders" description="Paid orders, newest first.">
+      {orders.length === 0 && (
+        <Link
+          href="/products"
+          className="mt-8 flex min-h-48 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground"
+        >
+          <PackageIcon aria-hidden="true" className="size-8" />
+          <span className="font-semibold">No orders yet. Start shopping</span>
+        </Link>
+      )}
+      <ol className="mt-8 flex flex-col gap-4 empty:hidden">
         {orders.map((order, index) => (
-          <li key={order.id} className="rounded-xl bg-muted p-5">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <h2 className="font-semibold">
-                <time dateTime={order.createdAt.toISOString()}>{date.format(order.createdAt)}</time>
-              </h2>
-              <span className="font-semibold tabular-nums">{money(order.amount, order.currency)}</span>
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Order {order.id.slice(-8).toUpperCase()}
-            </p>
+          <li key={order.id} className="overflow-hidden rounded-xl border">
+            <dl className="flex flex-wrap gap-x-8 gap-y-2 bg-muted px-5 py-3 text-xs text-muted-foreground">
+              <div>
+                <dt>Order placed</dt>
+                <dd className="mt-0.5 text-sm font-semibold text-foreground">
+                  <time dateTime={order.createdAt.toISOString()}>{date.format(order.createdAt)}</time>
+                </dd>
+              </div>
+              <div>
+                <dt>Total</dt>
+                <dd className="mt-0.5 text-sm font-semibold text-foreground tabular-nums">
+                  {money(order.amount, order.currency)}
+                </dd>
+              </div>
+              <div className="sm:ml-auto sm:text-right">
+                <dt>Order #</dt>
+                <dd className="mt-0.5 font-mono text-sm text-foreground">{order.id.slice(-8).toUpperCase()}</dd>
+              </div>
+            </dl>
             {items[index].length > 0 && (
-              <ul className="mt-4 flex flex-col gap-2 text-sm">
-                {items[index].map((item) => (
-                  <li key={item.id} className="flex items-center justify-between gap-4 border-t pt-2">
-                    <span>
-                      {item.quantity}× {item.description}
-                    </span>
-                    <span className="tabular-nums text-muted-foreground">
-                      {money(item.amount_total, item.currency)}
-                    </span>
-                  </li>
-                ))}
+              <ul className="divide-y px-5">
+                {items[index].map((item) => {
+                  const product = item.description ? byName.get(item.description) : undefined;
+                  return (
+                    <li key={item.id} className="flex items-center gap-4 py-4">
+                      {product && (
+                        // Same destination as the name beside it; one tab stop is enough.
+                        <Link href={`/products/${product.id}`} tabIndex={-1} aria-hidden="true" className="shrink-0">
+                          <Image
+                            src={product.image}
+                            alt=""
+                            width={256}
+                            height={256}
+                            sizes="80px"
+                            className="size-20 rounded-lg bg-product-shot object-cover"
+                          />
+                        </Link>
+                      )}
+                      <div className="flex min-w-0 flex-1 flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                        <div className="min-w-0">
+                          {product ? (
+                            <Link
+                              href={`/products/${product.id}`}
+                              className="rounded-sm text-sm font-semibold tracking-wide uppercase outline-none hover:underline focus-visible:ring-2 focus-visible:ring-foreground"
+                            >
+                              {item.description}
+                            </Link>
+                          ) : (
+                            <p className="text-sm font-semibold tracking-wide uppercase">{item.description}</p>
+                          )}
+                          <p className="mt-1 font-mono text-xs text-muted-foreground">Qty {item.quantity}</p>
+                        </div>
+                        <p className="shrink-0 font-mono text-xs tabular-nums">
+                          {money(item.amount_total, item.currency)}
+                        </p>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </li>
         ))}
       </ol>
-    </div>
+    </AccountShell>
   );
 }
