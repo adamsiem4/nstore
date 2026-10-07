@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentProps, ReactNode } from "react";
 import { PillButton } from "@/components/ui/pill-button";
+import { showModal } from "@/lib/utils";
 
 const DRAWER = "cart-drawer";
 
@@ -12,14 +13,7 @@ const DRAWER = "cart-drawer";
 export function openCart() {
   const drawer = document.getElementById(DRAWER);
   if (!(drawer instanceof HTMLDialogElement)) return false;
-  if (!drawer.open) {
-    // The scroll lock hides a classic scrollbar and the page slides into its
-    // 15px; measured here, while it is still on screen, so the gutter rule in
-    // globals.css only fires where that width is real.
-    const root = document.documentElement;
-    root.classList.toggle("scrollbar-takes-space", window.innerWidth > root.clientWidth);
-    drawer.showModal();
-  }
+  showModal(drawer);
   return true;
 }
 
