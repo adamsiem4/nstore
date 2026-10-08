@@ -47,6 +47,7 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 - Product-card quick-add with animated purple success/red error feedback, a slide-out cart drawer, cookie-backed `/cart`, quantity controls, a free-shipping countdown, in-cart suggestions, and order summary
 - Stripe hosted checkout with delivery addresses (a signed-in user's default saved address pre-fills it via a Stripe customer whose id lives in Clerk private metadata) and paid-return cart clearing
 - Clerk sign-in, sign-up, a protected Amazon-style `/account` hub (cards with sub-links for orders, login & security, addresses, plus sign out) that the desktop avatar and the mobile menu link to; Clerk profile at `/account/profile` and security at `/account/profile/security` restyled to match the store; an `/account/addresses` book (add, edit, remove, one default enforced by a partial unique index); and a signed-in `/orders` history built from webhook-recorded payments
+- Return requests from paid orders: an inline item/reason form, persisted confirmation, ownership checks, duplicate protection, and fully refunded-order blocking
 - Drizzle catalog (`products` + `product_details`), payment and saved-address schemas with generated PostgreSQL migrations and an atomic seed script
 - Stripe webhook signature verification and durable payment-status synchronization
 - Idempotent Resend payment-confirmation emails
@@ -75,6 +76,14 @@ Orders from €60 ship free; below that, Stripe Checkout adds a €4.95 flat rat
 and the cart counts down to the threshold.
 Cancelled checkout preserves the cart; `/api/checkout/return` clears it only after
 Stripe confirms a paid session. Configure `STRIPE_SECRET_KEY` to enable payment.
+
+Signed-in customers can request a return from `/orders`. Requests are stored on
+the Stripe PaymentIntent as `returnStatus=requested` and `returnDetails`; review
+them on the payment in the Stripe dashboard. The 30-day window starts at
+delivery, which the app does not track, so eligibility is checked during manual
+review rather than inferred from the payment date. Return instructions and
+refunds are handled manually; submitting a request does not issue a refund or
+send an email. No database migration or new environment variable is required.
 
 ## Environment
 

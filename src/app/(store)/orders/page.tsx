@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AccountShell } from "@/components/layout/account-shell";
 import { OrderList } from "@/components/store/order-list";
+import { OrderReturn } from "@/components/store/order-return";
 import { getDb } from "@/server/db";
 import { payments, products } from "@/server/db/schema";
 import { getStripe } from "@/server/stripe";
@@ -35,14 +36,22 @@ export default async function OrdersPage() {
   // ponytail: line items stay in Stripe — one session lookup per order, capped
   // at the 20 latest; persist them in the webhook if this page gets slow.
   const stripe = getStripe();
-  const items = await Promise.all(
+  const sessions = await Promise.all(
     orders.map((order) =>
       stripe.checkout.sessions
-        .list({ payment_intent: order.id, limit: 1, expand: ["data.line_items"] })
-        .then(({ data }) => data[0]?.line_items?.data ?? [])
-        .catch(() => []),
+        .list({ payment_intent: order.id, limit: 1, expand: ["data.line_items", "data.payment_intent.latest_charge"] })
+        .then(({ data }) => data[0] ?? null)
+        .catch(() => null),
     ),
   );
+  const items = sessions.map((session) => session?.line_items?.data ?? []);
+  const returnStatuses = sessions.map((session) => {
+    const intent = session?.payment_intent;
+    if (!intent || typeof intent === "string") return "unavailable" as const;
+    const charge = intent.latest_charge;
+    return charge && typeof charge !== "string" && charge.refunded ? "refunded"
+      : intent.metadata.returnStatus === "requested" ? "requested" : "available";
+  });
 
   // Stripe line items only carry the product name; match it back to the
   // catalog for the photo and link. Renamed or removed products show text only.
@@ -119,6 +128,7 @@ export default async function OrdersPage() {
         </li>
       );
     }),
+    footer: <OrderReturn orderId={order.id} status={returnStatuses[index]} />,
   }));
 
   return (

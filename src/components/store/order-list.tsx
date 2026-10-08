@@ -52,7 +52,7 @@ function OrderItems({ items, searching }: { items: ReactNode[]; searching: boole
 export function OrderList({
   orders,
 }: {
-  orders: { id: string; text: string; header: ReactNode; items: ReactNode[] }[];
+  orders: { id: string; text: string; header: ReactNode; items: ReactNode[]; footer: ReactNode }[];
 }) {
   const [query, setQuery] = useState("");
   const words = query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -83,11 +83,12 @@ export function OrderList({
         </p>
       )}
       <ol className="mt-8 flex flex-col gap-4 empty:hidden">
-        {shown.map(({ id, header, items }) => (
+        {shown.map(({ id, header, items, footer }) => (
           <li key={id} className="overflow-hidden rounded-xl border">
             {header}
             {/* Remount when a search starts or ends so the fold resets to match. */}
             <OrderItems key={String(words.length > 0)} items={items} searching={words.length > 0} />
+            {footer}
           </li>
         ))}
       </ol>

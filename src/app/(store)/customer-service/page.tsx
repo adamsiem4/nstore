@@ -101,7 +101,7 @@ export default async function CustomerServicePage() {
           id: "start-return",
           question: "How do I start a return?",
           answer:
-            "Write to the contact address on our [Privacy Policy](/privacy) page and tell us what you would like to send back.",
+            "Sign in and open [Order history](/orders). Choose Request a return on the order, describe the items and reason, and submit your request. Wait for return instructions before sending anything back. If you checked out as a guest, write to the contact address on our [Privacy Policy](/privacy) page.",
         },
         {
           id: "refund",
