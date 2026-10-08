@@ -84,6 +84,8 @@ delivery, which the app does not track, so eligibility is checked during manual
 review rather than inferred from the payment date. Return instructions and
 refunds are handled manually; submitting a request does not issue a refund or
 send an email. No database migration or new environment variable is required.
+Order headers and return controls use distinct per-order keys when passed into
+the client-rendered order list.
 
 ## Environment
 

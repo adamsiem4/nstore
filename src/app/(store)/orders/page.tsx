@@ -73,7 +73,7 @@ export default async function OrdersPage() {
       .join(" ")
       .toLowerCase(),
     header: (
-      <dl className="flex flex-wrap gap-x-8 gap-y-2 bg-muted px-5 py-3 text-xs text-muted-foreground">
+      <dl key={`header-${order.id}`} className="flex flex-wrap gap-x-8 gap-y-2 bg-muted px-5 py-3 text-xs text-muted-foreground">
         <div>
           <dt>Order placed</dt>
           <dd className="mt-0.5 text-sm font-semibold text-foreground">
@@ -128,7 +128,7 @@ export default async function OrdersPage() {
         </li>
       );
     }),
-    footer: <OrderReturn orderId={order.id} status={returnStatuses[index]} />,
+    footer: <OrderReturn key={`return-${order.id}`} orderId={order.id} status={returnStatuses[index]} />,
   }));
 
   return (
