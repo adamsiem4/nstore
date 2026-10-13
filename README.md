@@ -127,6 +127,11 @@ bunx tsc --noEmit
 bun run build
 ```
 
+Dependency updates use `bun update` for existing version ranges. Update pinned
+Next.js and `eslint-config-next` together, and React and React DOM together;
+major-version migrations are separate work. Keep `package.json` and `bun.lock`
+in sync, run the checks above, and smoke-test the production storefront and cart.
+
 ## Database
 
 - Schema: `src/server/db/schema.ts`
