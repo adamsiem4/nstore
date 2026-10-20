@@ -71,13 +71,17 @@ const UNDO_WINDOW = 5000;
  * itself on Escape or after five idle seconds.
  */
 function ConfirmAction({
-  action,
+  serverAction,
+  action = serverAction,
   label,
   confirm,
   subject,
   children,
 }: {
-  action: (formData: FormData) => Promise<void>;
+  /** posted directly before hydration or without JavaScript, skipping the confirm step */
+  serverAction: (formData: FormData) => Promise<void>;
+  /** run once confirmed; defaults to serverAction */
+  action?: (formData: FormData) => Promise<void>;
   label: string;
   confirm: string;
   /** appended to both accessible names when the visible text is ambiguous */
@@ -104,16 +108,22 @@ function ConfirmAction({
 
   if (!armed) {
     return (
-      <PillButton
-        type="button"
-        variant="link"
-        size="xs"
-        aria-label={subject && `${label} ${subject}`}
-        onClick={() => setArmed(true)}
-        className="text-muted-foreground hover:text-foreground"
-      >
-        {label}
-      </PillButton>
+      <form action={serverAction} className="contents">
+        {children}
+        <PillButton
+          type="submit"
+          variant="link"
+          size="xs"
+          aria-label={subject && `${label} ${subject}`}
+          onClick={(event) => {
+            event.preventDefault();
+            setArmed(true);
+          }}
+          className="text-muted-foreground hover:text-foreground"
+        >
+          {label}
+        </PillButton>
+      </form>
     );
   }
 
@@ -141,7 +151,8 @@ function ConfirmAction({
 export function RemoveLineButton({ id, name }: { id: string; name: string }) {
   return (
     <ConfirmAction
-      // Client wrapper is safe: the form only exists after a JS click arms it.
+      serverAction={updateCart}
+      // Client wrapper is safe: the confirm form only exists after a JS click arms it.
       action={async (formData) => {
         await updateCart(formData);
         posthog.capture("Product Removed", { product_id: id, name });
@@ -157,5 +168,5 @@ export function RemoveLineButton({ id, name }: { id: string; name: string }) {
 }
 
 export function ClearCartButton() {
-  return <ConfirmAction action={clearCart} label="Clear cart" confirm="Yes, clear" />;
+  return <ConfirmAction serverAction={clearCart} label="Clear cart" confirm="Yes, clear" />;
 }
