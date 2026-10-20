@@ -28,7 +28,7 @@ export default async function ProductsPage({
         {query ? "Find your everyday." : "A little better, every day."}
       </h1>
       <p className="mt-3 text-lg text-muted-foreground">
-        {products.length} products
+        {products.length} {products.length === 1 ? "product" : "products"}
         {query ? ` matching “${query}”` : ""}
       </p>
       <div className="mt-10">
