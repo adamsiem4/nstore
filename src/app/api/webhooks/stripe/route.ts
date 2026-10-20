@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import Stripe from "stripe";
 
 import { getDb } from "@/server/db";
 import { payments } from "@/server/db/schema";
@@ -35,7 +36,18 @@ export async function POST(request: Request) {
     return Response.json({ received: true });
   }
 
-  const intent = await stripe.paymentIntents.retrieve(event.data.object.id);
+  let intent;
+
+  try {
+    intent = await stripe.paymentIntents.retrieve(event.data.object.id);
+  } catch (error) {
+    // An intent Stripe doesn't know can never sync; acknowledge so Stripe stops retrying.
+    if (error instanceof Stripe.errors.StripeInvalidRequestError && error.code === "resource_missing") {
+      return Response.json({ received: true });
+    }
+    throw error;
+  }
+
   const db = getDb();
   const [payment] = await db
     .insert(payments)
