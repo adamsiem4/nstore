@@ -10,7 +10,6 @@ reviews:
     - "!bun.lock"
     - "!drizzle/meta/**"
     - "!public/**"
-    - "!assets/**"
     - "!.claude/**"
     - "!skills-lock.json"
   tools:
