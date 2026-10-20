@@ -2,12 +2,6 @@
 
 # Claude Code Instructions
 
-## Git
-
-Never stage, commit, push, merge, rebase, or create PRs.
-Only edit files and inspect Git state.
-The user handles all Git write operations manually.
-
 ## Workflow
 
 Before implementing a non-trivial change:

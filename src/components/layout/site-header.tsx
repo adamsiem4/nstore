@@ -2,13 +2,13 @@ import type { CSSProperties } from "react";
 import { Show, UserAvatar } from "@clerk/nextjs";
 import { SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
 import Link from "next/link";
-import { CartSheet } from "@/components/store/cart";
-import { CartDrawer, CartLink } from "@/components/store/cart-drawer";
+import { CartSheet } from "@/components/cart/cart";
+import { CartDrawer, CartLink } from "@/components/cart/cart-drawer";
 import { Input } from "@/components/ui/input";
 import { PillButton, pillButtonVariants } from "@/components/ui/pill-button";
 import { suggest, totals } from "@/lib/cart";
 import { cn } from "@/lib/utils";
-import { getCartLines } from "@/server/cart-lines";
+import { getCartLines } from "@/server/queries/cart";
 import { getProducts } from "@/server/queries/products";
 
 const categories = [

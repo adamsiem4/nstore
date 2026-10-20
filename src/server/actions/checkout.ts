@@ -5,10 +5,10 @@ import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { SHIPPING_COUNTRIES, toLineItems, totals } from "@/lib/cart";
-import { getCartLines } from "@/server/cart-lines";
+import { getCartLines } from "@/server/queries/cart";
 import { getDb } from "@/server/db";
 import { addresses } from "@/server/db/schema";
-import { getStripe } from "@/server/stripe";
+import { getStripe } from "@/server/services/stripe";
 
 /**
  * The user's Stripe customer, carrying their default address so Checkout

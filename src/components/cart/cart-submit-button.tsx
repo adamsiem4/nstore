@@ -4,10 +4,10 @@ import { CheckIcon, LoaderCircleIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
 import { type ComponentProps, startTransition, useEffect, useState } from "react";
-import { openCart } from "@/components/store/cart-drawer";
+import { openCart } from "@/components/cart/cart-drawer";
 import { SoftPillButton } from "@/components/ui/pill-button";
 import { cn } from "@/lib/utils";
-import { addToCart } from "@/server/cart";
+import { addToCart } from "@/server/actions/cart";
 
 /** Enhances a native cart form with pending, success, and failure feedback. */
 export function CartSubmitButton({

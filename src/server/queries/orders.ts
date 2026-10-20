@@ -1,7 +1,7 @@
 import { and, desc, eq, ilike, inArray } from "drizzle-orm";
 import { getDb } from "@/server/db";
 import { payments, products } from "@/server/db/schema";
-import { getStripe } from "@/server/stripe";
+import { getStripe } from "@/server/services/stripe";
 
 export type Order = Awaited<ReturnType<typeof getOrders>>[number];
 

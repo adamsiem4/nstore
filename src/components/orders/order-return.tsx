@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { PillButton } from "@/components/ui/pill-button";
-import { requestOrderReturn } from "@/server/returns";
+import { requestOrderReturn } from "@/server/actions/returns";
 
 export function OrderReturn({
   orderId,

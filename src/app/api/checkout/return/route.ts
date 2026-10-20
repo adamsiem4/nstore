@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { CART_COOKIE } from "@/lib/cart";
-import { getStripe } from "@/server/stripe";
+import { getStripe } from "@/server/services/stripe";
 
 /** Clear the cart only after Stripe confirms payment. */
 export async function GET(request: Request) {

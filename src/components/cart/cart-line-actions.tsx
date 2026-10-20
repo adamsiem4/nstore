@@ -7,7 +7,7 @@ import { useFormStatus } from "react-dom";
 import { PillButton } from "@/components/ui/pill-button";
 import { cn } from "@/lib/utils";
 import { MAX_QTY } from "@/lib/cart";
-import { clearCart, updateCart } from "@/server/cart";
+import { clearCart, updateCart } from "@/server/actions/cart";
 
 /**
  * Stepper button that reports its own form's pending state: the icon swaps for

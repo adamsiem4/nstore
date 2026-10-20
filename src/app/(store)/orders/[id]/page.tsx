@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { AccountShell } from "@/components/layout/account-shell";
-import { OrderItem, orderDate, orderMoney } from "@/components/store/order-item";
-import { OrderReturn } from "@/components/store/order-return";
+import { OrderItem, orderDate, orderMoney } from "@/components/orders/order-item";
+import { OrderReturn } from "@/components/orders/order-return";
 import { Badge } from "@/components/ui/badge";
 import { getOrders } from "@/server/queries/orders";
 

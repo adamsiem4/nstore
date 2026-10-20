@@ -2,8 +2,8 @@ import { eq } from "drizzle-orm";
 
 import { getDb } from "@/server/db";
 import { payments } from "@/server/db/schema";
-import { sendEmail } from "@/server/resend";
-import { getStripe } from "@/server/stripe";
+import { sendEmail } from "@/server/services/resend";
+import { getStripe } from "@/server/services/stripe";
 
 export async function POST(request: Request) {
   const signature = request.headers.get("stripe-signature");

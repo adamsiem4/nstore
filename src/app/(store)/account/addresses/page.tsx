@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AccountShell } from "@/components/layout/account-shell";
 import { Badge } from "@/components/ui/badge";
-import { deleteAddress, setDefaultAddress } from "@/server/addresses";
+import { deleteAddress, setDefaultAddress } from "@/server/actions/addresses";
 import { getDb } from "@/server/db";
 import { addresses } from "@/server/db/schema";
 

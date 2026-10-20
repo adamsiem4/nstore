@@ -7,8 +7,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { DragRow } from "@/components/store/drag-row";
-import { ProductCard } from "@/components/store/product-card";
+import { DragRow } from "@/components/ui/drag-row";
+import { ProductCard } from "@/components/products/product-card";
 import { pillButtonVariants } from "@/components/ui/pill-button";
 import { getProducts } from "@/server/queries/products";
 

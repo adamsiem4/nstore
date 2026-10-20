@@ -1,9 +1,9 @@
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { CartSubmitButton } from "@/components/store/cart-submit-button";
+import { CartSubmitButton } from "@/components/cart/cart-submit-button";
 import { money } from "@/lib/utils";
-import { updateCart } from "@/server/cart";
+import { updateCart } from "@/server/actions/cart";
 import type { Product } from "@/types/product";
 
 /**

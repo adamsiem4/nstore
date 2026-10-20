@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ThemePicker } from "@/components/theme-picker";
+import { ThemePicker } from "@/components/layout/theme-picker";
 
 const columns = [
   {

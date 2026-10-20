@@ -5,7 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CaptureEvent } from "@/components/analytics/capture-event";
 import { pillButtonVariants } from "@/components/ui/pill-button";
-import { getStripe } from "@/server/stripe";
+import { getStripe } from "@/server/services/stripe";
 
 export const metadata: Metadata = { title: "Order confirmed" };
 

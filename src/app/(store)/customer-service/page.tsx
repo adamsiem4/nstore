@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HelpCenter, type HelpTopic } from "@/components/store/help-center";
+import { HelpCenter, type HelpTopic } from "@/components/help/help-center";
 import { SHIPPING_COUNTRIES } from "@/lib/cart";
 import { getProducts } from "@/server/queries/products";
 

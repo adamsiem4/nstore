@@ -7,7 +7,7 @@ import { AccountShell } from "@/components/layout/account-shell";
 import { Input } from "@/components/ui/input";
 import { PillButton, pillButtonVariants } from "@/components/ui/pill-button";
 import { SHIPPING_COUNTRIES } from "@/lib/cart";
-import { saveAddress } from "@/server/addresses";
+import { saveAddress } from "@/server/actions/addresses";
 import { getDb } from "@/server/db";
 import { addresses } from "@/server/db/schema";
 

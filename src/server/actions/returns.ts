@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { refresh } from "next/cache";
-import { getStripe } from "@/server/stripe";
+import { getStripe } from "@/server/services/stripe";
 
 type ReturnState = { requested: boolean; error?: string };
 

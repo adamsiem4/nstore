@@ -38,6 +38,31 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 - Drizzle's Neon HTTP driver for PostgreSQL access
 - Signed Stripe webhooks as the source of truth for payment state
 
+## Project structure
+
+```text
+src/
+  app/                  App Router: (store) pages, api/ route handlers, sign-in/up
+  components/
+    ui/                 shadcn/ui primitives and in-house UI (pill button, drag row)
+    layout/             header, footer, account shell, theme picker
+    cart/ orders/ products/ help/
+                        feature components
+    analytics/ consent/ PostHog identity and cookie consent
+  lib/                  shared helpers: cart math, consent, formatting
+  server/
+    actions/            Server Actions ("use server")
+    queries/            server-only reads
+    services/           Stripe and Resend clients
+    db/                 Drizzle client, schema, and seed data
+  types/
+tests/                  bun test suites, mirroring src/
+drizzle/                generated SQL migrations
+public/
+  icons/                favicons and manifest icons; replace files in place
+  products/             catalog renders
+```
+
 ## Implemented
 
 - Responsive landing page with keyboard navigation and reduced-motion support
@@ -103,7 +128,7 @@ order — copy it and fill in. Where each value comes from:
 | `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | resend.com > API keys; sender on a verified domain |
 | `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN`, `NEXT_PUBLIC_POSTHOG_HOST` | app.posthog.com > Settings > Project |
 | `NEXT_PUBLIC_SENTRY_DSN` | sentry.io > project > Client Keys (DSN) |
-| `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` | sentry.io; only needed to upload source maps |
+| `SENTRY_AUTH_TOKEN` | sentry.io > Settings > Auth Tokens; only needed to upload source maps (org and project are set in `next.config.ts`) |
 
 Every value is optional except Clerk and `DATABASE_URL`: an empty variable
 disables its integration, and server code throws a named error instead of
@@ -139,7 +164,7 @@ in sync, run the checks above, and smoke-test the production storefront and cart
 - Schema changes: edit the schema → `bun run db:generate` → review SQL in `drizzle/` → `bun run db:migrate`
 - Catalog changes: edit `src/server/db/seed/*` → `bun run db:seed`; it replaces `products` and `product_details` in one transaction, leaving payments untouched
 - Browse data: `bun run db:studio`
-- `bun run test` reads the seeded database
+- `bun run test` loads `.env.local`; the query suites read the seeded database
 
 Add shadcn/ui components with:
 
@@ -147,9 +172,7 @@ Add shadcn/ui components with:
 bunx --bun shadcn@latest add button
 ```
 
-The generated components import `cn` from `@/lib/utils`; that helper was
-removed with the unused button, so restore it (and `clsx` plus
-`tailwind-merge`) when adding the first component.
+The generated components import `cn` from `@/lib/utils`.
 
 For Stripe, register `/api/webhooks/stripe` and subscribe to
 `payment_intent.*` events.

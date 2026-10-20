@@ -3,8 +3,8 @@ import { ChevronRightIcon, PackageIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AccountShell } from "@/components/layout/account-shell";
-import { OrderItem, orderDate, orderMoney } from "@/components/store/order-item";
-import { OrderList } from "@/components/store/order-list";
+import { OrderItem, orderDate, orderMoney } from "@/components/orders/order-item";
+import { OrderList } from "@/components/orders/order-list";
 import { pillButtonVariants } from "@/components/ui/pill-button";
 import { getOrders } from "@/server/queries/orders";
 

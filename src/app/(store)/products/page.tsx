@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CaptureEvent } from "@/components/analytics/capture-event";
-import { ProductGrid } from "@/components/store/product-grid";
+import { ProductGrid } from "@/components/products/product-grid";
 import { getProducts } from "@/server/queries/products";
 
 export const metadata: Metadata = {

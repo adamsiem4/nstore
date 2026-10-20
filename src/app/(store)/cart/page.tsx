@@ -1,10 +1,10 @@
 import { ShoppingBagIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CartLineList, CartSuggestions, CartSummary, ShippingProgress } from "@/components/store/cart";
+import { CartLineList, CartSuggestions, CartSummary, ShippingProgress } from "@/components/cart/cart";
 import { pillButtonVariants } from "@/components/ui/pill-button";
 import { suggest, totals } from "@/lib/cart";
-import { getCartLines } from "@/server/cart-lines";
+import { getCartLines } from "@/server/queries/cart";
 import { getProducts } from "@/server/queries/products";
 
 export const metadata: Metadata = { title: "My cart" };

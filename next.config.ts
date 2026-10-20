@@ -7,7 +7,13 @@ const nextConfig: NextConfig = {
 };
 
 export default withSentryConfig(nextConfig, {
-  silent: true,
-  sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN },
+  org: "adp-g6",
+  project: "nstore",
+  silent: !process.env.CI,
   telemetry: false,
+  widenClientFileUpload: true,
+  webpack: {
+    automaticVercelMonitors: true,
+    treeshake: { removeDebugLogging: true },
+  },
 });
