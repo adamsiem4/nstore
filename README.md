@@ -136,6 +136,11 @@ failing silently.
 
 ## Development
 
+Use Node.js 24 LTS (24.22.1, pinned in `.node-version`) and Bun 1.4.4.
+Node is the Next.js runtime; Bun is the only package manager. `package.json`
+declares the supported runtime versions and pins the package-manager version.
+If using fnm, run `fnm install` and `fnm use` to select the pinned Node version.
+
 ```bash
 bun install
 bun run db:migrate
@@ -156,6 +161,14 @@ Dependency updates use `bun update` for existing version ranges. Update pinned
 Next.js and `eslint-config-next` together, and React and React DOM together;
 major-version migrations are separate work. Keep `package.json` and `bun.lock`
 in sync, run the checks above, and smoke-test the production storefront and cart.
+
+The latest dependency refresh uses Next.js and `eslint-config-next` 16.4.3,
+React and React DOM 19.3.1, and Node 24 type definitions. Clerk, Sentry, Lucide,
+PostHog, Resend, shadcn, and cn are also updated. Stripe stays on 22.x because
+23.x changes its API contract; ESLint stays on 9.x because the React, import,
+and accessibility plugins do not declare ESLint 10 support. TypeScript stays
+on 5.9.x rather than taking a compiler-major migration; TypeScript 7 is outside
+the current typescript-eslint peer range.
 
 ## Database
 
