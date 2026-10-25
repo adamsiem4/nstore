@@ -28,7 +28,7 @@ export default function CookiesPage() {
           What we store
         </h2>
         <div className="mt-4 overflow-x-auto rounded-xl border">
-          <table className="w-full min-w-[48rem] border-collapse text-left text-sm">
+          <table className="w-full min-w-3xl border-collapse text-left text-sm">
             <caption className="sr-only">Cookies and local storage used by nstore</caption>
             <thead className="bg-muted/60">
               <tr>

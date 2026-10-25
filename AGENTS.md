@@ -8,43 +8,46 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-## Git
-
-Never stage, commit, push, merge, rebase, or create PRs.
-Only edit files and inspect Git state.
-The user handles all Git write operations manually.
-
 # NStore
 
-NStore is a portfolio-grade full-stack e-commerce application.
+Portfolio-grade full-stack e-commerce app: Next.js App Router, React, TypeScript, Tailwind CSS v4, shadcn/ui, Clerk, Neon Postgres with Drizzle ORM, Stripe, PostHog, Sentry, Resend, deployed on Vercel. Exact versions live in `package.json`.
 
-## Stack
+## Git
 
-- Next.js App Router
-- TypeScript
-- Bun
-- Tailwind CSS
-- shadcn/ui
-- Clerk
-- PostgreSQL on Neon
-- Drizzle ORM
-- Stripe
-- PostHog
-- Sentry
-- Resend
-- Vercel
+The user owns every Git write. Agents edit files and inspect Git state only: never stage, commit, push, merge, rebase, or open PRs.
 
-Always check `package.json` for exact installed versions before using framework-specific APIs.
+## Latest idioms
 
-## Package Manager
+Write for the versions installed in `package.json`, using each library's current idiom:
 
-Use Bun only.
+- **Next.js**: read the matching guide in `node_modules/next/dist/docs/` before using an API (e.g. this version uses `src/proxy.ts`, which replaced `middleware.ts`).
+- **Tailwind CSS v4**: use the built-in utility whenever one covers an arbitrary value (`scrollbar-none` over `[scrollbar-width:none]`, `data-stuck:` over `data-[stuck]:`, `min-w-3xl` over `min-w-[48rem]`). Apply the IDE's canonical-class suggestions.
+- **Deprecations**: a deprecation warning from lint, tsc, build, or the IDE is a bug; migrate to the replacement.
+- **New dependencies**: add one only when the installed stack cannot reasonably do the job, with `bun add <pkg>@latest`.
+
+## Workflow
+
+1. Search the project for an existing component, utility, type, query, or pattern before writing a new one; reuse it and follow its conventions.
+2. Make the smallest coherent change: edit existing files, add abstractions only when the task needs them, refactor at scale only when required.
+3. Verify (below).
+
+## Server and client
+
+- Default to Server Components; keep `"use client"` boundaries small.
+- Keep database access, secrets, Stripe server logic, authorization, and business logic on the server.
+- Use Route Handlers only for real HTTP endpoints, such as webhooks.
+
+## Tooling
+
+Bun only: `bun install`, `bun add`, `bunx`, `bun run <script>`. Scripts are in `package.json`.
+
+## Verification
+
+After a change, run these and fix until all pass:
 
 ```bash
-bun install
-bun add <package>
-bun add -d <package>
-bun dev
 bun run lint
+bunx tsc --noEmit
+bun run test
 bun run build
 ```

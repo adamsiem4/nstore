@@ -198,7 +198,7 @@ export function CartSuggestions({
       <h2 className="text-xs font-semibold tracking-[0.14em] uppercase">{heading}</h2>
       {/* The home page's snap row; container widths, because the drawer and
           the page give it very different room. */}
-      <DragRow className="-m-2 mt-2 grid snap-x snap-mandatory auto-cols-[62%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain scroll-p-2 p-2 [scrollbar-width:none] @sm:auto-cols-[46%] @2xl:auto-cols-[31%] @4xl:auto-cols-[calc((100%-2.25rem)/4)] [&::-webkit-scrollbar]:hidden">
+      <DragRow className="-m-2 mt-2 grid snap-x snap-mandatory auto-cols-[62%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain scroll-p-2 p-2 scrollbar-none @sm:auto-cols-[46%] @2xl:auto-cols-[31%] @4xl:auto-cols-[calc((100%-2.25rem)/4)] [&::-webkit-scrollbar]:hidden">
         {products.map((product) => (
           <li key={product.id} className="snap-start">
             <ProductCard product={product} source="cart_suggestion" />

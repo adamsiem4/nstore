@@ -118,7 +118,7 @@ export default async function HomePage() {
             keyboard come free from the overflow container; DragRow only adds
             mouse drag. The -m-2/p-2 pair keeps the card ring from clipping
             without moving the row. */}
-        <DragRow className="-m-2 grid snap-x snap-mandatory auto-cols-[78%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain scroll-p-2 p-2 [scrollbar-width:none] sm:auto-cols-[45%] sm:gap-4 lg:auto-cols-[calc((100%-3rem)/4)] [&::-webkit-scrollbar]:hidden">
+        <DragRow className="-m-2 grid snap-x snap-mandatory auto-cols-[78%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain scroll-p-2 p-2 scrollbar-none sm:auto-cols-[45%] sm:gap-4 lg:auto-cols-[calc((100%-3rem)/4)] [&::-webkit-scrollbar]:hidden">
           {products.slice(0, 8).map((product) => (
             <li key={product.id} className="snap-start">
               <ProductCard product={product} />

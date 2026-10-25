@@ -53,7 +53,7 @@ export function StickyHeader({ children }: { children: ReactNode }) {
           if (menu instanceof HTMLInputElement && (event.target as Element).closest("a")) menu.checked = false;
         }}
         data-stuck={stuck || undefined}
-        className="group/header sticky top-2 z-40 rounded-xl border py-2 pr-[5px] pl-5 transition-shadow duration-300 ease-out before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-card/80 before:backdrop-blur-md before:content-[''] sm:top-3 sm:py-3 sm:pl-8 lg:pl-10 data-[stuck]:shadow-lg"
+        className="group/header sticky top-2 z-40 rounded-xl border py-2 pr-1.25 pl-5 transition-shadow duration-300 ease-out before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-card/80 before:backdrop-blur-md before:content-[''] sm:top-3 sm:py-3 sm:pl-8 lg:pl-10 data-stuck:shadow-lg"
       >
         {children}
       </header>
