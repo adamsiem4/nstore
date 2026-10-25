@@ -5,6 +5,11 @@
   "scss.lint.unknownAtRules": "ignore",
   "less.lint.unknownAtRules": "ignore",
   "files.associations": {
-    "*.css": "tailwindcss"
-  }
+    "*.css": "tailwindcss",
+    // Bun writes its lockfile as JSONC (trailing commas), not strict JSON.
+    "bun.lock": "jsonc"
+  },
+  "json.schemas": [
+    { "fileMatch": ["bun.lock"], "schema": { "allowTrailingCommas": true } }
+  ]
 }

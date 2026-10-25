@@ -79,7 +79,7 @@ export default async function HomePage() {
             className={pillButtonVariants({
               variant: "outline",
               // dark: overrides exist because the outline variant ships its
-              // own dark:border-input / dark:bg-input fills; tailwind-merge
+              // own dark:border-input / dark:bg-input fills; cn
               // keeps the last class per property, so these win.
               className: "h-12 w-full gap-3 border-hero-line bg-transparent px-6 text-sm text-hero-ink hover:bg-hero-ink/10 hover:text-hero-ink focus-visible:ring-hero-cta focus-visible:ring-offset-2 focus-visible:ring-offset-transparent min-[420px]:w-auto dark:border-hero-line dark:bg-transparent dark:hover:bg-hero-ink/10",
             })}
