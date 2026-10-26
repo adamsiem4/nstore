@@ -164,8 +164,9 @@ major-version migrations are separate work. Keep `package.json` and `bun.lock`
 in sync, run the checks above, and smoke-test the production storefront and cart.
 
 The latest dependency refresh uses Next.js and `eslint-config-next` 16.4.3,
-React and React DOM 19.3.1, and Node 24 type definitions. Clerk, Sentry, Lucide,
-PostHog, Resend, shadcn, and cn are also updated. Stripe stays on 22.x because
+React and React DOM 19.3.1, Node 24 type definitions, and `posthog-js` 1.438.23.
+Compatible transitive dependencies were refreshed without changing lifecycle-script trust.
+Clerk, Sentry, Lucide, Resend, shadcn, and cn are also updated. Stripe stays on 22.x because
 23.x changes its API contract; ESLint stays on 9.x because the React, import,
 and accessibility plugins do not declare ESLint 10 support. TypeScript stays
 on 5.9.x rather than taking a compiler-major migration; TypeScript 7 is outside
