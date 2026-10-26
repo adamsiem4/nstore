@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/cart/cart";
 import { ProductCard } from "@/components/products/product-card";
+import {
+  ProductDetailSkeleton,
+  RelatedProductsSkeleton,
+} from "@/components/products/product-detail-skeleton";
+import { ProductImage } from "@/components/products/product-image";
 import { money } from "@/lib/utils";
 import { getProductDetails } from "@/server/queries/product-details";
 import { getProduct, getProducts } from "@/server/queries/products";
@@ -28,16 +33,20 @@ const sectionHeadingClass = "text-xs font-semibold tracking-[0.14em] uppercase";
 
 export default async function ProductPage(props: PageProps<"/products/[slug]">) {
   const { slug } = await props.params;
-  const [product, details, catalog] = await Promise.all([
+
+  return (
+    <Suspense key={slug} fallback={<ProductDetailSkeleton />}>
+      <ProductContent slug={slug} />
+    </Suspense>
+  );
+}
+
+async function ProductContent({ slug }: { slug: string }) {
+  const [product, details] = await Promise.all([
     getProduct(slug),
     getProductDetails(slug),
-    getProducts(),
   ]);
   if (!product || !details) notFound();
-
-  const related = catalog
-    .filter((item) => item.category === product.category && item.id !== product.id)
-    .slice(0, 3);
 
   return (
     <>
@@ -68,14 +77,14 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
           stays a two-column lockup and the detail sheet runs full width under
           it — a pinned gallery column would just hold a hole open. */}
       <article className="mt-6 grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
-        <Image
+        <ProductImage
           src={product.image}
           alt={product.name}
           width={1536}
           height={1536}
           sizes="(max-width: 1023px) 100vw, 50vw"
           preload
-          className="aspect-square w-full rounded-xl bg-product-shot object-cover"
+          className="aspect-square w-full rounded-xl"
         />
 
         <div>
@@ -171,23 +180,42 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
         </div>
       </section>
 
-      {related.length > 0 && (
-        <section aria-labelledby="related-heading" className="mt-12 border-t pt-10 sm:mt-16">
-          <h2
-            id="related-heading"
-            className="text-2xl font-semibold tracking-tight sm:text-3xl"
-          >
-            More in {product.category.toLowerCase()}
-          </h2>
-          <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((item) => (
-              <li key={item.id}>
-                <ProductCard product={item} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <Suspense fallback={<RelatedProductsSkeleton category={product.category} />}>
+        <RelatedProducts category={product.category} productId={product.id} />
+      </Suspense>
     </>
+  );
+}
+
+async function RelatedProducts({
+  category,
+  productId,
+}: {
+  category: string;
+  productId: string;
+}) {
+  const catalog = await getProducts();
+  const related = catalog
+    .filter((item) => item.category === category && item.id !== productId)
+    .slice(0, 3);
+
+  if (related.length === 0) return null;
+
+  return (
+    <section aria-labelledby="related-heading" className="mt-12 border-t pt-10 sm:mt-16">
+      <h2
+        id="related-heading"
+        className="text-2xl font-semibold tracking-tight sm:text-3xl"
+      >
+        More in {category.toLowerCase()}
+      </h2>
+      <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {related.map((item) => (
+          <li key={item.id}>
+            <ProductCard product={item} />
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

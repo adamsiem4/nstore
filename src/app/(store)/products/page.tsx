@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { CaptureEvent } from "@/components/analytics/capture-event";
 import { ProductGrid } from "@/components/products/product-grid";
+import { ProductResultsSkeleton } from "@/components/products/product-listing-skeleton";
 import { getProducts } from "@/server/queries/products";
 
 export const metadata: Metadata = {
@@ -14,6 +16,24 @@ export default async function ProductsPage({
 }: PageProps<"/products">) {
   const { q } = await searchParams;
   const query = typeof q === "string" ? q : undefined;
+  const suspenseKey = query ?? "";
+
+  return (
+    <>
+      <p className="text-sm font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+        Home appliances &amp; household goods
+      </p>
+      <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+        {query ? "Find your everyday." : "A little better, every day."}
+      </h1>
+      <Suspense key={suspenseKey} fallback={<ProductResultsSkeleton query={query} />}>
+        <ProductResults query={query} />
+      </Suspense>
+    </>
+  );
+}
+
+async function ProductResults({ query }: { query?: string }) {
   const products = await getProducts(query);
 
   return (
@@ -21,12 +41,6 @@ export default async function ProductsPage({
       {query && (
         <CaptureEvent event="Products Searched" properties={{ query, results: products.length }} />
       )}
-      <p className="text-sm font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-        Home appliances &amp; household goods
-      </p>
-      <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-        {query ? "Find your everyday." : "A little better, every day."}
-      </h1>
       <p className="mt-3 text-lg text-muted-foreground">
         {products.length} {products.length === 1 ? "product" : "products"}
         {query ? ` matching “${query}”` : ""}
@@ -43,3 +57,4 @@ export default async function ProductsPage({
     </>
   );
 }
+

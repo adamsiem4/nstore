@@ -69,6 +69,7 @@ public/
 - Searchable 50-product catalog, and product pages with key details, a specification table, materials, box contents, and care
 - Six household categories with original 1536×1536, text-free 3D product renders
 - Shared storefront layout and shadcn/ui configuration
+- Responsive, theme-aware skeletons for catalog/search, cart, account/addresses, orders, and checkout validation; static content and navigation stream immediately, product images resolve independently, and pulses respect reduced motion. Unknown row counts use representative placeholders; Clerk retains control of its internal loading UI.
 - Product-card quick-add with animated purple success/red error feedback, a slide-out cart drawer, cookie-backed `/cart`, quantity controls, a free-shipping countdown, in-cart suggestions, and order summary
 - Stripe hosted checkout with delivery addresses (a signed-in user's default saved address pre-fills it via a Stripe customer whose id lives in Clerk private metadata) and paid-return cart clearing
 - Clerk sign-in, sign-up, a protected Amazon-style `/account` hub (cards with sub-links for orders, login & security, addresses, plus sign out) that the desktop avatar and the mobile menu link to; Clerk profile at `/account/profile` and security at `/account/profile/security` restyled to match the store; an `/account/addresses` book (add, edit, remove, one default enforced by a partial unique index); and a signed-in `/orders` history built from webhook-recorded payments

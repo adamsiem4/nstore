@@ -1,5 +1,5 @@
 import { PlusIcon } from "lucide-react";
-import Image from "next/image";
+import { ProductImage } from "@/components/products/product-image";
 import Link from "next/link";
 import { CartSubmitButton } from "@/components/cart/cart-submit-button";
 import { money } from "@/lib/utils";
@@ -51,7 +51,7 @@ export function ProductCard({
         {/* The shot's own backdrop is --product-shot and so is the tile, in
             both modes — the image dissolves into it and only the corner
             radius shows. */}
-        <Image
+        <ProductImage
           src={product.image}
           alt={product.name}
           width={1536}

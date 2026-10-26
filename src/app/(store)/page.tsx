@@ -7,14 +7,15 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { DragRow } from "@/components/ui/drag-row";
 import { ProductCard } from "@/components/products/product-card";
+import { ProductCardSkeleton } from "@/components/products/product-card-skeleton";
 import { pillButtonVariants } from "@/components/ui/pill-button";
+import { LoadingRegion, Skeleton } from "@/components/ui/skeleton";
 import { getProducts } from "@/server/queries/products";
 
-export default async function HomePage() {
-  const products = await getProducts();
-  const categories = [...new Set(products.map((product) => product.category))];
+export default function HomePage() {
 
   return (
     <>
@@ -118,13 +119,9 @@ export default async function HomePage() {
             keyboard come free from the overflow container; DragRow only adds
             mouse drag. The -m-2/p-2 pair keeps the card ring from clipping
             without moving the row. */}
-        <DragRow className="-m-2 grid snap-x snap-mandatory auto-cols-[78%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain scroll-p-2 p-2 scrollbar-none sm:auto-cols-[45%] sm:gap-4 lg:auto-cols-[calc((100%-3rem)/4)] [&::-webkit-scrollbar]:hidden">
-          {products.slice(0, 8).map((product) => (
-            <li key={product.id} className="snap-start">
-              <ProductCard product={product} />
-            </li>
-          ))}
-        </DragRow>
+        <Suspense fallback={<FeaturedProductsSkeleton />}>
+          <FeaturedProducts />
+        </Suspense>
       </section>
 
       <section aria-labelledby="categories-heading" className="rounded-xl bg-muted/60 p-5 sm:p-8">
@@ -134,22 +131,9 @@ export default async function HomePage() {
         <p className="mt-2 text-sm leading-6 text-muted-foreground sm:text-base">
           From the first coffee to the last load of laundry. Where shall we start?
         </p>
-        <ul className="mt-5 flex flex-wrap gap-2">
-          {categories.map((category) => (
-            <li key={category}>
-              <Link
-                href={`/products?q=${encodeURIComponent(category)}`}
-                className={pillButtonVariants({
-                  variant: "outline",
-                  className: "h-11 gap-3 px-4 focus-visible:ring-foreground",
-                })}
-              >
-                {category}
-                <ArrowRightIcon aria-hidden="true" />
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <Suspense fallback={<CategoryLinksSkeleton />}>
+          <CategoryLinks />
+        </Suspense>
       </section>
 
       <ul aria-label="Shopping with nstore" className="mt-10 grid gap-5 border-t pt-8 sm:mt-12 sm:grid-cols-3 sm:gap-6">
@@ -171,10 +155,99 @@ export default async function HomePage() {
           <SparklesIcon aria-hidden="true" className="size-5 shrink-0" />
           <div>
             <p className="text-sm font-medium">Small upgrades. Big smiles.</p>
-            <p className="mt-1 text-sm text-muted-foreground">{products.length} everyday essentials to explore</p>
+            <Suspense fallback={<CatalogCountSkeleton />}>
+              <CatalogCount />
+            </Suspense>
           </div>
         </li>
       </ul>
     </>
+  );
+}
+
+const featuredRowClass =
+  "-m-2 grid snap-x snap-mandatory auto-cols-[78%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain scroll-p-2 p-2 scrollbar-none sm:auto-cols-[45%] sm:gap-4 lg:auto-cols-[calc((100%-3rem)/4)] [&::-webkit-scrollbar]:hidden";
+
+async function FeaturedProducts() {
+  const products = await getProducts();
+
+  return (
+    <DragRow className={featuredRowClass}>
+      {products.slice(0, 8).map((product) => (
+        <li key={product.id} className="snap-start">
+          <ProductCard product={product} />
+        </li>
+      ))}
+    </DragRow>
+  );
+}
+
+function FeaturedProductsSkeleton() {
+  return (
+    <LoadingRegion label="Loading featured products">
+      <ul className={featuredRowClass}>
+        {Array.from({ length: 4 }, (_, index) => (
+          <li key={index} className="snap-start">
+            <ProductCardSkeleton />
+          </li>
+        ))}
+      </ul>
+    </LoadingRegion>
+  );
+}
+
+async function CategoryLinks() {
+  const products = await getProducts();
+  const categories = [...new Set(products.map((product) => product.category))];
+
+  return (
+    <ul className="mt-5 flex flex-wrap gap-2">
+      {categories.map((category) => (
+        <li key={category}>
+          <Link
+            href={`/products?q=${encodeURIComponent(category)}`}
+            className={pillButtonVariants({
+              variant: "outline",
+              className: "h-11 gap-3 px-4 focus-visible:ring-foreground",
+            })}
+          >
+            {category}
+            <ArrowRightIcon aria-hidden="true" />
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function CategoryLinksSkeleton() {
+  return (
+    <LoadingRegion label="Loading product categories">
+      <ul className="mt-5 flex flex-wrap gap-2">
+        {["w-28", "w-36", "w-24", "w-32", "w-28", "w-36"].map((width, index) => (
+          <li key={index}>
+            <Skeleton className={`h-11 rounded-full ${width}`} />
+          </li>
+        ))}
+      </ul>
+    </LoadingRegion>
+  );
+}
+
+async function CatalogCount() {
+  const products = await getProducts();
+
+  return (
+    <p className="mt-1 text-sm text-muted-foreground">
+      {products.length} everyday essentials to explore
+    </p>
+  );
+}
+
+function CatalogCountSkeleton() {
+  return (
+    <LoadingRegion label="Loading catalog size" className="mt-1">
+      <Skeleton className="h-5 w-48 max-w-full" />
+    </LoadingRegion>
   );
 }

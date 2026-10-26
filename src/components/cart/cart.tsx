@@ -1,5 +1,5 @@
 import { MinusIcon, PlusIcon } from "lucide-react";
-import Image from "next/image";
+import { ProductImage } from "@/components/products/product-image";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { ClearCartButton, QuantityButton, RemoveLineButton } from "@/components/cart/cart-line-actions";
@@ -82,7 +82,7 @@ export function CartLineList({ lines, className }: { lines: CartLine[]; classNam
           <li key={product.id} className="flex gap-4 py-4">
             {/* Same destination as the name beside it; one tab stop is enough. */}
             <Link href={`/products/${product.id}`} tabIndex={-1} aria-hidden="true" className="shrink-0">
-              <Image
+              <ProductImage
                 src={product.image}
                 alt=""
                 width={256}

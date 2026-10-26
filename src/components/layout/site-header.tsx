@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { cache, Suspense, type CSSProperties } from "react";
 import { Show, UserAvatar } from "@clerk/nextjs";
 import { SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
 import Link from "next/link";
@@ -6,6 +6,7 @@ import { CartSheet } from "@/components/cart/cart";
 import { CartDrawer, CartLink } from "@/components/cart/cart-drawer";
 import { Input } from "@/components/ui/input";
 import { PillButton, pillButtonVariants } from "@/components/ui/pill-button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { suggest, totals } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 import { getCartLines } from "@/server/queries/cart";
@@ -47,16 +48,49 @@ const TAIL = [
   { letter: "e", in: 100, out: 350 },
 ];
 
-/** Store name, centered catalog nav, icon cluster — the sticky panel's row. */
-export async function SiteHeader() {
-  const [lines, catalog] = await Promise.all([getCartLines(), getProducts()]);
-  const { count } = totals(lines);
-  const cartLabel = `Cart, ${count} item${count === 1 ? "" : "s"}`;
-  const badge = count > 0 ? (
+const getHeaderCart = cache(getCartLines);
+
+function CartControl({ count, mobile = false }: { count?: number; mobile?: boolean }) {
+  const badge = count === undefined ? (
+    <Skeleton className="size-4 rounded-full bg-primary/15" />
+  ) : count > 0 ? (
     <span aria-hidden="true" className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-none font-medium text-primary-foreground tabular-nums">
       {count > 9 ? "9+" : count}
     </span>
   ) : null;
+
+  return (
+    <CartLink
+      aria-label={count === undefined ? "Cart, loading item count" : `Cart, ${count} item${count === 1 ? "" : "s"}`}
+      aria-busy={count === undefined}
+      className={mobile
+        ? cn(navLinkClass, "gap-2 normal-case tracking-normal text-foreground")
+        : pillButtonVariants({ variant: "ghost", size: "icon-lg", className: "relative size-10 focus-visible:ring-foreground" })}
+    >
+      <ShoppingBagIcon aria-hidden="true" />
+      {mobile && "Cart"}
+      {mobile ? badge : badge && <span className="absolute right-0 bottom-0.5">{badge}</span>}
+    </CartLink>
+  );
+}
+
+async function HeaderCartControl({ mobile = false }: { mobile?: boolean }) {
+  const { count } = totals(await getHeaderCart());
+  return <CartControl count={count} mobile={mobile} />;
+}
+
+async function HeaderCartDrawer() {
+  const [lines, catalog] = await Promise.all([getHeaderCart(), getProducts()]);
+
+  return (
+    <CartDrawer count={totals(lines).count}>
+      <CartSheet lines={lines} picks={suggest(lines, catalog)} />
+    </CartDrawer>
+  );
+}
+
+/** Static navigation stays available while cart data streams independently. */
+export function SiteHeader() {
 
   return (
     <div className="flex items-center gap-x-1 sm:gap-x-2">
@@ -171,13 +205,9 @@ export async function SiteHeader() {
           </form>
         </div>
 
-        <CartLink
-          aria-label={cartLabel}
-          className={pillButtonVariants({ variant: "ghost", size: "icon-lg", className: "relative size-10 focus-visible:ring-foreground" })}
-        >
-          <ShoppingBagIcon aria-hidden="true" />
-          {badge && <span className="absolute right-0 bottom-0.5">{badge}</span>}
-        </CartLink>
+        <Suspense fallback={<CartControl />}>
+          <HeaderCartControl />
+        </Suspense>
         <Show when="signed-out">
           <Link
             href="/sign-in"
@@ -264,14 +294,9 @@ export async function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-1 border-t pt-2">
-            <CartLink
-              aria-label={cartLabel}
-              className={cn(navLinkClass, "gap-2 normal-case tracking-normal text-foreground")}
-            >
-              <ShoppingBagIcon aria-hidden="true" />
-              Cart
-              {badge}
-            </CartLink>
+            <Suspense fallback={<CartControl mobile />}>
+              <HeaderCartControl mobile />
+            </Suspense>
             <div className="ml-auto flex items-center gap-1">
               <Show when="signed-out">
                 <Link href="/sign-in" className={cn(navLinkClass, "gap-2 normal-case tracking-normal text-foreground")}>
@@ -290,9 +315,9 @@ export async function SiteHeader() {
         </div>
       </div>
 
-      <CartDrawer count={count}>
-        <CartSheet lines={lines} picks={suggest(lines, catalog)} />
-      </CartDrawer>
+      <Suspense fallback={null}>
+        <HeaderCartDrawer />
+      </Suspense>
     </div>
   );
 }
