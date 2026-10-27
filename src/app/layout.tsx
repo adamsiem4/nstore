@@ -26,7 +26,6 @@ export const metadata: Metadata = {
     "Home appliances and household goods for everyday living. Explore kitchen appliances, cookware, cleaning, laundry, storage, and home comfort at nstore.",
   icons: {
     icon: [
-      { url: "/icons/favicon.svg", type: "image/svg+xml" },
       { url: "/icons/favicon-96x96.png", sizes: "96x96", type: "image/png" },
     ],
     shortcut: "/icons/favicon.ico",

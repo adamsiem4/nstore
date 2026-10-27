@@ -21,33 +21,29 @@ export default function HomePage() {
     <>
       <section
         aria-labelledby="home-heading"
-        className="relative isolate -mx-2 -mt-2 flex min-h-[calc(100svh-var(--chrome))] flex-col items-center justify-center overflow-hidden rounded-xl border px-6 py-16 text-center text-hero-ink sm:-mx-5 sm:-mt-5 sm:px-10 sm:py-24 lg:-mx-7 lg:-mt-7"
+        className="relative isolate -mx-2 -mt-2 flex min-h-[calc(100svh-var(--chrome))] flex-col items-center justify-center overflow-hidden rounded-xl border bg-(image:--hero-mesh) bg-cover bg-center px-6 py-16 text-center text-hero-ink sm:-mx-5 sm:-mt-5 sm:px-10 sm:py-24 lg:-mx-7 lg:-mt-7"
       >
         {/* ponytail: two <Image>s toggled by the dark class — a useTheme()
             client boundary would cost a hydration flash on the LCP element.
-            Opacity, not `hidden`: a display:none fill image measures 0px
-            wide and next/image then warns about `sizes`.
-            Both sit in the viewport, so both download whatever `loading`
-            says; eager only stops the LCP element going through the lazy
-            path, and fetchPriority replaces `priority`, deprecated in 16.
-            `preload` stays off: that one really would add two <link>s. */}
+            `hidden` plus the default lazy loading means the off-theme image
+            never downloads (eager fetched both); fetchPriority keeps the
+            visible one first in line. Until it lands, the baked
+            --hero-mesh background shows the same gradient without the grain. */}
         <Image
           src="/hero-gradient-light.webp"
           alt=""
           fill
-          loading="eager"
           fetchPriority="high"
           sizes="100vw"
-          className="-z-10 object-cover dark:opacity-0"
+          className="-z-10 object-cover dark:hidden"
         />
         <Image
           src="/hero-gradient-dark.webp"
           alt=""
           fill
-          loading="eager"
           fetchPriority="high"
           sizes="100vw"
-          className="-z-10 object-cover opacity-0 dark:opacity-100"
+          className="-z-10 hidden object-cover dark:block"
         />
         {/* ponytail: colours come from --hero-* in globals.css, so the scrim
             is one element with no dark: variant — it is transparent in
