@@ -26,7 +26,6 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 - PostHog
 - Sentry
 - Vercel
-- CodeRabbit
 
 ## Architecture
 
@@ -78,7 +77,7 @@ public/
 - Stripe webhook signature verification and durable payment-status synchronization
 - Idempotent Resend payment-confirmation emails
 - Consent-gated PostHog analytics (pageviews, autocapture, Clerk identity, `Products Searched` / `Product Added` (with `source`) / `Product Removed` / `Checkout Started` / `Order Completed` ecommerce events) and Sentry client/server/edge error monitoring
-- Zero-configuration Vercel deployment and CodeRabbit pull-request review
+- Zero-configuration Vercel deployment
 
 Catalog reads go through `src/server/queries/`. Its original
 WebP renders live in `public/products/`; no rendering library or external image
