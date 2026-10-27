@@ -1,7 +1,8 @@
 "use client";
 
-import posthog, { type Properties } from "posthog-js";
+import type { Properties } from "posthog-js";
 import { useEffect } from "react";
+import { withPostHog } from "@/lib/posthog";
 
 /**
  * Lets a Server Component record one PostHog event when its page mounts.
@@ -19,7 +20,7 @@ export function CaptureEvent({
   const payload = JSON.stringify(properties);
 
   useEffect(() => {
-    posthog.capture(event, JSON.parse(payload), { uuid });
+    withPostHog((posthog) => posthog.capture(event, JSON.parse(payload), { uuid }));
   }, [event, payload, uuid]);
 
   return null;

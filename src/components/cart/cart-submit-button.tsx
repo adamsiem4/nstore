@@ -2,10 +2,10 @@
 
 import { CheckIcon, LoaderCircleIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import posthog from "posthog-js";
 import { type ComponentProps, startTransition, useEffect, useState } from "react";
 import { openCart } from "@/components/cart/cart-drawer";
 import { SoftPillButton } from "@/components/ui/pill-button";
+import { withPostHog } from "@/lib/posthog";
 import { cn } from "@/lib/utils";
 import { addToCart } from "@/server/actions/cart";
 
@@ -51,11 +51,13 @@ export function CartSubmitButton({
             try {
               const changed = await addToCart(formData);
               if (changed) {
-                posthog.capture("Product Added", {
-                  product_id: formData.get("id"),
-                  quantity: 1,
-                  source: formData.get("source"),
-                });
+                withPostHog((posthog) =>
+                  posthog.capture("Product Added", {
+                    product_id: formData.get("id"),
+                    quantity: 1,
+                    source: formData.get("source"),
+                  }),
+                );
               }
               setConfirmation(changed ? (formData.get("next") === "/cart" ? "cart" : "stay") : "error");
             } catch {
@@ -138,7 +140,9 @@ export function CheckoutButton({
       {...props}
       type="submit"
       onClick={() =>
-        posthog.capture("Checkout Started", { value: total / 100, currency: "EUR" }, { send_instantly: true })
+        withPostHog((posthog) =>
+          posthog.capture("Checkout Started", { value: total / 100, currency: "EUR" }, { send_instantly: true }),
+        )
       }
     />
   );

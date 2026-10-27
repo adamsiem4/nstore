@@ -1,12 +1,12 @@
 "use client";
 
 import { LoaderCircleIcon } from "lucide-react";
-import posthog from "posthog-js";
 import { type ComponentProps, type ReactNode, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { PillButton } from "@/components/ui/pill-button";
 import { cn } from "@/lib/utils";
 import { MAX_QTY } from "@/lib/cart";
+import { withPostHog } from "@/lib/posthog";
 import { clearCart, updateCart } from "@/server/actions/cart";
 
 /**
@@ -155,7 +155,7 @@ export function RemoveLineButton({ id, name }: { id: string; name: string }) {
       // Client wrapper is safe: the confirm form only exists after a JS click arms it.
       action={async (formData) => {
         await updateCart(formData);
-        posthog.capture("Product Removed", { product_id: id, name });
+        withPostHog((posthog) => posthog.capture("Product Removed", { product_id: id, name }));
       }}
       label="Remove"
       confirm="Yes, remove"

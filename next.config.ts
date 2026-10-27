@@ -16,6 +16,8 @@ export default withSentryConfig(nextConfig, {
   silent: !process.env.CI,
   telemetry: false,
   widenClientFileUpload: true,
+  // Strips the SDK's internal logger; the `debug` init option is never used.
+  bundleSizeOptimizations: { excludeDebugStatements: true },
   // Same-origin route so ad blockers don't drop client errors.
   tunnelRoute: "/monitoring",
 });
