@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { ProductImage } from "@/components/products/product-image";
+import { orderMoney } from "@/lib/utils";
 import type { Order } from "@/server/queries/orders";
-
-export const orderDate = new Intl.DateTimeFormat("en-IE", { dateStyle: "medium" });
-export const orderMoney = (cents: number, currency: string) =>
-  new Intl.NumberFormat("en-IE", { style: "currency", currency }).format(cents / 100);
 
 export function OrderItem({ item }: { item: Order["items"][number] }) {
   const { product } = item;

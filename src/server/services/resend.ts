@@ -12,9 +12,8 @@ export function getResend() {
   return new Resend(apiKey);
 }
 
-// ponytail: plain text only — pass React/HTML through when a template exists.
 export async function sendEmail(
-  email: { to: string; subject: string; text: string },
+  email: { to: string; subject: string; text: string; html?: string },
   idempotencyKey?: string,
 ) {
   const from = process.env.RESEND_FROM_EMAIL;

@@ -5,6 +5,10 @@ export const money = new Intl.NumberFormat("en-IE", {
   currency: "EUR",
 });
 
+export const orderDate = new Intl.DateTimeFormat("en-IE", { dateStyle: "medium" });
+export const orderMoney = (cents: number, currency: string) =>
+  new Intl.NumberFormat("en-IE", { style: "currency", currency }).format(cents / 100);
+
 /** Open a modal dialog without the page shifting under the scroll lock in globals.css. */
 export function showModal(dialog: HTMLDialogElement) {
   if (dialog.open) return;

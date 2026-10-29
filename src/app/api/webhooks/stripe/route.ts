@@ -3,6 +3,8 @@ import Stripe from "stripe";
 
 import { getDb } from "@/server/db";
 import { payments } from "@/server/db/schema";
+import { receiptEmail } from "@/server/emails/receipt";
+import { getOrders, orderNumber } from "@/server/queries/orders";
 import { sendEmail } from "@/server/services/resend";
 import { getStripe } from "@/server/services/stripe";
 
@@ -80,15 +82,28 @@ export async function POST(request: Request) {
     intent.receipt_email &&
     !payment.confirmationEmailSentAt
   ) {
-    await sendEmail(
-      {
-        to: intent.receipt_email,
-        subject: "Your NStore payment was received",
-        text: `We received your payment of ${new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: intent.currency,
-        }).format(intent.amount_received / 100)}.`,
+    // Same lookup as the order page; a payment with no Clerk user still gets its total.
+    const [order] = intent.metadata.clerkUserId
+      ? await getOrders(intent.metadata.clerkUserId, orderNumber(intent.id))
+      : [];
+    const receipt = receiptEmail(
+      order ?? {
+        number: orderNumber(intent.id),
+        amount: intent.amount_received,
+        currency: intent.currency,
+        createdAt: new Date(intent.created * 1000),
+        items: [],
+        subtotal: null,
+        shipping: null,
+        tax: 0,
+        discount: 0,
+        shipTo: null,
       },
+      new URL(request.url).origin,
+    );
+
+    await sendEmail(
+      { to: intent.receipt_email, ...receipt },
       `payment-confirmation/${intent.id}`,
     );
 
