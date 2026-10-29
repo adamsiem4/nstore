@@ -3,7 +3,7 @@ import Stripe from "stripe";
 
 import { getDb } from "@/server/db";
 import { payments } from "@/server/db/schema";
-import { receiptEmail } from "@/server/emails/receipt";
+import { orderEmail } from "@/server/emails/order";
 import { getOrders, orderNumber } from "@/server/queries/orders";
 import { sendEmail } from "@/server/services/resend";
 import { getStripe } from "@/server/services/stripe";
@@ -86,7 +86,8 @@ export async function POST(request: Request) {
     const [order] = intent.metadata.clerkUserId
       ? await getOrders(intent.metadata.clerkUserId, orderNumber(intent.id))
       : [];
-    const receipt = receiptEmail(
+    const receipt = orderEmail(
+      "confirmed",
       order ?? {
         number: orderNumber(intent.id),
         amount: intent.amount_received,

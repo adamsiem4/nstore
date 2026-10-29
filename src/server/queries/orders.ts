@@ -65,11 +65,18 @@ export async function getOrders(userId: string, number?: string) {
     const returnStatus: "available" | "requested" | "refunded" | "unavailable" = !intent ? "unavailable"
       : charge?.refunded ? "refunded"
       : intent.metadata.returnStatus === "requested" ? "requested" : "available";
+    // Fulfillment lives on the payment's metadata, like returns; only the dev tool sets it for now.
+    const step = intent?.metadata.fulfillment;
+    const fulfillment: "confirmed" | "shipped" | "delivered" = step === "shipped" || step === "delivered" ? step : "confirmed";
+    const date = (value: string | undefined) => (value ? new Date(value) : null);
 
     return {
       ...order,
       number: orderNumber(order.id),
       returnStatus,
+      fulfillment,
+      shippedAt: date(intent?.metadata.shippedAt),
+      deliveredAt: date(intent?.metadata.deliveredAt),
       // Everything below is null when the Stripe lookup failed; the page says so.
       subtotal: session?.amount_subtotal ?? null,
       shipping: session?.shipping_cost?.amount_total ?? null,

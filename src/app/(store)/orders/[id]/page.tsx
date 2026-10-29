@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { ExternalLinkIcon } from "lucide-react";
+import { CircleCheckIcon, CircleIcon, ExternalLinkIcon } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
@@ -7,11 +7,15 @@ import { AccountShell } from "@/components/layout/account-shell";
 import { OrderItem } from "@/components/orders/order-item";
 import { OrderReturn } from "@/components/orders/order-return";
 import { Badge } from "@/components/ui/badge";
-import { orderDate, orderMoney } from "@/lib/utils";
+import { PillButton } from "@/components/ui/pill-button";
+import { cn, orderDate, orderMoney } from "@/lib/utils";
+import { simulateOrderStep } from "@/server/actions/order-status";
 import { getOrders } from "@/server/queries/orders";
 
 const region = new Intl.DisplayNames("en", { type: "region" });
-const status = { available: "Paid", unavailable: "Paid", requested: "Return requested", refunded: "Refunded" };
+const status = { requested: "Return requested", refunded: "Refunded" };
+const fulfillment = { confirmed: "Paid", shipped: "Shipped", delivered: "Delivered" };
+const nextStep = { confirmed: "shipped", shipped: "delivered", delivered: null } as const;
 
 export async function generateMetadata(props: PageProps<"/orders/[id]">): Promise<Metadata> {
   const { id } = await props.params;
@@ -45,6 +49,12 @@ export default async function OrderPage(props: PageProps<"/orders/[id]">) {
   const format = (cents: number) => orderMoney(cents, order.currency);
   const quantity = order.items.reduce((sum, item) => sum + (item.quantity ?? 0), 0);
   const address = order.shipTo?.address;
+  const next = nextStep[order.fulfillment];
+  const tracking = [
+    { label: "Order confirmed", date: order.createdAt },
+    { label: "Shipped", date: order.shippedAt },
+    { label: "Delivered", date: order.deliveredAt },
+  ];
 
   return (
     <AccountShell back={{ href: "/orders", label: "Your orders" }} title={`Order ${order.number}`}>
@@ -52,10 +62,34 @@ export default async function OrderPage(props: PageProps<"/orders/[id]">) {
         <span>
           Placed <time dateTime={order.createdAt.toISOString()}>{orderDate.format(order.createdAt)}</time>
         </span>
-        <Badge variant={order.returnStatus === "refunded" ? "outline" : "secondary"}>{status[order.returnStatus]}</Badge>
+        <Badge variant={order.returnStatus === "refunded" ? "outline" : "secondary"}>
+          {order.returnStatus === "requested" || order.returnStatus === "refunded"
+            ? status[order.returnStatus]
+            : fulfillment[order.fulfillment]}
+        </Badge>
       </p>
 
       <div className="mt-8 grid gap-6">
+        <Section title="Delivery">
+          <ol className="grid gap-4 px-5 py-4 text-sm sm:grid-cols-3">
+            {tracking.map((step) => (
+              <li key={step.label} className="flex items-center gap-3">
+                {step.date ? (
+                  <CircleCheckIcon aria-hidden="true" className="size-5 shrink-0" />
+                ) : (
+                  <CircleIcon aria-hidden="true" className="size-5 shrink-0 text-muted-foreground" />
+                )}
+                <div>
+                  <p className={cn("font-medium", !step.date && "text-muted-foreground")}>{step.label}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {step.date ? <time dateTime={step.date.toISOString()}>{orderDate.format(step.date)}</time> : "Pending"}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </Section>
+
         <Section title={`Items (${quantity})`}>
           {order.items.length > 0 ? (
             <ul className="divide-y px-5">
@@ -132,6 +166,30 @@ export default async function OrderPage(props: PageProps<"/orders/[id]">) {
         <Section title="Returns">
           <OrderReturn orderId={order.id} status={order.returnStatus} />
         </Section>
+
+        {process.env.NODE_ENV === "development" && (
+          // Dashed like the store's empty states: scaffolding, not part of the page.
+          <section className="rounded-xl border-2 border-dashed">
+            <h2 className="px-5 pt-4 text-sm font-semibold">Dev tools</h2>
+            <form action={simulateOrderStep} className="flex flex-wrap gap-2 px-5 pt-2 pb-4">
+              <p className="w-full text-sm text-muted-foreground">
+                Development only. Simulates the warehouse and sends each step&apos;s email to {order.email ?? "the receipt address"}.
+              </p>
+              <input type="hidden" name="orderId" value={order.id} />
+              {next && (
+                <PillButton type="submit" name="step" value={next} className="h-10 px-4">
+                  Mark as {next}
+                </PillButton>
+              )}
+              <PillButton type="submit" name="step" value="confirmed" variant="outline" className="h-10 px-4">
+                Resend confirmation
+              </PillButton>
+              <PillButton type="submit" name="step" value="reset" variant="ghost" className="h-10 px-4">
+                Reset to paid
+              </PillButton>
+            </form>
+          </section>
+        )}
       </div>
     </AccountShell>
   );
