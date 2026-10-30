@@ -1,12 +1,12 @@
 # NStore
 
-[![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19-149ECA?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Bun](https://img.shields.io/badge/Bun-14151A?style=for-the-badge&logo=bun&logoColor=white)](https://bun.sh/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://stripe.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge)](./LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Bun](https://img.shields.io/badge/Bun-1.4-14151A?logo=bun&logoColor=white)](https://bun.sh)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Stripe](https://img.shields.io/badge/Stripe-22-635BFF?logo=stripe&logoColor=white)](https://stripe.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22C55E)](./LICENSE)
 
 NStore is a home appliances and household goods store built with the Next.js
 App Router, TypeScript, Bun, and Tailwind CSS.
@@ -41,25 +41,31 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 
 ```text
 src/
-  app/                  App Router: (store) pages, api/ route handlers, sign-in/up
-  components/
-    ui/                 shadcn/ui primitives and in-house UI (pill button, drag row)
-    layout/             header, footer, account shell, theme picker
-    cart/ orders/ products/ help/
-                        feature components
-    analytics/ consent/ PostHog identity and cookie consent
-  lib/                  shared helpers: cart math, consent, formatting
-  server/
-    actions/            Server Actions ("use server")
-    queries/            server-only reads
-    services/           Stripe and Resend clients
-    db/                 Drizzle client, schema, and seed data
-  types/
+├── app/                App Router pages, API routes, sign-in and sign-up
+├── components/
+│   ├── account/        profile phone form
+│   ├── analytics/      PostHog identity and events
+│   ├── cart/           cart drawer, buttons, and shipping progress
+│   ├── consent/        cookie banner and preferences
+│   ├── help/           help center
+│   ├── layout/         header, footer, account shell, and theme picker
+│   ├── loading/        skeleton loaders
+│   ├── orders/         order list, items, and returns
+│   ├── products/       product cards, grids, and images
+│   └── ui/             shadcn/ui primitives and in-house UI
+├── lib/                cart math, consent, and formatting helpers
+├── server/
+│   ├── actions/        Server Actions
+│   ├── db/             Drizzle client, schema, and seed data
+│   ├── emails/         order email templates
+│   ├── queries/        server-only reads
+│   └── services/       Stripe and Resend clients
+└── types/              shared types
 tests/                  bun test suites, mirroring src/
 drizzle/                generated SQL migrations
 public/
-  icons/                favicons and manifest icons; replace files in place
-  products/             catalog renders
+├── icons/              favicons and manifest icons
+└── products/           catalog renders
 ```
 
 ## Implemented
@@ -71,12 +77,13 @@ public/
 - Responsive, theme-aware skeletons for catalog/search, cart, account/addresses, orders, and checkout validation; static content and navigation stream immediately, product images resolve independently, and pulses respect reduced motion. Unknown row counts use representative placeholders; Clerk retains control of its internal loading UI.
 - Product-card quick-add with animated purple success/red error feedback, a slide-out cart drawer, cookie-backed `/cart`, quantity controls, a free-shipping countdown, in-cart suggestions, and order summary
 - Stripe hosted checkout with delivery addresses (a signed-in user's default saved address pre-fills it via a Stripe customer whose id lives in Clerk private metadata) and paid-return cart clearing
-- Clerk sign-in, sign-up, a protected Amazon-style `/account` hub (cards with sub-links for orders, login & security, addresses, plus sign out) that the desktop avatar and the mobile menu link to; Clerk profile at `/account/profile` and security at `/account/profile/security` restyled to match the store; an `/account/addresses` book (add, edit, remove, one default enforced by a partial unique index); and a signed-in `/orders` history built from webhook-recorded payments
+- Clerk sign-in, sign-up, a protected Amazon-style `/account` hub (cards with sub-links for orders, login & security, addresses, plus sign out) that the desktop avatar and the mobile menu link to; Clerk profile at `/account/profile` and security at `/account/profile/security` restyled to match the store, with an optional phone number kept in Clerk private metadata and sent to the Stripe customer at checkout; an `/account/addresses` book (add, edit, remove, one default enforced by a partial unique index); and a signed-in `/orders` history built from webhook-recorded payments
 - Return requests from paid orders: an inline item/reason form, persisted confirmation, ownership checks, duplicate protection, and fully refunded-order blocking
 - Drizzle catalog (`products` + `product_details`), payment and saved-address schemas with generated PostgreSQL migrations and an atomic seed script
 - Stripe webhook signature verification and durable payment-status synchronization
-- Idempotent Resend payment-confirmation emails
-- Consent-gated PostHog analytics (pageviews, autocapture, Clerk identity, `Products Searched` / `Product Added` (with `source`) / `Product Removed` / `Checkout Started` / `Order Completed` ecommerce events) and Sentry client/server/edge error monitoring
+- Idempotent Resend confirmation emails for paid orders, using one branded HTML and plain-text template that also covers the shipped and delivered steps
+- Order-page delivery tracker and status badge, with fulfillment stored on the Stripe payment's metadata; a development-only Dev tools panel moves your own orders through the steps and sends each step's email, since no warehouse integration exists
+- Consent-gated PostHog analytics, loaded only after the visitor accepts (pageviews, autocapture, Clerk identity, `Products Searched` / `Product Added` (with `source`) / `Product Removed` / `Checkout Started` / `Order Completed` ecommerce events) and Sentry client/server/edge error monitoring
 - Zero-configuration Vercel deployment
 
 Catalog reads go through `src/server/queries/`. Its original
@@ -105,8 +112,8 @@ Stripe confirms a paid session. Configure `STRIPE_SECRET_KEY` to enable payment.
 Signed-in customers can request a return from `/orders`. Requests are stored on
 the Stripe PaymentIntent as `returnStatus=requested` and `returnDetails`; review
 them on the payment in the Stripe dashboard. The 30-day window starts at
-delivery, which the app does not track, so eligibility is checked during manual
-review rather than inferred from the payment date. Return instructions and
+delivery; the request flow does not enforce it, so eligibility is checked during
+manual review rather than inferred from the payment date. Return instructions and
 refunds are handled manually; submitting a request does not issue a refund or
 send an email. No database migration or new environment variable is required.
 Order headers and return controls use distinct per-order keys when passed into
