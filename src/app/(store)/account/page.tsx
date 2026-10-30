@@ -20,7 +20,7 @@ const sections = [
     title: "Login & security",
     icon: ShieldCheckIcon,
     links: [
-      { label: "Name, email & phone", href: "/account/profile" },
+      { label: "Photo, email & phone", href: "/account/profile" },
       { label: "Password & signed-in devices", href: "/account/profile/security" },
     ],
   },

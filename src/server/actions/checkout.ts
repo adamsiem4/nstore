@@ -17,8 +17,11 @@ import { getStripe } from "@/server/services/stripe";
  */
 async function customerWithShipping(user: User, email: string | undefined, address: typeof addresses.$inferSelect) {
   const stripe = getStripe();
+  const { phone } = user.privateMetadata;
   const params = {
     email,
+    // "" clears a number the user removed from their profile.
+    phone: typeof phone === "string" ? phone : "",
     shipping: {
       name: address.name,
       // "" clears a line2 left over from a previous default.

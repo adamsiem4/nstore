@@ -47,8 +47,8 @@ export default function PrivacyPage() {
         <ul className="list-disc space-y-2 pl-5 leading-7 text-muted-foreground">
           <li>
             <strong className="text-foreground">Account data:</strong> Clerk handles your email,
-            name, and authentication data so we can create and secure your account and perform our
-            contract with you.
+            name, phone number if you add one, and authentication data so we can create and secure
+            your account and perform our contract with you.
           </li>
           <li>
             <strong className="text-foreground">Orders and payments:</strong> We use order,
@@ -63,7 +63,8 @@ export default function PrivacyPage() {
             <strong className="text-foreground">Catalog, order and address storage:</strong> Neon
             Postgres stores catalog and order records and the delivery addresses you save to your
             account. When you check out with a default address, it is also sent to Stripe so the
-            payment page can fill it in. Data is held in an EU region when the Neon project is
+            payment page can fill it in, along with your phone number if you added one so we can
+            reach you about a delivery. Data is held in an EU region when the Neon project is
             configured for one.
           </li>
           <li>

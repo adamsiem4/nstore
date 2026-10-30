@@ -47,7 +47,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           enableSystem
           disableTransitionOnChange
         >
-          <ClerkProvider appearance={{ theme: shadcn }}>
+          <ClerkProvider
+            appearance={{ theme: shadcn }}
+            // shortcut: labels say photo only while Clerk's name fields are off; add "name" here and on the /account link once they're on.
+            localization={{
+              userProfile: {
+                start: { profileSection: { primaryButton: "Change photo" } },
+                profilePage: { title: "Change photo", imageFormSubtitle: "Upload new photo" },
+              },
+            }}
+          >
             <PostHogIdentity />
             {children}
             <CookieBanner />

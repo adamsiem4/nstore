@@ -328,6 +328,179 @@ html.scrollbar-takes-space:has(dialog:modal) {
   scrollbar-gutter: stable;
 }
 
+/* Our phone form unfolds in place like Clerk's forms, which animate themselves:
+   animating .cl-actionCard too makes Clerk measure it empty, and the page jumps.
+   Grid rows are the one way to animate to an unknown height in every browser. */
+@keyframes unfold {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+  to {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+
+/* Its own name: only changing direction would not restart the animation. */
+@keyframes fold {
+  from {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  to {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+}
+
+.unfold {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  animation: unfold 250ms ease-out;
+}
+
+.unfold-closing {
+  animation: fold 250ms ease-out forwards;
+}
+
+/* The padding keeps focus rings and button shadows inside the clip without
+   shifting the content. */
+.unfold > * {
+  min-height: 0;
+  overflow: clip;
+  margin: -6px;
+  padding: 6px;
+}
+
+/* The phone row's controls, matching what Clerk's theme gives its own forms. */
+.clerk-input {
+  width: 100%;
+  border-radius: 0.375rem;
+  background: var(--input);
+  padding: 0.4375rem 0.75rem;
+  color: var(--foreground);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.3846;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--foreground) 11%, transparent),
+    0 0 1px color-mix(in srgb, var(--foreground) 7%, transparent);
+  transition: box-shadow 200ms;
+}
+
+.clerk-input:hover {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--foreground) 28%, transparent),
+    0 0 1px color-mix(in srgb, var(--foreground) 11%, transparent);
+}
+
+.clerk-input:focus {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--foreground) 28%, transparent),
+    0 0 1px color-mix(in srgb, var(--foreground) 11%, transparent),
+    0 0 0 4px color-mix(in srgb, var(--ring) 50%, transparent);
+}
+
+.clerk-button {
+  flex-shrink: 0;
+  border-radius: 0.375rem;
+  padding: 0.4375rem 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.3846;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 100ms, color 100ms, box-shadow 100ms;
+}
+
+.clerk-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--foreground) 3%, transparent);
+  color: color-mix(in srgb, var(--foreground) 80%, white);
+}
+
+.clerk-button:focus-visible {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ring) 50%, transparent);
+}
+
+.clerk-button-compact {
+  padding: 0.375rem 0.75rem 0.375rem 0.625rem;
+}
+
+.clerk-button-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 2rem;
+  padding: 0.375rem 0.75rem 0.375rem 0.625rem;
+  font-size: 0.8654rem;
+  line-height: 1.3333;
+  text-align: left;
+}
+
+.clerk-button-arrow {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0;
+  transform: translateX(-0.5rem);
+  transition: all 100ms ease;
+}
+
+.clerk-button-row:hover .clerk-button-arrow,
+.clerk-button-row:focus-visible .clerk-button-arrow {
+  opacity: 0.5;
+  transform: translateX(0);
+}
+
+.clerk-button-danger {
+  color: var(--destructive);
+}
+
+.clerk-button-danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--destructive) 3%, transparent);
+  color: color-mix(in srgb, var(--destructive) 90%, black);
+}
+
+.dark .clerk-button-danger:hover:not(:disabled) {
+  color: rgb(255 64 64);
+}
+
+.clerk-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.clerk-button-primary,
+.clerk-button-primary:hover:not(:disabled) {
+  color: var(--primary-foreground);
+  box-shadow:
+    0 0 0 1px var(--primary),
+    inset 0 1px 1px rgb(255 255 255 / 0.07),
+    0 2px 3px rgb(35 40 55 / 0.2),
+    0 1px 1px rgb(0 0 0 / 0.24);
+}
+
+.clerk-button-primary {
+  background: var(--primary);
+}
+
+.clerk-button-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--primary) 80%, white);
+}
+
+.clerk-button-primary:focus-visible {
+  transition-duration: 200ms;
+  box-shadow:
+    0 0 0 1px var(--primary),
+    inset 0 1px 1px rgb(255 255 255 / 0.07),
+    0 2px 3px rgb(35 40 55 / 0.2),
+    0 1px 1px rgb(0 0 0 / 0.24),
+    0 0 0 4px color-mix(in srgb, var(--ring) 50%, transparent);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
