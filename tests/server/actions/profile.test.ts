@@ -8,6 +8,7 @@ mock.module("@clerk/nextjs/server", () => ({
     if (!userId) throw new Error("Unauthenticated");
     return { userId };
   } },
+  currentUser: async () => userId ? ({ id: userId, privateMetadata: {} }) : null,
   clerkClient: async () => ({ users: {
     updateUserMetadata: async (id: string, { privateMetadata }: { privateMetadata: unknown }) => {
       writes.push([id, privateMetadata]);

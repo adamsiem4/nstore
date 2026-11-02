@@ -1,8 +1,9 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { refresh } from "next/cache";
 import { headers } from "next/headers";
+import { getDevToolsAccess } from "@/server/dev-tools";
 import { orderEmail } from "@/server/emails/order";
 import { getOrders, orderNumber } from "@/server/queries/orders";
 import { sendEmail } from "@/server/services/resend";
@@ -17,6 +18,8 @@ export async function simulateOrderStep(form: FormData) {
   if (process.env.NODE_ENV !== "development") throw new Error("Order simulation is development-only");
 
   const { userId } = await auth.protect();
+  const user = await currentUser();
+  if (!getDevToolsAccess(user?.privateMetadata).enabled) throw new Error("Developer tools are not enabled for this account");
   const id = form.get("orderId");
   const step = form.get("step");
   if (typeof id !== "string" || !/^pi_[a-zA-Z0-9]{1,240}$/.test(id)) throw new Error("Invalid order");

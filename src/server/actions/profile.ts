@@ -1,7 +1,8 @@
 "use server";
 
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import { refresh } from "next/cache";
+import { getDevToolsAccess } from "@/server/dev-tools";
 
 type PhoneState = { saved: boolean; error?: string };
 
@@ -19,4 +20,18 @@ export async function savePhone(form: FormData): Promise<PhoneState> {
   await (await clerkClient()).users.updateUserMetadata(userId, { privateMetadata: { phone: phone || null } });
   refresh();
   return { saved: true };
+}
+
+export async function setDevToolsEnabled(form: FormData): Promise<void> {
+  const { userId } = await auth.protect();
+  const user = await currentUser();
+  if (!getDevToolsAccess(user?.privateMetadata).allowed) {
+    throw new Error("Developer tools require an admin account in development");
+  }
+
+  const enabled = form.get("enabled");
+  if (enabled !== "true" && enabled !== "false") throw new Error("Invalid developer tools setting");
+
+  await (await clerkClient()).users.updateUserMetadata(userId, { privateMetadata: { devToolsEnabled: enabled === "true" } });
+  refresh();
 }

@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
-import { mock, test } from "bun:test";
+import { afterAll, mock, test } from "bun:test";
 
-let userId = "user_owner";
+const originalNodeEnv = process.env.NODE_ENV;
+afterAll(() => {
+  if (originalNodeEnv === undefined) Reflect.deleteProperty(process.env, "NODE_ENV");
+  else Object.assign(process.env, { NODE_ENV: originalNodeEnv });
+});
+
+let userId: string | null = "user_owner";
+let privateMetadata: Record<string, unknown> = { role: "admin", devToolsEnabled: true };
 let intent = {
   id: "pi_order",
   status: "succeeded",
@@ -10,7 +17,18 @@ let intent = {
 };
 const sent: { to: string; subject: string }[] = [];
 
-mock.module("@clerk/nextjs/server", () => ({ auth: { protect: async () => ({ userId }) } }));
+mock.module("@clerk/nextjs/server", () => ({
+  auth: { protect: async () => {
+    if (!userId) throw new Error("Unauthenticated");
+    return { userId };
+  } },
+  currentUser: async () => userId ? ({ id: userId, privateMetadata }) : null,
+  clerkClient: async () => ({ users: {
+    updateUserMetadata: async (_id: string, update: { privateMetadata: Record<string, unknown> }) => {
+      privateMetadata = { ...privateMetadata, ...update.privateMetadata };
+    },
+  } }),
+}));
 mock.module("next/cache", () => ({ refresh: () => {} }));
 mock.module("next/headers", () => ({ headers: async () => new Headers({ host: "localhost:3000" }) }));
 mock.module("@/server/services/resend", () => ({ sendEmail: async (email: { to: string; subject: string }) => sent.push(email) }));
@@ -33,7 +51,9 @@ mock.module("@/server/queries/orders", () => ({
   }],
 }));
 
+// Load actions after mocks; static imports would initialize real Clerk/Stripe modules.
 const { simulateOrderStep } = await import("@/server/actions/order-status");
+const { setDevToolsEnabled } = await import("@/server/actions/profile");
 
 function form(step: string, orderId = intent.id) {
   const data = new FormData();
@@ -43,6 +63,7 @@ function form(step: string, orderId = intent.id) {
 }
 
 test("order simulation is development-only, owner-only, and walks the steps", async () => {
+  Object.assign(process.env, { NODE_ENV: "production" });
   await assert.rejects(simulateOrderStep(form("shipped")), /development-only/);
   Object.assign(process.env, { NODE_ENV: "development" });
 
@@ -76,4 +97,51 @@ test("order simulation is development-only, owner-only, and walks the steps", as
   await simulateOrderStep(form("reset"));
   assert.deepEqual(intent.metadata, { clerkUserId: "user_owner" });
   assert.equal(sent.length, 3, "reset sends nothing");
+});
+
+test("order simulation rejects customers and admins whose account switch is off", async () => {
+  Object.assign(process.env, { NODE_ENV: "development" });
+  privateMetadata = { devToolsEnabled: true };
+  await assert.rejects(simulateOrderStep(form("shipped")), /not enabled/);
+
+  privateMetadata = { role: "admin", devToolsEnabled: false };
+  await assert.rejects(simulateOrderStep(form("shipped")), /not enabled/);
+
+  privateMetadata = { role: "admin", devToolsEnabled: "true" };
+  await assert.rejects(simulateOrderStep(form("shipped")), /not enabled/);
+});
+
+function devToolsForm(enabled: string) {
+  const data = new FormData();
+  data.set("enabled", enabled);
+  return data;
+}
+
+test("the admin's saved switch gates subsequent order actions and cannot grant admin access", async () => {
+  Object.assign(process.env, { NODE_ENV: "development" });
+  userId = "user_owner";
+  privateMetadata = { role: "admin" };
+  await assert.rejects(simulateOrderStep(form("reset")), /not enabled/);
+
+  await setDevToolsEnabled(devToolsForm("true"));
+  await simulateOrderStep(form("reset"));
+  await setDevToolsEnabled(devToolsForm("false"));
+  await assert.rejects(simulateOrderStep(form("reset")), /not enabled/);
+  await assert.rejects(setDevToolsEnabled(devToolsForm("yes")), /Invalid developer tools setting/);
+
+  privateMetadata = { devToolsEnabled: true };
+  const forged = devToolsForm("true");
+  forged.set("role", "admin");
+  await assert.rejects(setDevToolsEnabled(forged), /admin account/);
+  await assert.rejects(simulateOrderStep(form("reset")), /not enabled/);
+
+  privateMetadata = { role: "admin", devToolsEnabled: true };
+  Object.assign(process.env, { NODE_ENV: "production" });
+  await assert.rejects(setDevToolsEnabled(devToolsForm("true")), /in development/);
+  await assert.rejects(simulateOrderStep(form("reset")), /development-only/);
+
+  Object.assign(process.env, { NODE_ENV: "development" });
+  userId = null;
+  await assert.rejects(setDevToolsEnabled(devToolsForm("true")), /Unauthenticated/);
+  await assert.rejects(simulateOrderStep(form("reset")), /Unauthenticated/);
 });

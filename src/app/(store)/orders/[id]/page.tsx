@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { CircleCheckIcon, CircleIcon, ExternalLinkIcon } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { PillButton } from "@/components/ui/pill-button";
 import { cn, orderDate, orderMoney } from "@/lib/utils";
 import { simulateOrderStep } from "@/server/actions/order-status";
+import { getDevToolsAccess } from "@/server/dev-tools";
 import { getOrders } from "@/server/queries/orders";
 
 const region = new Intl.DisplayNames("en", { type: "region" });
@@ -46,6 +47,8 @@ export default async function OrderPage(props: PageProps<"/orders/[id]">) {
   // Scoped to the signed-in user, so someone else's order number is a 404.
   const [order] = await getOrders(userId, id);
   if (!order) notFound();
+  const user = process.env.NODE_ENV === "development" ? await currentUser() : null;
+  const devTools = getDevToolsAccess(user?.privateMetadata);
   const format = (cents: number) => orderMoney(cents, order.currency);
   const quantity = order.items.reduce((sum, item) => sum + (item.quantity ?? 0), 0);
   const address = order.shipTo?.address;
@@ -167,14 +170,10 @@ export default async function OrderPage(props: PageProps<"/orders/[id]">) {
           <OrderReturn orderId={order.id} status={order.returnStatus} />
         </Section>
 
-        {process.env.NODE_ENV === "development" && (
-          // Dashed like the store's empty states: scaffolding, not part of the page.
+        {devTools.enabled && (
           <section className="rounded-xl border-2 border-dashed">
             <h2 className="px-5 pt-4 text-sm font-semibold">Dev tools</h2>
             <form action={simulateOrderStep} className="flex flex-wrap gap-2 px-5 pt-2 pb-4">
-              <p className="w-full text-sm text-muted-foreground">
-                Development only. Simulates the warehouse and sends each step&apos;s email to {order.email ?? "the receipt address"}.
-              </p>
               <input type="hidden" name="orderId" value={order.id} />
               {next && (
                 <PillButton type="submit" name="step" value={next} className="h-10 px-4">

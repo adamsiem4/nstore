@@ -1,10 +1,12 @@
 import { SignOutButton } from "@clerk/nextjs";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { HouseIcon, LogOutIcon, PackageIcon, ShieldCheckIcon } from "lucide-react";
+import { HouseIcon, LogOutIcon, PackageIcon, ShieldCheckIcon, WrenchIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { DevToolsSwitch } from "@/components/account/dev-tools-switch";
 import { AccountShell } from "@/components/layout/account-shell";
+import { getDevToolsAccess } from "@/server/dev-tools";
 
 export const metadata: Metadata = { title: "Account" };
 
@@ -57,6 +59,7 @@ export default async function AccountPage() {
   await auth.protect();
   const user = await currentUser();
   const email = user?.primaryEmailAddress?.emailAddress;
+  const devTools = getDevToolsAccess(user?.privateMetadata);
 
   return (
     <AccountShell back={null} title="Your account" description={user?.fullName || email}>
@@ -72,6 +75,13 @@ export default async function AccountPage() {
             ))}
           </Card>
         ))}
+        {devTools.allowed && (
+          <Card title="Developer tools" icon={WrenchIcon}>
+            <li>
+              <DevToolsSwitch enabled={devTools.enabled} />
+            </li>
+          </Card>
+        )}
         <Card title="Sign out" icon={LogOutIcon}>
           <li>
             <SignOutButton>

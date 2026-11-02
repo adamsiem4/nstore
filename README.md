@@ -82,7 +82,7 @@ public/
 - Drizzle catalog (`products` + `product_details`), payment and saved-address schemas with generated PostgreSQL migrations and an atomic seed script
 - Stripe webhook signature verification and durable payment-status synchronization
 - Idempotent Resend confirmation emails for paid orders, using one branded HTML and plain-text template that also covers the shipped and delivered steps
-- Order-page delivery tracker and status badge, with fulfillment stored on the Stripe payment's metadata; a development-only Dev tools panel moves your own orders through the steps and sends each step's email, since no warehouse integration exists
+- Order-page delivery tracker and status badge, with fulfillment stored on the Stripe payment's metadata; development-only Dev tools are gated by an admin account's saved switch and move only that account's own paid orders through the steps, sending each step's email
 - Consent-gated PostHog analytics, loaded only after the visitor accepts (pageviews, autocapture, Clerk identity, `Products Searched` / `Product Added` (with `source`) / `Product Removed` / `Checkout Started` / `Order Completed` ecommerce events) and Sentry client/server/edge error monitoring
 - Zero-configuration Vercel deployment
 
@@ -192,9 +192,32 @@ These are dependency-graph findings, not proof of an exploitable storefront path
 
 No advisory suppression, unsupported major-version override, or prerelease Drizzle
 migration is applied. Recheck with `bun audit` as upstream packages adopt fixes.
-Lint, typecheck, all 20 tests, the production build, CLI version commands, and a
+Lint, typecheck, the test suite, the production build, CLI version commands, and a
 production-browser cart add/remove round trip pass. Sentry release creation and
 source-map publishing remain unverified because its build hook reported network errors.
+
+### Developer tools (local only)
+
+Clerk private metadata supplies the app-wide admin permission; no Clerk Organization
+or custom session claim is required. In your Clerk development instance, open
+**Users → your user → Metadata → Private** and add `"role": "admin"` to the existing
+JSON object. Preserve other keys, such as `phone` and `stripeCustomerId`.
+Do not put this role in unsafe metadata, which users can edit themselves.
+
+Run `bun run dev`, sign in as that account, and open **Your account → Developer tools**.
+The switch defaults off and saves `devToolsEnabled` as a boolean in the same user's
+private metadata. It follows the account across sessions and devices rather than
+living in a browser cookie. There is no in-app control for granting yourself admin access.
+
+Order simulation requires all three: a development server, private metadata
+`role: "admin"`, and `devToolsEnabled: true`. Both the order-page controls and the
+Server Action enforce this policy. Actions reread the user's backend metadata, so
+turning the switch off or revoking the role also blocks submissions from stale pages.
+Order ownership and paid-payment checks still apply. Production blocks both the
+switch action and order simulation, even for enabled admins.
+
+Simulations write Stripe fulfillment metadata and send real emails even when run
+locally. Use Stripe test keys and appropriate email recipients.
 
 ## Database
 
