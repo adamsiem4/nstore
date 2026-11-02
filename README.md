@@ -169,14 +169,32 @@ Next.js and `eslint-config-next` together, and React and React DOM together;
 major-version migrations are separate work. Keep `package.json` and `bun.lock`
 in sync, run the checks above, and smoke-test the production storefront and cart.
 
-The latest dependency refresh uses Next.js and `eslint-config-next` 16.4.3,
-React and React DOM 19.3.1, Node 24 type definitions, and `posthog-js` 1.438.23.
+The latest dependency refresh uses Next.js and `eslint-config-next` 16.4.4,
+React and React DOM 19.3.1, Node 24 type definitions, and `posthog-js` 1.444.3.
 Compatible transitive dependencies were refreshed without changing lifecycle-script trust.
-Clerk, Sentry, Lucide, Resend, shadcn, and cn are also updated. Stripe stays on 22.x because
-23.x changes its API contract; ESLint stays on 9.x because the React, import,
-and accessibility plugins do not declare ESLint 10 support. TypeScript stays
-on 5.9.x rather than taking a compiler-major migration; TypeScript 7 is outside
-the current typescript-eslint peer range.
+Clerk, Sentry, Lucide, Resend, shadcn, cn, and the TypeScript language server are also updated.
+Stripe stays on 22.x because 23.x changes its API contract; ESLint stays on 9.x
+because the React, import, and accessibility plugins do not declare ESLint 10 support.
+TypeScript stays on 5.9.x rather than taking a compiler-major migration;
+TypeScript 7 is outside the current typescript-eslint peer range.
+
+The dependency audit on 2026-11-02 reports four transitive advisories
+(three moderate, one low), with no high or critical findings. `bun audit --production`
+reports three (two moderate, one low); it excludes the development-only esbuild copy.
+These are dependency-graph findings, not proof of an exploitable storefront path:
+
+| Package | Severity | Advisory | Remediation status |
+| --- | --- | --- | --- |
+| `deepmerge` 4.3.1, via shadcn | Low | [CVE-2026-93753](https://github.com/advisories/GHSA-gcqx-w48m-w2h4) | No patched release published. |
+| `esbuild` 0.18.20, via Drizzle Kit's legacy loader | Moderate | [GHSA-67mh-4wv8-2f99](https://github.com/advisories/GHSA-67mh-4wv8-2f99) (no CVE assigned) | Fixed in 0.25.0; the legacy loader requires 0.18.x. The advisory concerns esbuild's development server, not its transform API. |
+| `glob` 13.0.6, via Sentry's bundler tooling | Moderate | [CVE-2026-118773](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) | Fixed in 14.0.2, outside the parent's declared 13.x range. |
+| `minimatch` 3.1.5 and 10.2.6, via lint/build/CLI tooling | Moderate | [CVE-2026-118764](https://github.com/advisories/GHSA-g3hv-75wg-m249) | Fixed in 11.0.1, outside the parents' declared ranges. The reported optimization pipeline is absent from 3.1.5, although the advisory range includes it. |
+
+No advisory suppression, unsupported major-version override, or prerelease Drizzle
+migration is applied. Recheck with `bun audit` as upstream packages adopt fixes.
+Lint, typecheck, all 20 tests, the production build, CLI version commands, and a
+production-browser cart add/remove round trip pass. Sentry release creation and
+source-map publishing remain unverified because its build hook reported network errors.
 
 ## Database
 
