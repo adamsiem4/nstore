@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
 @import "@clerk/ui/themes/shadcn.css";
 
 @custom-variant dark (&:is(.dark *));
@@ -11,6 +10,17 @@
    phones. */
 @theme {
   --search-width: min(20rem, calc(100vw - 14rem));
+
+  /* Base UI's measured height keeps accordion motion independent of the shadcn CLI. */
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--accordion-panel-height); }
+  }
+
+  @keyframes accordion-up {
+    from { height: var(--accordion-panel-height); }
+    to { height: 0; }
+  }
 }
 
 /* ponytail: the pill unrolls out of the icon — the clip is pinned on the right,

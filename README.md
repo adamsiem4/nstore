@@ -169,32 +169,45 @@ Next.js and `eslint-config-next` together, and React and React DOM together;
 major-version migrations are separate work. Keep `package.json` and `bun.lock`
 in sync, run the checks above, and smoke-test the production storefront and cart.
 
-The latest dependency refresh uses Next.js and `eslint-config-next` 16.4.4,
-React and React DOM 19.3.1, Node 24 type definitions, and `posthog-js` 1.444.3.
-Compatible transitive dependencies were refreshed without changing lifecycle-script trust.
-Clerk, Sentry, Lucide, Resend, shadcn, cn, and the TypeScript language server are also updated.
+The security refresh on 2026-11-05 updates `@sentry/nextjs` to 11.11.0.
+Its [supported upstream update](https://github.com/getsentry/sentry-javascript/releases/tag/11.11.0)
+uses `glob` 14.0.3 and `minimatch` 11.0.4, resolving the affected Sentry tooling chain.
+The application no longer installs the `shadcn` CLI package, removing its unpatched
+`deepmerge` dependency rather than hiding it in `devDependencies`. Existing shadcn/ui
+components remain: accordion keyframes live in `src/app/globals.css`, and state/orientation
+selectors use native Tailwind variants. Lifecycle-script trust is unchanged.
+
+Next.js and `eslint-config-next` remain on 16.4.4, React and React DOM on 19.3.1,
+and `posthog-js` on 1.444.3, with Node 24 type definitions.
 Stripe stays on 22.x because 23.x changes its API contract; ESLint stays on 9.x
 because the React, import, and accessibility plugins do not declare ESLint 10 support.
 TypeScript stays on 5.9.x rather than taking a compiler-major migration;
 TypeScript 7 is outside the current typescript-eslint peer range.
 
-The dependency audit on 2026-11-02 reports four transitive advisories
-(three moderate, one low), with no high or critical findings. `bun audit --production`
-reports three (two moderate, one low); it excludes the development-only esbuild copy.
-These are dependency-graph findings, not proof of an exploitable storefront path:
+The dependency audit on 2026-11-05 reports two moderate advisories, both reachable
+only through development dependencies. There are no low, high, or critical findings.
+`bun audit --production` reports no vulnerabilities across 262 packages.
+This is a known-advisory check of the dependency graph, not proof that every
+storefront path is secure.
 
 | Package | Severity | Advisory | Remediation status |
 | --- | --- | --- | --- |
-| `deepmerge` 4.3.1, via shadcn | Low | [CVE-2026-93753](https://github.com/advisories/GHSA-gcqx-w48m-w2h4) | No patched release published. |
-| `esbuild` 0.18.20, via Drizzle Kit's legacy loader | Moderate | [GHSA-67mh-4wv8-2f99](https://github.com/advisories/GHSA-67mh-4wv8-2f99) (no CVE assigned) | Fixed in 0.25.0; the legacy loader requires 0.18.x. The advisory concerns esbuild's development server, not its transform API. |
-| `glob` 13.0.6, via Sentry's bundler tooling | Moderate | [CVE-2026-118773](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) | Fixed in 14.0.2, outside the parent's declared 13.x range. |
-| `minimatch` 3.1.5 and 10.2.6, via lint/build/CLI tooling | Moderate | [CVE-2026-118764](https://github.com/advisories/GHSA-g3hv-75wg-m249) | Fixed in 11.0.1, outside the parents' declared ranges. The reported optimization pipeline is absent from 3.1.5, although the advisory range includes it. |
+| `esbuild` 0.18.20, via Drizzle Kit's legacy loader | Moderate | [GHSA-67mh-4wv8-2f99](https://github.com/advisories/GHSA-67mh-4wv8-2f99) (no CVE assigned) | Fixed in 0.25.0. Stable `drizzle-kit` 0.31.11 still installs the deprecated loader, whose `core-utils` requires `~0.18.20`. The advisory concerns esbuild's development server, not its transform API. |
+| `minimatch` 10.2.6, via typescript-eslint | Moderate | [CVE-2026-118764](https://github.com/advisories/GHSA-g3hv-75wg-m249) | Fixed in 11.0.1; stable `@typescript-eslint/typescript-estree` 8.72.1 still requires `^10.2.2`. No patched 10.x release is available. ESLint's 3.1.5 and Sentry's 11.0.4 copies are outside the current affected range (`>=7.0.0 <11.0.1`). |
 
-No advisory suppression, unsupported major-version override, or prerelease Drizzle
-migration is applied. Recheck with `bun audit` as upstream packages adopt fixes.
-Lint, typecheck, the test suite, the production build, CLI version commands, and a
-production-browser cart add/remove round trip pass. Sentry release creation and
-source-map publishing remain unverified because its build hook reported network errors.
+`bun audit fix --dry-run` confirms both remaining fixes are blocked by upstream
+dependency ranges. No advisory suppression, unsupported major-version override,
+or prerelease Drizzle migration is applied. Keep database tooling, lint coverage,
+and Sentry monitoring intact; recheck `bun audit` and `bun audit --production`
+as upstream packages adopt fixes.
+
+Verification on 2026-11-05: frozen-lockfile installation, lint, typecheck, all 22 tests,
+the production build, and Next/Drizzle CLI version commands pass. Production-browser
+checks cover storefront rendering, cart add/view/confirmed-remove, FAQ expand/collapse
+animations, and horizontal/vertical separator styles. The local production smoke
+used `bun run start --hostname localhost --port 3107` and `http://localhost:3107`.
+Sentry release creation and source-map publishing remain unverified because its
+build hook reported network errors.
 
 ### Developer tools (local only)
 
@@ -228,13 +241,18 @@ locally. Use Stripe test keys and appropriate email recipients.
 - Browse data: `bun run db:studio`
 - `bun run test` loads `.env.local`; the query suites read the seeded database
 
-Add shadcn/ui components with:
+The shadcn CLI is optional, not an application dependency. To generate a component:
 
 ```bash
 bunx --bun shadcn@latest add button
 ```
 
-The generated components import `cn` from `@/lib/utils`.
+The generated components import `cn` from `@/lib/utils`. The downloaded CLI still
+has the [unpatched deepmerge advisory](https://github.com/advisories/GHSA-gcqx-w48m-w2h4);
+the clean production audit does not cover this separate `bunx` execution. Use only
+trusted registries and review generated code and dependency changes. Keep the app
+independent of `shadcn/tailwind.css`, preserve required styles locally, and rerun
+both audits and the checks above after generation.
 
 For Stripe, register `/api/webhooks/stripe` and subscribe to
 `payment_intent.*` events.
