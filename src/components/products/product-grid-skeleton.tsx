@@ -13,7 +13,7 @@ export function ProductGridSkeleton({
 }) {
   return (
     <LoadingRegion label={label}>
-      <ul className={cn("grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3", className)}>
+      <ul className={cn("grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6", className)}>
         {Array.from({ length: count }, (_, index) => (
           <li key={index}>
             <ProductCardSkeleton />

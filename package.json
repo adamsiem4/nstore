@@ -52,6 +52,14 @@
     "bun": ">=1.4.4"
   },
   "packageManager": "bun@1.4.4",
+  "overrides": {
+    "drizzle-kit@0.31.11": {
+      "@esbuild-kit/esm-loader": "npm:tsx@^4.23.15"
+    },
+    "@typescript-eslint/typescript-estree@8.72.1": {
+      "minimatch": "^11.0.4"
+    }
+  },
   "ignoreScripts": [
     "sharp",
     "unrs-resolver"

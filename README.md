@@ -184,28 +184,33 @@ because the React, import, and accessibility plugins do not declare ESLint 10 su
 TypeScript stays on 5.9.x rather than taking a compiler-major migration;
 TypeScript 7 is outside the current typescript-eslint peer range.
 
-The dependency audit on 2026-11-05 reports two moderate advisories, both reachable
-only through development dependencies. There are no low, high, or critical findings.
-`bun audit --production` reports no vulnerabilities across 262 packages.
-This is a known-advisory check of the dependency graph, not proof that every
-storefront path is secure.
+Both `bun audit` and `bun audit --production` report no known vulnerabilities on
+2026-11-05. These are dependency-graph checks, not proof that every storefront
+path is secure.
 
-| Package | Severity | Advisory | Remediation status |
-| --- | --- | --- | --- |
-| `esbuild` 0.18.20, via Drizzle Kit's legacy loader | Moderate | [GHSA-67mh-4wv8-2f99](https://github.com/advisories/GHSA-67mh-4wv8-2f99) (no CVE assigned) | Fixed in 0.25.0. Stable `drizzle-kit` 0.31.11 still installs the deprecated loader, whose `core-utils` requires `~0.18.20`. The advisory concerns esbuild's development server, not its transform API. |
-| `minimatch` 10.2.6, via typescript-eslint | Moderate | [CVE-2026-118764](https://github.com/advisories/GHSA-g3hv-75wg-m249) | Fixed in 11.0.1; stable `@typescript-eslint/typescript-estree` 8.72.1 still requires `^10.2.2`. No patched 10.x release is available. ESLint's 3.1.5 and Sentry's 11.0.4 copies are outside the current affected range (`>=7.0.0 <11.0.1`). |
+Two exact-parent Bun overrides resolve the otherwise blocked development findings:
 
-`bun audit fix --dry-run` confirms both remaining fixes are blocked by upstream
-dependency ranges. No advisory suppression, unsupported major-version override,
-or prerelease Drizzle migration is applied. Keep database tooling, lint coverage,
-and Sentry monitoring intact; recheck `bun audit` and `bun audit --production`
-as upstream packages adopt fixes.
+- `drizzle-kit@0.31.11` resolves its deprecated `@esbuild-kit/esm-loader` dependency
+  to `tsx@^4.23.15`, removing `core-utils` and its vulnerable esbuild 0.18.x copy.
+  Drizzle Kit already uses `tsx`; the obsolete dependency's removal is tracked in
+  [upstream PR #5689](https://github.com/drizzle-team/drizzle-orm/pull/5689).
+- `@typescript-eslint/typescript-estree@8.72.1` resolves `minimatch@^11.0.4`,
+  retaining its existing glob-matching API while taking the security fix.
+  Upstream adoption is tracked in
+  [PR #13145](https://github.com/typescript-eslint/typescript-eslint/pull/13145).
 
-Verification on 2026-11-05: frozen-lockfile installation, lint, typecheck, all 22 tests,
-the production build, and Next/Drizzle CLI version commands pass. Production-browser
-checks cover storefront rendering, cart add/view/confirmed-remove, FAQ expand/collapse
-animations, and horizontal/vertical separator styles. The local production smoke
-used `bun run start --hostname localhost --port 3107` and `http://localhost:3107`.
+These are reviewed, locally maintained exceptions outside the parents' declared
+dependency ranges, not supported upstream releases. Each override stops applying
+when its exact parent version changes: recheck the resolved graph on updates and
+remove the override when the parent adopts a supported fix. No advisory suppression
+or prerelease Drizzle migration is applied; lifecycle-script trust is unchanged.
+
+Verification on 2026-11-05: frozen-lockfile offline installation, lint, typecheck,
+all 22 tests, and the production build pass. Drizzle generates SQL into a temporary
+directory, and its migrate/studio help commands run without database operations.
+A production-browser smoke covers storefront rendering and cart add, view, and
+confirmed removal back to an empty cart at `http://localhost:3108`, using
+`bun run start --hostname localhost --port 3108`.
 Sentry release creation and source-map publishing remain unverified because its
 build hook reported network errors.
 

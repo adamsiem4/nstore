@@ -43,7 +43,7 @@ export function ProductCard({
   source?: string;
 }) {
   return (
-    <article className="flex h-full flex-col rounded-xl bg-product-shot p-2 text-shot-ink">
+    <article className="flex h-full flex-col rounded-lg bg-product-shot p-1.5 text-shot-ink">
       <Link
         href={`/products/${product.id}`}
         className="flex flex-1 flex-col rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-shot-ink focus-visible:ring-offset-2 focus-visible:ring-offset-product-shot"
@@ -64,18 +64,18 @@ export function ProductCard({
         <span
           aria-hidden="true"
           style={{ backgroundColor: product.color }}
-          className="mt-4 ml-1 block size-2.5 rounded-full ring-1 ring-shot-ink/15"
+          className="mt-2.5 ml-1 block size-2 rounded-full ring-1 ring-shot-ink/15"
         />
-        <h2 className="mt-3 px-1 text-sm font-semibold tracking-wide uppercase">
+        <h2 className="mt-1.5 line-clamp-2 px-1 text-xs font-semibold tracking-wide uppercase">
           {product.name}
         </h2>
         {/* ponytail: first sentence, truncated by CSS — the catalog copy is
             spec-first, so sentence one is the one-line summary. */}
-        <p className="mt-1 truncate px-1 font-mono text-xs text-shot-ink-muted">
+        <p className="mt-0.5 truncate px-1 font-mono text-xs text-shot-ink-muted">
           {product.description.split(". ")[0]}
         </p>
       </Link>
-      <div className="mt-4 flex items-center justify-between gap-3 px-1 pb-1">
+      <div className="mt-2.5 flex items-center justify-between gap-2 px-1 pb-0.5">
         <p className="font-mono text-xs tabular-nums">{money.format(product.price)}</p>
         <QuickAddButton product={product} source={source} />
       </div>

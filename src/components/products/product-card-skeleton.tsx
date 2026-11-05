@@ -12,17 +12,17 @@ export function ProductCardSkeleton({
       {...props}
       aria-hidden="true"
       className={cn(
-        "flex h-full flex-col rounded-xl bg-product-shot p-2 text-shot-ink",
+        "flex h-full flex-col rounded-lg bg-product-shot p-1.5 text-shot-ink",
         className,
       )}
     >
       <div className="flex flex-1 flex-col">
         <Skeleton className="aspect-square w-full rounded-md bg-shot-ink/10" />
-        <Skeleton className="mt-4 ml-1 size-2.5 rounded-full bg-shot-ink/10" />
-        <Skeleton className="mt-3 ml-1 h-5 w-3/5 bg-shot-ink/10" />
-        <Skeleton className="mt-1 ml-1 h-4 w-4/5 bg-shot-ink/10" />
+        <Skeleton className="mt-2.5 ml-1 size-2 rounded-full bg-shot-ink/10" />
+        <Skeleton className="mt-1.5 ml-1 h-4 w-3/5 bg-shot-ink/10" />
+        <Skeleton className="mt-1 ml-1 h-3 w-4/5 bg-shot-ink/10" />
       </div>
-      <div className="mt-4 flex items-center justify-between gap-3 px-1 pb-1">
+      <div className="mt-2.5 flex items-center justify-between gap-2 px-1 pb-0.5">
         <Skeleton className="h-4 w-16 bg-shot-ink/10" />
         <Skeleton className="h-7 w-18 rounded-xl bg-shot-ink/10" />
       </div>
