@@ -1,4 +1,4 @@
-name: Dependency security
+name: Dependency Security
 
 on:
   pull_request:
@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   audit:
-    name: Bun audit
+    name: bun audit
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

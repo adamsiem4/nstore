@@ -174,7 +174,7 @@ and GitHub Actions weekly. Next.js and `eslint-config-next` share a PR group,
 as do React and React DOM. Bun major-version updates are ignored because those
 migrations require separate review; PRs are not merged automatically.
 
-The `Dependency security` workflow in `.github/workflows/dependency-security.yml`
+The `Dependency Security` workflow in `.github/workflows/dependency-security.yml`
 runs `bun audit` on every pull request, on pushes changing the manifest, lockfile,
 or workflow, daily at 06:17 UTC, and on manual dispatch. It audits all locked
 dependencies, including development and transitive packages, without installing
