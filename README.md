@@ -81,7 +81,7 @@ public/
 - Return requests from paid orders: an inline item/reason form, persisted confirmation, ownership checks, duplicate protection, and fully refunded-order blocking
 - Drizzle catalog (`products` + `product_details`), payment and saved-address schemas with generated PostgreSQL migrations and an atomic seed script
 - Stripe webhook signature verification and durable payment-status synchronization
-- Idempotent Resend confirmation emails for paid orders, using one branded HTML and plain-text template that also covers the shipped and delivered steps
+- Idempotent Resend confirmation emails for paid orders, members and guests alike (guests at the address they give Stripe Checkout, without the account link), using one branded HTML and plain-text template that also covers the shipped and delivered steps
 - Order-page delivery tracker and status badge, with fulfillment stored on the Stripe payment's metadata; development-only Dev tools are gated by an admin account's saved switch and move only that account's own paid orders through the steps, sending each step's email
 - Consent-gated PostHog analytics, loaded only after the visitor accepts (pageviews, autocapture, Clerk identity, `Products Searched` / `Product Added` (with `source`) / `Product Removed` / `Checkout Started` / `Order Completed` ecommerce events) and Sentry client/server/edge error monitoring
 - Zero-configuration Vercel deployment
@@ -140,6 +140,10 @@ order — copy it and fill in. Where each value comes from:
 Every value is optional except Clerk and `DATABASE_URL`: an empty variable
 disables its integration, and server code throws a named error instead of
 failing silently.
+
+The Stripe webhook is the exception: with Resend unset it still records the
+payment, logs that the confirmation email was skipped, and answers 200 so Stripe
+does not retry.
 
 ## Development
 
