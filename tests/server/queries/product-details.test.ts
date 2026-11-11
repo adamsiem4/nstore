@@ -1,8 +1,11 @@
-// ponytail: needs DATABASE_URL and a seeded database (`bun run db:migrate && bun run db:seed`)
+// ponytail: needs DATABASE_URL and a seeded database (`bun run db:migrate && bun run db:seed`);
+// without one (CI, a fresh clone) these are skipped rather than failed.
 import assert from "node:assert/strict";
-import { test } from "bun:test";
+import { test as bunTest } from "bun:test";
 import { getProductDetails } from "@/server/queries/product-details";
 import { getProducts } from "@/server/queries/products";
+
+const test = bunTest.skipIf(!process.env.DATABASE_URL);
 
 // A product page renders the whole sheet, so a missing or thin one is a hole in
 // the page, not a degraded section.

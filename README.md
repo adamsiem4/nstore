@@ -160,7 +160,7 @@ Useful checks:
 ```bash
 bun run test
 bun run lint
-bunx tsc --noEmit
+bun run typecheck
 bun run build
 ```
 
@@ -173,6 +173,14 @@ Dependabot is configured in `.github/dependabot.yml` to check Bun dependencies
 and GitHub Actions weekly. Next.js and `eslint-config-next` share a PR group,
 as do React and React DOM. Bun major-version updates are ignored because those
 migrations require separate review; PRs are not merged automatically.
+
+The `CI` workflow in `.github/workflows/ci.yml` runs `bun run lint`,
+`bun run typecheck`, and `bun run test` on every pull request and on pushes to
+`master`. It uses no secrets: the catalog query tests need a seeded database and
+skip when `DATABASE_URL` is unset, so run `bun run test` locally with
+`.env.local` before changing the catalog or its queries. The production build is
+not part of CI because it reads the catalog at build time. Make the `verify`
+check required in the branch ruleset after its first run.
 
 The `Dependency Security` workflow in `.github/workflows/dependency-security.yml`
 runs `bun audit` on every pull request, on pushes changing the manifest, lockfile,
