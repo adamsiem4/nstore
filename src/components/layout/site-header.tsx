@@ -4,6 +4,7 @@ import { SearchIcon, ShoppingBagIcon, UserIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { CartSheet } from "@/components/cart/cart";
 import { CartDrawer, CartLink } from "@/components/cart/cart-drawer";
+import { HeaderBoundary } from "@/components/layout/header-boundary";
 import { Input } from "@/components/ui/input";
 import { PillButton, pillButtonVariants } from "@/components/ui/pill-button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -205,9 +206,11 @@ export function SiteHeader() {
           </form>
         </div>
 
-        <Suspense fallback={<CartControl />}>
-          <HeaderCartControl />
-        </Suspense>
+        <HeaderBoundary fallback={<CartControl count={0} />}>
+          <Suspense fallback={<CartControl />}>
+            <HeaderCartControl />
+          </Suspense>
+        </HeaderBoundary>
         <Show when="signed-out">
           <Link
             href="/sign-in"
@@ -294,9 +297,11 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-1 border-t pt-2">
-            <Suspense fallback={<CartControl mobile />}>
-              <HeaderCartControl mobile />
-            </Suspense>
+            <HeaderBoundary fallback={<CartControl count={0} mobile />}>
+              <Suspense fallback={<CartControl mobile />}>
+                <HeaderCartControl mobile />
+              </Suspense>
+            </HeaderBoundary>
             <div className="ml-auto flex items-center gap-1">
               <Show when="signed-out">
                 <Link href="/sign-in" className={cn(navLinkClass, "gap-2 normal-case tracking-normal text-foreground")}>
@@ -315,9 +320,12 @@ export function SiteHeader() {
         </div>
       </div>
 
-      <Suspense fallback={null}>
-        <HeaderCartDrawer />
-      </Suspense>
+      {/* No drawer when the cart can't load: CartLink then navigates to /cart, whose own boundary explains. */}
+      <HeaderBoundary fallback={null}>
+        <Suspense fallback={null}>
+          <HeaderCartDrawer />
+        </Suspense>
+      </HeaderBoundary>
     </div>
   );
 }

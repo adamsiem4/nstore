@@ -636,7 +636,7 @@ The advisor ran this exact code against `a89aea0` in a scratch clone: `8 pass, 0
 - [ ] `bun test --isolate --conditions=react-server tests/app/api/webhooks` → `8 pass`, `0 fail`
 - [ ] `bun run test` → `0 fail`
 - [ ] `bun run lint` and `bunx tsc --noEmit` exit 0
-- [ ] `grep -n "getOrders" src/app/api/webhooks/stripe/route.ts` → no matches
+- [ ] `grep -cE "getOrders\(|import .*getOrders" src/app/api/webhooks/stripe/route.ts` → `0` (no import or call; the one remaining mention is in a comment)
 - [ ] `grep -c "isEmailConfigured" src/app/api/webhooks/stripe/route.ts` → `2`
 - [ ] `git status --short` lists only the five in-scope files (and `plans/`)
 - [ ] `plans/README.md` status row updated
