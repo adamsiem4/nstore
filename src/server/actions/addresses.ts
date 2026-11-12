@@ -21,6 +21,16 @@ function field(form: FormData, name: string, { max = 100, optional = false } = {
 const mine = (userId: string, id: string) =>
   and(eq(addresses.id, id), eq(addresses.clerkUserId, userId));
 
+/** False for an address removed in another tab, or one that was never this user's. */
+async function owns(userId: string, id: string) {
+  const [address] = await getDb()
+    .select({ id: addresses.id })
+    .from(addresses)
+    .where(mine(userId, id))
+    .limit(1);
+  return Boolean(address);
+}
+
 /** Creates, or updates when the form carries an `id`. */
 export async function saveAddress(form: FormData) {
   const { userId } = await auth.protect();
@@ -37,6 +47,9 @@ export async function saveAddress(form: FormData) {
     isDefault: form.get("isDefault") === "on",
   };
   const id = field(form, "id", { optional: true });
+  // Nothing to update: writing anyway would clear the current default and set none.
+  if (id && !(await owns(userId, id))) redirect("/account/addresses");
+
   const db = getDb();
   const write = id
     ? db.update(addresses).set(values).where(mine(userId, id))
@@ -62,13 +75,17 @@ export async function deleteAddress(form: FormData) {
 
 export async function setDefaultAddress(form: FormData) {
   const { userId } = await auth.protect();
+  const id = field(form, "id");
   const db = getDb();
-  await db.batch([
-    db
-      .update(addresses)
-      .set({ isDefault: false })
-      .where(and(eq(addresses.clerkUserId, userId), eq(addresses.isDefault, true))),
-    db.update(addresses).set({ isDefault: true }).where(mine(userId, field(form, "id"))),
-  ]);
+  // Same guard as saveAddress: only swap the default when there is a row to give it to.
+  if (await owns(userId, id)) {
+    await db.batch([
+      db
+        .update(addresses)
+        .set({ isDefault: false })
+        .where(and(eq(addresses.clerkUserId, userId), eq(addresses.isDefault, true))),
+      db.update(addresses).set({ isDefault: true }).where(mine(userId, id)),
+    ]);
+  }
   refresh();
 }

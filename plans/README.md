@@ -18,7 +18,7 @@ migration. The repository itself was not modified outside `plans/`.
 | [002](002-webhook-order-email.md) | Every paid order gets its confirmation email, and email problems never break payment sync | P1 | S–M | — | DONE |
 | [003](003-store-error-boundary.md) | A failed page or cart read no longer replaces the whole store with a blank error screen | P2 | S | — | DONE |
 | [004](004-security-headers.md) | Every response carries baseline security headers | P2 | S | — | DONE |
-| [005](005-action-tests-and-default-address-fix.md) | Checkout, cart and address actions are tested; a stale address id can no longer wipe the default | P2 | M | — | TODO |
+| [005](005-action-tests-and-default-address-fix.md) | Checkout, cart and address actions are tested; a stale address id can no longer wipe the default | P2 | M | — | DONE |
 | [007](007-consent-recheck-and-payments-index.md) | Analytics queued before a consent withdrawal never fires; the order list has an index | P3 | S | — | TODO |
 | [006](006-static-shell-and-cached-catalog.md) | Pages ship a prerendered shell and the catalog is read once, not on every request | P3 | M | 001, 003, 004 | TODO |
 
