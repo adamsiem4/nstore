@@ -36,6 +36,7 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 - Clerk for authentication and authorization
 - Drizzle's Neon HTTP driver for PostgreSQL access
 - Signed Stripe webhooks as the source of truth for payment state
+- Baseline security headers on every response (`next.config.ts`): same-origin framing only, no MIME sniffing, explicit referrer and permissions policies; no script Content-Security-Policy yet
 
 ## Project structure
 
