@@ -31,11 +31,13 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 
 - One Next.js application; no separate frontend or backend repository
 - Server Components by default, with narrow Client Component boundaries
+- Cache Components: each page's static shell is prerendered; cart, sign-in state, and orders stream in behind Suspense; the catalog is cached across requests for up to an hour
 - Server-only database access, secrets, authorization, and business logic
 - Server Actions for application mutations and Route Handlers for HTTP endpoints
 - Clerk for authentication and authorization
 - Drizzle's Neon HTTP driver for PostgreSQL access
 - Signed Stripe webhooks as the source of truth for payment state
+- Baseline security headers on every response (`next.config.ts`): same-origin framing only, no MIME sniffing, explicit referrer and permissions policies; no script Content-Security-Policy yet
 
 ## Project structure
 
@@ -81,7 +83,7 @@ public/
 - Return requests from paid orders: an inline item/reason form, persisted confirmation, ownership checks, duplicate protection, and fully refunded-order blocking
 - Drizzle catalog (`products` + `product_details`), payment and saved-address schemas with generated PostgreSQL migrations and an atomic seed script
 - Stripe webhook signature verification and durable payment-status synchronization
-- Idempotent Resend confirmation emails for paid orders, using one branded HTML and plain-text template that also covers the shipped and delivered steps
+- Idempotent Resend confirmation emails for paid orders, members and guests alike (guests at the address they give Stripe Checkout, without the account link), using one branded HTML and plain-text template that also covers the shipped and delivered steps
 - Order-page delivery tracker and status badge, with fulfillment stored on the Stripe payment's metadata; development-only Dev tools are gated by an admin account's saved switch and move only that account's own paid orders through the steps, sending each step's email
 - Consent-gated PostHog analytics, loaded only after the visitor accepts (pageviews, autocapture, Clerk identity, `Products Searched` / `Product Added` (with `source`) / `Product Removed` / `Checkout Started` / `Order Completed` ecommerce events) and Sentry client/server/edge error monitoring
 - Zero-configuration Vercel deployment
@@ -141,6 +143,10 @@ Every value is optional except Clerk and `DATABASE_URL`: an empty variable
 disables its integration, and server code throws a named error instead of
 failing silently.
 
+The Stripe webhook is the exception: with Resend unset it still records the
+payment, logs that the confirmation email was skipped, and answers 200 so Stripe
+does not retry.
+
 ## Development
 
 Use Node.js 24 LTS (24.22.1, pinned in `.node-version`) and Bun 1.4.4.
@@ -160,7 +166,7 @@ Useful checks:
 ```bash
 bun run test
 bun run lint
-bunx tsc --noEmit
+bun run typecheck
 bun run build
 ```
 
@@ -173,6 +179,14 @@ Dependabot is configured in `.github/dependabot.yml` to check Bun dependencies
 and GitHub Actions weekly. Next.js and `eslint-config-next` share a PR group,
 as do React and React DOM. Bun major-version updates are ignored because those
 migrations require separate review; PRs are not merged automatically.
+
+The `CI` workflow in `.github/workflows/ci.yml` runs `bun run lint`,
+`bun run typecheck`, and `bun run test` on every pull request and on pushes to
+`master`. It uses no secrets: the catalog query tests need a seeded database and
+skip when `DATABASE_URL` is unset, so run `bun run test` locally with
+`.env.local` before changing the catalog or its queries. The production build is
+not part of CI because it reads the catalog at build time. Make the `verify`
+check required in the branch ruleset after its first run.
 
 The `Dependency Security` workflow in `.github/workflows/dependency-security.yml`
 runs `bun audit` on every pull request, on pushes changing the manifest, lockfile,
@@ -199,7 +213,7 @@ components remain: accordion keyframes live in `src/app/globals.css`, and state/
 selectors use native Tailwind variants. Lifecycle-script trust is unchanged.
 
 Next.js and `eslint-config-next` remain on 16.4.4, React and React DOM on 19.3.1,
-and `posthog-js` on 1.444.3, with Node 24 type definitions.
+and `posthog-js` on 1.445.1, with Node 24 type definitions.
 Stripe stays on 22.x because 23.x changes its API contract; ESLint stays on 9.x
 because the React, import, and accessibility plugins do not declare ESLint 10 support.
 TypeScript stays on 5.9.x rather than taking a compiler-major migration;
@@ -263,7 +277,7 @@ locally. Use Stripe test keys and appropriate email recipients.
 - Schema: `src/server/db/schema.ts`
 - Queries: `src/server/queries/`
 - Schema changes: edit the schema → `bun run db:generate` → review SQL in `drizzle/` → `bun run db:migrate`
-- Catalog changes: edit `src/server/db/seed/*` → `bun run db:seed`; it replaces `products` and `product_details` in one transaction, leaving payments untouched
+- Catalog changes: edit `src/server/db/seed/*` → `bun run db:seed`; it replaces `products` and `product_details` in one transaction, leaving payments untouched. The running site caches the catalog (prices included) for up to an hour; a deployment starts a fresh cache
 - Browse data: `bun run db:studio`
 - `bun run test` loads `.env.local`; the query suites read the seeded database
 

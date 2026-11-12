@@ -1,0 +1,1 @@
+CREATE INDEX "payments_orders_idx" ON "payments" USING btree ("clerk_user_id","status","created_at");

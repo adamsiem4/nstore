@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { ThemePicker } from "@/components/layout/theme-picker";
 
@@ -31,7 +32,11 @@ const linkClass =
   "inline-flex min-h-11 items-center rounded-lg text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-card sm:min-h-8";
 
 /** Column nav, wordmark, and copyright shown below every store route. */
-export function SiteFooter() {
+export async function SiteFooter() {
+  // Cached so the copyright year is a stored value, not a clock read on every prerender.
+  "use cache";
+  cacheLife("days");
+
   return (
     <footer className="rounded-xl border bg-card p-5 sm:p-8 lg:p-10">
       <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-4">

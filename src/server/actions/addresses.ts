@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, exists } from "drizzle-orm";
 import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { SHIPPING_COUNTRIES } from "@/lib/cart";
@@ -21,6 +21,27 @@ function field(form: FormData, name: string, { max = 100, optional = false } = {
 const mine = (userId: string, id: string) =>
   and(eq(addresses.id, id), eq(addresses.clerkUserId, userId));
 
+const isDefaultOf = (userId: string) =>
+  and(eq(addresses.clerkUserId, userId), eq(addresses.isDefault, true));
+
+/**
+ * The first two statements of a batch (one transaction) that hands the default
+ * to address `id`; the caller adds the write that sets it. The partial unique
+ * index allows one default per user, so the old one has to go first — but only
+ * while there is still a row to give it to. An address removed in another tab,
+ * or one that was never this user's, leaves the current default alone.
+ */
+function releaseDefaultFor(userId: string, id: string) {
+  const db = getDb();
+  const target = () => db.select({ id: addresses.id }).from(addresses).where(mine(userId, id));
+  return [
+    // Held until the batch commits: a delete racing in from another tab waits
+    // for it instead of landing between the check below and the caller's write.
+    target().for("update"),
+    db.update(addresses).set({ isDefault: false }).where(and(isDefaultOf(userId), exists(target()))),
+  ] as const;
+}
+
 /** Creates, or updates when the form carries an `id`. */
 export async function saveAddress(form: FormData) {
   const { userId } = await auth.protect();
@@ -38,18 +59,17 @@ export async function saveAddress(form: FormData) {
   };
   const id = field(form, "id", { optional: true });
   const db = getDb();
-  const write = id
-    ? db.update(addresses).set(values).where(mine(userId, id))
-    : db.insert(addresses).values({ ...values, clerkUserId: userId });
 
-  // The partial unique index allows one default per user, so the old one is
-  // cleared in the same batch (one transaction) before the new one is set.
-  const clearDefault = db
-    .update(addresses)
-    .set({ isDefault: false })
-    .where(and(eq(addresses.clerkUserId, userId), eq(addresses.isDefault, true)));
-  if (values.isDefault) await db.batch([clearDefault, write]);
-  else await write;
+  if (id) {
+    const update = db.update(addresses).set(values).where(mine(userId, id));
+    if (values.isDefault) await db.batch([...releaseDefaultFor(userId, id), update]);
+    else await update;
+  } else {
+    const insert = db.insert(addresses).values({ ...values, clerkUserId: userId });
+    // A new row always exists, so the old default is cleared unconditionally, in the same batch.
+    if (values.isDefault) await db.batch([db.update(addresses).set({ isDefault: false }).where(isDefaultOf(userId)), insert]);
+    else await insert;
+  }
 
   redirect("/account/addresses");
 }
@@ -62,13 +82,11 @@ export async function deleteAddress(form: FormData) {
 
 export async function setDefaultAddress(form: FormData) {
   const { userId } = await auth.protect();
+  const id = field(form, "id");
   const db = getDb();
   await db.batch([
-    db
-      .update(addresses)
-      .set({ isDefault: false })
-      .where(and(eq(addresses.clerkUserId, userId), eq(addresses.isDefault, true))),
-    db.update(addresses).set({ isDefault: true }).where(mine(userId, field(form, "id"))),
+    ...releaseDefaultFor(userId, id),
+    db.update(addresses).set({ isDefault: true }).where(mine(userId, id)),
   ]);
   refresh();
 }

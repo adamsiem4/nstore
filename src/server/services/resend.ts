@@ -2,6 +2,11 @@ import "server-only";
 
 import { Resend } from "resend";
 
+/** False while either Resend variable is empty: email is switched off, not broken. */
+export function isEmailConfigured() {
+  return Boolean(process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL);
+}
+
 export function getResend() {
   const apiKey = process.env.RESEND_API_KEY;
 

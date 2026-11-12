@@ -69,8 +69,11 @@ const region = new Intl.DisplayNames("en", { type: "region" });
 const escape = (value: string) =>
   value.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
-/** The email for one order step (paid, shipped, delivered): HTML plus a plain-text fallback. */
-export function orderEmail(step: OrderStep, order: OrderDetails, origin: string) {
+/**
+ * The email for one order step (paid, shipped, delivered): HTML plus a plain-text fallback.
+ * `account` is false for guest checkouts: they have no /orders page, so the link is left out.
+ */
+export function orderEmail(step: OrderStep, order: OrderDetails, origin: string, account = true) {
   const { heading, intro, address: addressLabel, subject } = copy[step];
   const reached = steps.indexOf(step);
   const money = (cents: number) => orderMoney(cents, order.currency);
@@ -153,11 +156,15 @@ export function orderEmail(step: OrderStep, order: OrderDetails, origin: string)
           <p class="mu" style="margin:0;${muted}">${shipTo.map(escape).join("<br>")}</p>`
               : ""
           }
-          <table role="presentation" cellpadding="0" cellspacing="0" class="cta" style="margin-top:32px">
+          ${
+            account
+              ? `<table role="presentation" cellpadding="0" cellspacing="0" class="cta" style="margin-top:32px">
             <tr><td class="btn" style="background:${color.button};border-radius:6px">
               <a href="${escape(orderUrl)}" style="display:inline-block;padding:12px 24px;font-size:16px;line-height:24px;color:${color.text};font-weight:600;text-decoration:none">View your order →</a>
             </td></tr>
-          </table>
+          </table>`
+              : ""
+          }
         </td></tr>
         <tr><td class="mu inset" style="padding:24px 32px 0;font-size:13px;line-height:20px;${muted}">
           Questions about your order? <a href="${escape(`${origin}/customer-service`)}" class="fg" style="color:${color.text}">Visit customer service</a>.<br>
@@ -180,8 +187,7 @@ export function orderEmail(step: OrderStep, order: OrderDetails, origin: string)
     ...totals.map(([label, value]) => `${label}: ${value}`),
     `Total paid: ${money(order.amount)}`,
     ...(shipTo.length ? ["", `${addressLabel}:`, ...shipTo] : []),
-    "",
-    `View your order: ${orderUrl}`,
+    ...(account ? ["", `View your order: ${orderUrl}`] : []),
     "",
     "nstore",
   ].join("\n");
