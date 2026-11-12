@@ -21,8 +21,8 @@ migration. The repository itself was not modified outside `plans/`.
 | [005](005-action-tests-and-default-address-fix.md) | Checkout, cart and address actions are tested; a stale address id can no longer wipe the default | P2 | M | — | DONE |
 | [007](007-consent-recheck-and-payments-index.md) | Analytics queued before a consent withdrawal never fires; the order list has an index | P3 | S | — | DONE |
 | [006](006-static-shell-and-cached-catalog.md) | Pages ship a prerendered shell and the catalog is read once, not on every request | P3 | M | 001, 003, 004 | DONE |
-| [008](008-review-fixes-consent-receipt-cache.md) | Review fixes: opt-in only under consent, complete receipts, a real one-hour catalog limit | P1 | S | 001–007 | TODO |
-| [009](009-atomic-default-address-swap.md) | Changing the default address is one atomic transaction (optional) | P3 | S | 008 | TODO |
+| [008](008-review-fixes-consent-receipt-cache.md) | Review fixes: opt-in only under consent, complete receipts, a real one-hour catalog limit | P1 | S | 001–007 | DONE |
+| [009](009-atomic-default-address-swap.md) | Changing the default address is one atomic transaction (optional) | P3 | S | 008 | DONE |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale — finding fixed independently or approach abandoned)
 

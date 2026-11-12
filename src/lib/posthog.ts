@@ -9,6 +9,7 @@ let client: Promise<PostHog> | undefined;
 // sends nothing to a PostHog host before consent.
 function load() {
   client ??= import("posthog-js").then(({ default: posthog }) => {
+    // Starts opted out: nothing is sent until withPostHog opts in below.
     posthog.init(token!, {
       api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
       defaults: "2026-05-30",
@@ -16,8 +17,6 @@ function load() {
       opt_out_capturing_persistence_type: "localStorage",
       opt_out_persistence_by_default: true,
     });
-    // Also clears an opt-out persisted by an earlier "Reject".
-    posthog.opt_in_capturing();
     return posthog;
   });
   return client;
@@ -28,7 +27,11 @@ export function withPostHog(use: (posthog: PostHog) => unknown) {
   if (!token || getConsent() !== "granted") return;
   void load().then((posthog) => {
     // Asked again on arrival: the visitor may have declined while the chunk downloaded.
-    if (getConsent() === "granted") use(posthog);
+    if (getConsent() !== "granted") return;
+    // Opting in sends an event of its own, so it happens here, under the same
+    // check, and once: on first use and again after a "Reject" opted the SDK out.
+    if (!posthog.has_opted_in_capturing()) posthog.opt_in_capturing();
+    use(posthog);
   });
 }
 
@@ -39,7 +42,7 @@ export function startPostHog() {
 
   window.addEventListener(CONSENT_EVENT, (event) => {
     const consent = (event as CustomEvent<Consent | null>).detail;
-    if (consent === "granted") void load();
+    if (consent === "granted") withPostHog(() => {});
     else void client?.then((posthog) => posthog.opt_out_capturing());
   });
 }

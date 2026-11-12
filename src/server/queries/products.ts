@@ -21,7 +21,9 @@ const columns = {
  */
 async function getCatalog(): Promise<Product[]> {
   "use cache";
-  cacheLife("hours");
+  // Refreshed in the background after 15 minutes, and never served more than an
+  // hour old: the built-in "hours" profile would keep a stale entry for a day.
+  cacheLife({ stale: 300, revalidate: 900, expire: 3600 });
 
   return getDb().select(columns).from(products).orderBy(asc(products.position));
 }

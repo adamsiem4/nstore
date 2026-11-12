@@ -3,25 +3,24 @@ import { beforeEach, mock, test } from "bun:test";
 import type { SQL } from "drizzle-orm";
 import { PgDialect } from "drizzle-orm/pg-core";
 
-type Write = { kind: "insert" | "update" | "delete"; values?: Record<string, unknown>; where?: SQL };
+type Statement = { kind: "select" | "insert" | "update" | "delete"; values?: Record<string, unknown>; where?: SQL; lock?: string };
 
 let userId: string | null = "user_owner";
-let owned = true; // whether the submitted id is one of this user's addresses
-let ran: Write[] = []; // writes awaited on their own
-let batches: Write[][] = []; // writes sent together as one transaction
+let ran: Statement[] = []; // statements awaited on their own
+let batches: Statement[][] = []; // statements sent together as one transaction
 
 beforeEach(() => {
   userId = "user_owner";
-  owned = true;
   ran = [];
   batches = [];
 });
 
-// Records each write instead of running it; nothing happens until it is awaited or batched.
-function write(kind: Write["kind"]) {
-  const record: Write = { kind };
+// Records each statement instead of running it; nothing happens until it is awaited or batched.
+function statement(kind: Statement["kind"]) {
+  const record: Statement = { kind };
   const chain = {
     record,
+    from: () => chain,
     values(values: Record<string, unknown>) {
       record.values = values;
       return chain;
@@ -34,6 +33,12 @@ function write(kind: Write["kind"]) {
       record.where = condition;
       return chain;
     },
+    for(strength: string) {
+      record.lock = strength;
+      return chain;
+    },
+    // Lets a recorded select sit inside exists(...): its condition, and so its bound values, flow into the outer query.
+    getSQL: () => record.where,
     then(resolve: (rows: unknown[]) => void) {
       ran.push(record);
       resolve([]);
@@ -57,12 +62,12 @@ mock.module("next/navigation", () => ({
 }));
 mock.module("@/server/db", () => ({
   getDb: () => ({
-    insert: () => write("insert"),
-    update: () => write("update"),
-    delete: () => write("delete"),
-    select: () => ({ from: () => ({ where: () => ({ limit: async () => (owned ? [{ id: "addr_1" }] : []) }) }) }),
-    batch: async (writes: { record: Write }[]) => {
-      batches.push(writes.map(({ record }) => record));
+    select: () => statement("select"),
+    insert: () => statement("insert"),
+    update: () => statement("update"),
+    delete: () => statement("delete"),
+    batch: async (statements: { record: Statement }[]) => {
+      batches.push(statements.map(({ record }) => record));
     },
   }),
 }));
@@ -71,7 +76,7 @@ mock.module("@/server/db", () => ({
 const { deleteAddress, saveAddress, setDefaultAddress } = await import("@/server/actions/addresses");
 
 /** The values a WHERE clause is bound to, e.g. ["addr_1", "user_owner"]. */
-const bound = (record: Write) => (record.where ? new PgDialect().sqlToQuery(record.where).params : []);
+const bound = (record: Statement) => (record.where ? new PgDialect().sqlToQuery(record.where).params : []);
 
 function address(fields: Record<string, string> = {}) {
   const form = new FormData();
@@ -118,23 +123,34 @@ test("a new default clears the old one in the same transaction", async () => {
   assert.equal(insert.values?.isDefault, true);
 });
 
-test("edits, removals and default changes only touch the signed-in user's own address", async () => {
+test("edits and removals only touch the signed-in user's own address", async () => {
   await assert.rejects(saveAddress(address({ id: "addr_1" })), toList);
   await deleteAddress(only("addr_1"));
-  await setDefaultAddress(only("addr_1"));
 
+  assert.deepEqual(batches, []);
   assert.deepEqual(ran.map((record) => [record.kind, bound(record)]), [
     ["update", ["addr_1", "user_owner"]],
     ["delete", ["addr_1", "user_owner"]],
   ]);
-  const [[clear, promote]] = batches;
-  assert.deepEqual([clear.values, bound(clear)], [{ isDefault: false }, ["user_owner", true]]);
-  assert.deepEqual([promote.values, bound(promote)], [{ isDefault: true }, ["addr_1", "user_owner"]]);
 });
 
-test("an address that is gone or someone else's leaves the current default alone", async () => {
-  owned = false;
-  await assert.rejects(saveAddress(address({ id: "addr_gone", isDefault: "on" })), toList);
-  await setDefaultAddress(only("addr_gone"));
-  assert.deepEqual([ran, batches], [[], []]);
+// Whether the address still exists is decided by the database, inside the same
+// transaction as the swap. What can be checked here is that the swap is built
+// that way: lock the target, release the old default only if the target is this
+// user's, then set the new one, with no separate look-up beforehand.
+test("handing over the default locks the target and releases the old default only while the target exists", async () => {
+  await setDefaultAddress(only("addr_1"));
+  await assert.rejects(saveAddress(address({ id: "addr_1", isDefault: "on" })), toList);
+
+  assert.deepEqual(ran, [], "one transaction each, nothing checked or written outside it");
+  for (const [lock, release, write] of batches) {
+    assert.deepEqual([lock.kind, lock.lock, bound(lock)], ["select", "update", ["addr_1", "user_owner"]]);
+    assert.deepEqual(
+      [release.kind, release.values, bound(release)],
+      ["update", { isDefault: false }, ["user_owner", true, "addr_1", "user_owner"]],
+      "this user's current default, and only if addr_1 is this user's address",
+    );
+    assert.deepEqual([write.kind, write.values?.isDefault, bound(write)], ["update", true, ["addr_1", "user_owner"]]);
+  }
+  assert.equal(batches.length, 2);
 });

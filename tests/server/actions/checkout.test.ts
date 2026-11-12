@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { beforeEach, mock, test } from "bun:test";
+import type { SQL } from "drizzle-orm";
+import { PgDialect } from "drizzle-orm/pg-core";
 import type { CartLine } from "@/lib/cart";
 
 const kettle = { id: "kettle", name: "Kettle", description: "Boils water", category: "Kitchen appliances", image: "/products/kettle.webp", color: "#d6d4cd", price: 49 };
@@ -10,6 +12,7 @@ type Params = Record<string, unknown>;
 let lines: CartLine[] = [];
 let user: { id: string; primaryEmailAddress: { emailAddress: string }; privateMetadata: Record<string, unknown> } | null = null;
 let defaultAddress: typeof home | null = null;
+let addressQuery: SQL | undefined; // the WHERE clause the default-address lookup ran with
 let savedCustomerExists = true;
 let sessions: Params[] = [];
 let customerUpdates: [string, Params][] = [];
@@ -20,6 +23,7 @@ beforeEach(() => {
   lines = [{ product: kettle, quantity: 1 }];
   user = null;
   defaultAddress = null;
+  addressQuery = undefined;
   savedCustomerExists = true;
   sessions = [];
   customerUpdates = [];
@@ -45,7 +49,10 @@ mock.module("next/navigation", () => ({
 }));
 mock.module("@/server/queries/cart", () => ({ getCartLines: async () => lines }));
 mock.module("@/server/db", () => ({
-  getDb: () => ({ select: () => ({ from: () => ({ where: async () => (defaultAddress ? [defaultAddress] : []) }) }) }),
+  getDb: () => ({ select: () => ({ from: () => ({ where: async (condition: SQL) => {
+    addressQuery = condition;
+    return defaultAddress ? [defaultAddress] : [];
+  } }) }) }),
 }));
 mock.module("@/server/services/stripe", () => ({
   getStripe: () => ({
@@ -126,6 +133,8 @@ test("a member's default address and phone pre-fill Checkout through their saved
   }]]);
   assert.equal(sessions[0].customer, "cus_saved");
   assert.ok(!("customer_email" in sessions[0]), "Stripe rejects a session with both customer and customer_email");
+  // The fake returns whatever it holds, so the filter is what keeps another member's address out.
+  assert.deepEqual(new PgDialect().sqlToQuery(addressQuery!).params, ["user_member", true], "only this member's default address is looked up");
   assert.deepEqual([customerCreates, metadataWrites], [[], []]);
 });
 

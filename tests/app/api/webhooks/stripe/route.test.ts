@@ -8,6 +8,7 @@ process.env.STRIPE_WEBHOOK_SECRET = "whsec_nstore";
 // What Stripe, Postgres and Resend hold; each test sets these, the route reads them.
 let intent: Record<string, unknown> | null = null; // null: an intent Stripe doesn't know
 let session: Record<string, unknown> | null = null; // null: a payment made outside Checkout
+let allLineItems: Record<string, unknown>[] = []; // what Stripe returns when asked for every line item
 let row: { confirmationEmailSentAt: Date | null } = { confirmationEmailSentAt: null };
 let upserts: Record<string, unknown>[] = [];
 let sent: { to: string; subject: string; html: string; text: string; key?: string }[] = [];
@@ -17,6 +18,7 @@ let failSend = false;
 beforeEach(() => {
   intent = null;
   session = null;
+  allLineItems = [];
   row = { confirmationEmailSentAt: null };
   upserts = [];
   sent = [];
@@ -37,6 +39,7 @@ mock.module("@/server/services/stripe", () => ({
       });
     }) as never;
     stripe.checkout.sessions.list = (async () => ({ data: session ? [session] : [] })) as never;
+    stripe.checkout.sessions.listLineItems = (() => ({ autoPagingToArray: async () => allLineItems })) as never;
     return stripe;
   },
 }));
@@ -173,6 +176,18 @@ test("a guest order is emailed to the address typed into Checkout, without an ac
   assert.ok(sent[0].text.includes("Total paid: €64.95"));
   assert.ok(!sent[0].html.includes("/orders/") && !sent[0].text.includes("/orders/"), "guests have no order page");
   assert.ok(row.confirmationEmailSentAt instanceof Date);
+});
+
+test("a basket larger than Stripe's first page of line items is listed in full", async () => {
+  const line = (n: number) => ({ id: `li_${n}`, description: `Product ${n}`, quantity: 1, amount_total: 500, currency: "eur" });
+  allLineItems = Array.from({ length: 12 }, (_, index) => line(index + 1));
+  intent = { ...paid, receipt_email: "member@example.com", metadata: { clerkUserId: "user_member" } };
+  // Stripe expands the first ten and flags that there are more.
+  session = { ...checkout, id: "cs_test_big", line_items: { has_more: true, data: allLineItems.slice(0, 10) } };
+
+  assert.equal((await deliver()).status, 200);
+  assert.ok(sent[0].text.includes("Product 10 × 1"));
+  assert.ok(sent[0].text.includes("Product 12 × 1"), "items past the first page are in the email");
 });
 
 test("unpaid, unaddressed and email-disabled payments are recorded without an email", async () => {

@@ -92,6 +92,10 @@ export async function POST(request: Request) {
       limit: 1,
       expand: ["data.line_items"],
     });
+    // Stripe expands only the first ten line items; a bigger basket needs the rest fetched.
+    const items = session?.line_items?.has_more
+      ? await stripe.checkout.sessions.listLineItems(session.id, { limit: 100 }).autoPagingToArray({ limit: 1000 })
+      : (session?.line_items?.data ?? []);
     // Only signed-in checkouts set receipt_email; a guest typed theirs into Checkout.
     const to = intent.receipt_email ?? session?.customer_details?.email;
 
@@ -104,7 +108,7 @@ export async function POST(request: Request) {
           currency: intent.currency,
           createdAt: new Date(intent.created * 1000),
           // Empty and null when the payment did not come from Checkout; the total still shows.
-          items: (session?.line_items?.data ?? []).map((item) => ({
+          items: items.map((item) => ({
             id: item.id,
             name: item.description,
             quantity: item.quantity,
