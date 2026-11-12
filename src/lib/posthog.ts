@@ -25,7 +25,11 @@ function load() {
 
 /** Runs `use` with PostHog when analytics was accepted; does nothing otherwise. */
 export function withPostHog(use: (posthog: PostHog) => unknown) {
-  if (token && getConsent() === "granted") void load().then(use);
+  if (!token || getConsent() !== "granted") return;
+  void load().then((posthog) => {
+    // Asked again on arrival: the visitor may have declined while the chunk downloaded.
+    if (getConsent() === "granted") use(posthog);
+  });
 }
 
 /** Starts PostHog for a visitor who already accepted, then follows the banner. */

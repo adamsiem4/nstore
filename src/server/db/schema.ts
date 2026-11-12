@@ -37,23 +37,31 @@ export const productDetails = pgTable("product_details", {
   care: text("care").notNull(),
 });
 
-export const payments = pgTable("payments", {
-  id: text("stripe_payment_intent_id").primaryKey(),
-  clerkUserId: text("clerk_user_id"),
-  status: text("status").notNull(),
-  amount: integer("amount").notNull(),
-  currency: text("currency").notNull(),
-  receiptEmail: text("receipt_email"),
-  confirmationEmailSentAt: timestamp("confirmation_email_sent_at", {
-    withTimezone: true,
-  }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const payments = pgTable(
+  "payments",
+  {
+    id: text("stripe_payment_intent_id").primaryKey(),
+    clerkUserId: text("clerk_user_id"),
+    status: text("status").notNull(),
+    amount: integer("amount").notNull(),
+    currency: text("currency").notNull(),
+    receiptEmail: text("receipt_email"),
+    confirmationEmailSentAt: timestamp("confirmation_email_sent_at", {
+      withTimezone: true,
+    }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    // The order list: one user's paid orders by date. Ascending on purpose —
+    // Postgres walks it backwards for the newest-first sort.
+    index("payments_orders_idx").on(table.clerkUserId, table.status, table.createdAt),
+  ],
+);
 
 /** Saved delivery addresses; the default one pre-fills Stripe Checkout. */
 export const addresses = pgTable(
