@@ -213,7 +213,7 @@ components remain: accordion keyframes live in `src/app/globals.css`, and state/
 selectors use native Tailwind variants. Lifecycle-script trust is unchanged.
 
 Next.js and `eslint-config-next` remain on 16.4.4, React and React DOM on 19.3.1,
-and `posthog-js` on 1.444.3, with Node 24 type definitions.
+and `posthog-js` on 1.445.1, with Node 24 type definitions.
 Stripe stays on 22.x because 23.x changes its API contract; ESLint stays on 9.x
 because the React, import, and accessibility plugins do not declare ESLint 10 support.
 TypeScript stays on 5.9.x rather than taking a compiler-major migration;
