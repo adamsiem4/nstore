@@ -2,21 +2,26 @@
 
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
-/** Pinned header panel; flags `data-stuck` once the page scrolls past the top. */
-export function StickyHeader({ children }: { children: ReactNode }) {
+/** Page changes start above the shared header; hash links keep their target. */
+function ScrollReset() {
   const pathname = usePathname();
   const previousPathname = useRef(pathname);
-  const sentinel = useRef<HTMLDivElement>(null);
-  const [stuck, setStuck] = useState(false);
 
   useEffect(() => {
     if (previousPathname.current === pathname) return;
     previousPathname.current = pathname;
-    // Page changes start above the shared header; hash links keep their target.
     if (!window.location.hash) window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [pathname]);
+
+  return null;
+}
+
+/** Pinned header panel; flags `data-stuck` once the page scrolls past the top. */
+export function StickyHeader({ children }: { children: ReactNode }) {
+  const sentinel = useRef<HTMLDivElement>(null);
+  const [stuck, setStuck] = useState(false);
 
   useEffect(() => {
     const target = sentinel.current;
@@ -36,6 +41,10 @@ export function StickyHeader({ children }: { children: ReactNode }) {
 
   return (
     <>
+      {/* The pathname is request data on routes with dynamic segments; it streams in without holding the header. */}
+      <Suspense fallback={null}>
+        <ScrollReset />
+      </Suspense>
       {/* Out of flow on purpose: a flex child would eat a gap of its own and
           push the header down the page. */}
       <div ref={sentinel} aria-hidden="true" className="absolute top-0 h-px w-px" />

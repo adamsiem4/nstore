@@ -31,6 +31,7 @@ App Router, TypeScript, Bun, and Tailwind CSS.
 
 - One Next.js application; no separate frontend or backend repository
 - Server Components by default, with narrow Client Component boundaries
+- Cache Components: each page's static shell is prerendered; cart, sign-in state, and orders stream in behind Suspense; the catalog is cached across requests for up to an hour
 - Server-only database access, secrets, authorization, and business logic
 - Server Actions for application mutations and Route Handlers for HTTP endpoints
 - Clerk for authentication and authorization
@@ -276,7 +277,7 @@ locally. Use Stripe test keys and appropriate email recipients.
 - Schema: `src/server/db/schema.ts`
 - Queries: `src/server/queries/`
 - Schema changes: edit the schema → `bun run db:generate` → review SQL in `drizzle/` → `bun run db:migrate`
-- Catalog changes: edit `src/server/db/seed/*` → `bun run db:seed`; it replaces `products` and `product_details` in one transaction, leaving payments untouched
+- Catalog changes: edit `src/server/db/seed/*` → `bun run db:seed`; it replaces `products` and `product_details` in one transaction, leaving payments untouched. The running site caches the catalog (prices included) for up to an hour; a deployment starts a fresh cache
 - Browse data: `bun run db:studio`
 - `bun run test` loads `.env.local`; the query suites read the seeded database
 

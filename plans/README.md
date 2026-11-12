@@ -20,7 +20,7 @@ migration. The repository itself was not modified outside `plans/`.
 | [004](004-security-headers.md) | Every response carries baseline security headers | P2 | S | — | DONE |
 | [005](005-action-tests-and-default-address-fix.md) | Checkout, cart and address actions are tested; a stale address id can no longer wipe the default | P2 | M | — | DONE |
 | [007](007-consent-recheck-and-payments-index.md) | Analytics queued before a consent withdrawal never fires; the order list has an index | P3 | S | — | DONE |
-| [006](006-static-shell-and-cached-catalog.md) | Pages ship a prerendered shell and the catalog is read once, not on every request | P3 | M | 001, 003, 004 | TODO |
+| [006](006-static-shell-and-cached-catalog.md) | Pages ship a prerendered shell and the catalog is read once, not on every request | P3 | M | 001, 003, 004 | DONE |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale — finding fixed independently or approach abandoned)
 

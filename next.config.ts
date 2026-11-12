@@ -16,6 +16,8 @@ const securityHeaders = [
 
 // ponytail: pin root so a stray package-lock.json above the repo can't hijack it
 const nextConfig: NextConfig = {
+  cacheComponents: true,
+  partialPrefetching: true,
   poweredByHeader: false,
   turbopack: { root: import.meta.dirname },
   async headers() {

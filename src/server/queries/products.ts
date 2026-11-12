@@ -1,4 +1,5 @@
-import { asc, eq, sql } from "drizzle-orm";
+import { asc, sql } from "drizzle-orm";
+import { cacheLife } from "next/cache";
 import { cache } from "react";
 import { getDb } from "@/server/db";
 import { products } from "@/server/db/schema";
@@ -14,33 +15,35 @@ const columns = {
   price: products.price,
 };
 
+/**
+ * The whole catalog in grid order, read once and shared by every request. A new
+ * deployment starts a fresh cache; without one, a reseed shows up within the hour.
+ */
+async function getCatalog(): Promise<Product[]> {
+  "use cache";
+  cacheLife("hours");
+
+  return getDb().select(columns).from(products).orderBy(asc(products.position));
+}
+
 // React cache dedupes header/page getProducts() calls within one server render.
-// ponytail: no cross-request cache—every render reads Neon; add unstable_cache with a catalog tag if traffic matters.
 export const getProducts = cache(
   async (query?: string): Promise<Product[]> => {
     const q = query?.trim().toLowerCase();
+    if (!q) return getCatalog();
 
+    // Searches are per-visitor input, so they read Neon directly instead of filling the cache.
     // strpos keeps substring search over name, description, and category; unlike LIKE, bound %/_ stay literal.
     return getDb()
       .select(columns)
       .from(products)
-      .where(
-        q
-          ? sql`strpos(lower(concat_ws(' ', ${products.name}, ${products.description}, ${products.category})), ${q}) > 0`
-          : undefined,
-      )
+      .where(sql`strpos(lower(concat_ws(' ', ${products.name}, ${products.description}, ${products.category})), ${q}) > 0`)
       .orderBy(asc(products.position));
   },
 );
 
+/** One product, from the cached catalog: an unknown id costs no query and no cache entry. */
 export const getProduct = cache(
-  async (id: string): Promise<Product | undefined> => {
-    const [product] = await getDb()
-      .select(columns)
-      .from(products)
-      .where(eq(products.id, id))
-      .limit(1);
-
-    return product;
-  },
+  async (id: string): Promise<Product | undefined> =>
+    (await getCatalog()).find((product) => product.id === id),
 );

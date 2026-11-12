@@ -2,7 +2,6 @@
 
 import { XIcon } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import type { ComponentProps, ReactNode } from "react";
 import { PillButton } from "@/components/ui/pill-button";
 import { showModal } from "@/lib/utils";
@@ -23,15 +22,14 @@ export function openCart() {
  * minimalist shops surveyed do.
  */
 export function CartLink(props: Omit<ComponentProps<typeof Link>, "href">) {
-  const pathname = usePathname();
-
   return (
     <Link
       {...props}
       href="/cart"
       aria-haspopup="dialog"
       onClick={(event) => {
-        if (pathname === "/cart" || event.button !== 0) return;
+        // Read at click time: a hook would make the pathname render data and hold up the static header.
+        if (window.location.pathname === "/cart" || event.button !== 0) return;
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         if (openCart()) event.preventDefault();
       }}

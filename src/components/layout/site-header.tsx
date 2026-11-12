@@ -211,6 +211,8 @@ export function SiteHeader() {
             <HeaderCartControl />
           </Suspense>
         </HeaderBoundary>
+        {/* Who is signed in is request data: it streams in after the static header. The fallback holds the icon's 40px. */}
+        <Suspense fallback={<span aria-hidden="true" className="size-10" />}>
         <Show when="signed-out">
           <Link
             href="/sign-in"
@@ -230,6 +232,7 @@ export function SiteHeader() {
             <UserAvatar />
           </Link>
         </Show>
+        </Suspense>
       </div>
 
       {/* ponytail: same checkbox trick as the search pill — the drawer animates
@@ -303,6 +306,8 @@ export function SiteHeader() {
               </Suspense>
             </HeaderBoundary>
             <div className="ml-auto flex items-center gap-1">
+              {/* Same as the desktop slot; the drawer is closed while this streams, so nothing needs holding. */}
+              <Suspense fallback={null}>
               <Show when="signed-out">
                 <Link href="/sign-in" className={cn(navLinkClass, "gap-2 normal-case tracking-normal text-foreground")}>
                   <UserIcon aria-hidden="true" />
@@ -315,6 +320,7 @@ export function SiteHeader() {
                   Account
                 </Link>
               </Show>
+              </Suspense>
             </div>
           </div>
         </div>
