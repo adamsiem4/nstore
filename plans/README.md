@@ -21,6 +21,8 @@ migration. The repository itself was not modified outside `plans/`.
 | [005](005-action-tests-and-default-address-fix.md) | Checkout, cart and address actions are tested; a stale address id can no longer wipe the default | P2 | M | — | DONE |
 | [007](007-consent-recheck-and-payments-index.md) | Analytics queued before a consent withdrawal never fires; the order list has an index | P3 | S | — | DONE |
 | [006](006-static-shell-and-cached-catalog.md) | Pages ship a prerendered shell and the catalog is read once, not on every request | P3 | M | 001, 003, 004 | DONE |
+| [008](008-review-fixes-consent-receipt-cache.md) | Review fixes: opt-in only under consent, complete receipts, a real one-hour catalog limit | P1 | S | 001–007 | TODO |
+| [009](009-atomic-default-address-swap.md) | Changing the default address is one atomic transaction (optional) | P3 | S | 008 | TODO |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale — finding fixed independently or approach abandoned)
 
@@ -30,6 +32,22 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
 - 006 requires 001, 003 and 004 because it edits the same files and its snippets are written against their result: the two catalog test files (001), `src/components/layout/site-header.tsx` (003) and `next.config.ts` (004). Run it last.
 - 001 first is recommended, not required: once it lands, every later plan is checked by CI on its pull request.
 - 002 and 005 both add tests under `tests/`; neither changes the other's files.
+- 008 and 009 come from the automated review of pull request #6 and go on the same branch (`audit/improve`). 009 requires 008 because both edit `tests/server/actions/addresses.test.ts`. 009 is optional: reject it if the narrow race is acceptable.
+
+## Review of pull request #6
+
+Each review comment was checked against the code and installed packages before planning.
+
+| Review comment | Verdict | Plan |
+|---|---|---|
+| `src/lib/posthog.ts`: opt-in runs before the consent check (major, privacy) | valid — `opt_in_capturing()` sends `$opt_in` | 008 |
+| Consent listener: accepting after a reject does not resume capture | valid — the cached SDK is never opted back in | 008 |
+| `route.ts`: receipt uses only the first page of line items | valid — Stripe expands ten | 008 |
+| `products.ts`: `cacheLife("hours")` expires after a day, not an hour | valid | 008 |
+| `checkout.test.ts` / `addresses.test.ts`: fakes ignore the user filter (2 nitpicks) | valid | 008 |
+| `addresses.ts`: ownership check and default swap are not atomic | valid, narrow, mild outcome | 009 |
+
+The comment the review attached to `plans/007-…md` is the consent-listener finding; it is fixed in `src/lib/posthog.ts`, and the plan file is left as the record of what was executed.
 
 ## Owner actions the plans cannot perform
 
@@ -40,7 +58,8 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
 ## Findings noted, not planned
 
 - `src/app/(store)/privacy/page.tsx:4-5` — the privacy page's contact address is still the placeholder `privacy@nstore.example` (the code comment says to replace it before launch). Needs a real address from the owner.
-- `README.md:202` says `posthog-js` stays on `1.444.3`; `package.json` has `^1.445.1` (Dependabot bump). One-line doc fix.
+- `README.md` said `posthog-js` stays on `1.444.3` while `package.json` has `^1.445.1`: fixed in `7f05bf7`.
+- Order pages and the checkout success page show at most ten line items for an order with more than ten different products (`src/server/queries/orders.ts:43`, `src/app/(store)/checkout/success/page.tsx:19`): same Stripe expansion limit as the receipt fixed in 008, display only, older than pull request #6. Solved properly by persisting orders (below).
 - Direction options raised in the audit and not selected: persist orders and line items in the webhook (removes up to 20 Stripe calls per `/orders` render; three code comments already defer to it); a production fulfillment/returns surface (shipped/delivered can only be set by the dev-only simulator); `sitemap.ts`/`robots.ts`/product JSON-LD and real category routes; a Playwright smoke test for the cart flow the README documents as a manual check.
 
 ## Findings considered and rejected
