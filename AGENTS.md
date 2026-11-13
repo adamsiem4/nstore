@@ -39,7 +39,7 @@ Write for the versions installed in `package.json`, using each library's current
 
 ## Tooling
 
-Bun only: `bun install`, `bun add`, `bunx`, `bun run <script>`. Scripts are in `package.json`.
+Bun only: `bun install`, `bun add`, `bunx`, `bun run <script>`. Scripts are in `package.json`. Where a skill shows `npm`, `npx` or `pnpm` commands, run the Bun equivalent.
 
 ## Verification
 
@@ -47,7 +47,7 @@ After a change, run these and fix until all pass:
 
 ```bash
 bun run lint
-bunx tsc --noEmit
+bun run typecheck
 bun run test
 bun run build
 ```

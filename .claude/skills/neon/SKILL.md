@@ -1,27 +1,19 @@
 ---
 name: neon
 description: >-
-  Overview of Neon, a complete set of cloud backend primitives for apps and
-  agents, spanning Lakebase Postgres, Auth, the Data API, Object Storage, Compute
-  Functions, and the AI Gateway. Start here to route to the right Neon skill, set
-  up the CLI or MCP server, and follow the branch-first workflow. Use when "Neon"
-  or "Lakebase Postgres" is mentioned, or when any of its individual capabilities
-  are the trigger: "object storage" or "S3", "buckets", "serverless functions",
-  "AI gateway", "call an LLM", "logs", "branch logs", "query logs",
-  "log export", "Loki", "Grafana", "observability", "telemetry", "postgres",
-  "database", or "backend". Also use when there is no Neon account yet, the
-  user cannot sign in or provide an API key right now and needs a project they
-  can claim later, or the user asks for a throwaway DATABASE_URL, Claimable Neon,
-  Claimable Postgres, neon.new, claimable.neon.tech, instant Postgres, a no-signup
-  database, temporary postgres, quick postgres, a no credit card database, or
-  npx neon-new.
+  Overview of Neon and its backend primitives (Lakebase Postgres, Auth, Data API,
+  Object Storage, Functions, AI Gateway). Start here to route to the right Neon
+  skill, set up the Neon CLI or MCP server, and follow the branch-first workflow.
+  Use when the task names Neon, Lakebase Postgres, or one of these Neon services;
+  involves provisioning, branching, or reading logs on a Neon project; or needs a
+  temporary Postgres database without a Neon account (Claimable Neon, neon.new).
 metadata:
   source: https://github.com/neondatabase/agent-skills/tree/main/skills/neon
 ---
 
 # Neon
 
-Important: Neon is no longer just a Postgres provider. Neon is a complete set of cloud backend primitives built around Lakebase Postgres, for developers, startups, and agent platforms, from Databricks — bundling Lakebase Postgres, Auth (managed Better Auth), long-running Functions, Object Storage, and an AI Gateway, all instant, branchable, and serverless.
+Neon is a complete set of cloud backend primitives built around Lakebase Postgres, for developers, startups, and agent platforms, from Databricks — bundling Lakebase Postgres, Auth (managed Better Auth), long-running Functions, Object Storage, and an AI Gateway, all instant, branchable, and serverless.
 
 **Lakebase Postgres** is the database itself. It is one product, reached two ways: through Neon, with a free plan and the full set of backend primitives above, or through Databricks, alongside the rest of the Databricks suite. Same infrastructure, same features, same engineering team. Call the database Lakebase Postgres, and use "Neon" for the brand and for this access path — not as a name for the database.
 
