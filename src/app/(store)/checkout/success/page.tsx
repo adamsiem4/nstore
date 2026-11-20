@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CaptureEvent } from "@/components/analytics/capture-event";
 import { pillButtonVariants } from "@/components/ui/pill-button";
+import { orderNumber } from "@/server/queries/orders";
 import { getStripe } from "@/server/services/stripe";
 
 export const metadata: Metadata = { title: "Order confirmed" };
@@ -33,6 +34,9 @@ export default async function CheckoutSuccessPage(
     .update(session.id)
     .digest("hex")
     .replace(/^(.{8})(.{4})(.{4})(.{4})(.{12}).*/, "$1-$2-$3-$4-$5");
+  // The session id unlocks this page, so analytics gets the order number customers see instead.
+  const intentId =
+    typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id;
 
   return (
     <div className="mx-auto flex max-w-lg flex-1 flex-col justify-center py-10 text-center">
@@ -40,7 +44,7 @@ export default async function CheckoutSuccessPage(
         event="Order Completed"
         uuid={eventId}
         properties={{
-          order_id: session.id,
+          order_id: intentId ? orderNumber(intentId) : eventId,
           total: (session.amount_total ?? 0) / 100,
           revenue: (session.amount_subtotal ?? 0) / 100,
           shipping: (shipping ?? 0) / 100,
