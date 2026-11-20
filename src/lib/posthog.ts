@@ -16,6 +16,9 @@ function load() {
       opt_out_capturing_by_default: true,
       opt_out_capturing_persistence_type: "localStorage",
       opt_out_persistence_by_default: true,
+      // session_id on /checkout/success unlocks that order's page, so it never leaves the browser.
+      mask_personal_data_properties: true,
+      custom_personal_data_properties: ["session_id"],
     });
     return posthog;
   });

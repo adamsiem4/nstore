@@ -22,11 +22,14 @@ const sdk = Promise.withResolvers<void>();
 const optedOut = Promise.withResolvers<void>();
 let capturing = false;
 const sent: string[] = [];
+let config: Record<string, unknown> = {};
 mock.module("posthog-js", async () => {
   await sdk.promise;
   return {
     default: {
-      init() {},
+      init(_token: string, options: Record<string, unknown>) {
+        config = options;
+      },
       has_opted_in_capturing: () => capturing,
       opt_in_capturing() {
         capturing = true;
@@ -78,4 +81,10 @@ test("nothing runs or is sent for a visitor who declines while PostHog downloads
   await settled();
   assert.equal(capturing, true, "capture resumes in the same session");
   assert.deepEqual(sent, ["$opt_in", "$opt_in"]);
+});
+
+test("the checkout session id is masked in captured URLs", () => {
+  // The custom list only applies when masking is on, so both are required.
+  assert.equal(config.mask_personal_data_properties, true);
+  assert.deepEqual(config.custom_personal_data_properties, ["session_id"]);
 });
