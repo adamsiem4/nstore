@@ -80,6 +80,7 @@ public/
 - Product-card quick-add with animated purple success/red error feedback, a slide-out cart drawer, cookie-backed `/cart`, quantity controls, a free-shipping countdown, in-cart suggestions, and order summary
 - Stripe hosted checkout with delivery addresses (a signed-in user's default saved address pre-fills it via a Stripe customer whose id lives in Clerk private metadata) and paid-return cart clearing
 - Clerk sign-in, sign-up, a protected Amazon-style `/account` hub (cards with sub-links for orders, login & security, addresses, plus sign out) that the desktop avatar and the mobile menu link to; Clerk profile at `/account/profile` and security at `/account/profile/security` restyled to match the store, with an optional phone number kept in Clerk private metadata and sent to the Stripe customer at checkout; an `/account/addresses` book (add, edit, remove, one default enforced by a partial unique index); and a signed-in `/orders` history built from webhook-recorded payments
+  - Signed-out visits to `/account`, `/orders`, and their subpages redirect before rendering and preserve the original destination for after sign-in.
 - Return requests from paid orders: an inline item/reason form, persisted confirmation, ownership checks, duplicate protection, and fully refunded-order blocking
 - Drizzle catalog (`products` + `product_details`), payment and saved-address schemas with generated PostgreSQL migrations and an atomic seed script
 - Stripe webhook signature verification and durable payment-status synchronization
