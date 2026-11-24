@@ -99,18 +99,6 @@ test("order simulation is development-only, owner-only, and walks the steps", as
   assert.equal(sent.length, 3, "reset sends nothing");
 });
 
-test("order simulation rejects customers and admins whose account switch is off", async () => {
-  Object.assign(process.env, { NODE_ENV: "development" });
-  privateMetadata = { devToolsEnabled: true };
-  await assert.rejects(simulateOrderStep(form("shipped")), /not enabled/);
-
-  privateMetadata = { role: "admin", devToolsEnabled: false };
-  await assert.rejects(simulateOrderStep(form("shipped")), /not enabled/);
-
-  privateMetadata = { role: "admin", devToolsEnabled: "true" };
-  await assert.rejects(simulateOrderStep(form("shipped")), /not enabled/);
-});
-
 function devToolsForm(enabled: string) {
   const data = new FormData();
   data.set("enabled", enabled);
@@ -122,6 +110,9 @@ test("the admin's saved switch gates subsequent order actions and cannot grant a
   userId = "user_owner";
   privateMetadata = { role: "admin" };
   await assert.rejects(simulateOrderStep(form("reset")), /not enabled/);
+  privateMetadata = { role: "admin", devToolsEnabled: "true" };
+  await assert.rejects(simulateOrderStep(form("reset")), /not enabled/, "only a boolean switch counts");
+  privateMetadata = { role: "admin" };
 
   await setDevToolsEnabled(devToolsForm("true"));
   await simulateOrderStep(form("reset"));

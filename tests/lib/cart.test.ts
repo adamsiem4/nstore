@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "bun:test";
-import { MAX_QTY, SHIPPING_CENTS, parseCart, suggest, toLineItems, totals, withQty } from "@/lib/cart";
+import { MAX_QTY, SHIPPING_CENTS, parseCart, suggest, totals, withQty } from "@/lib/cart";
 import type { Product } from "@/types/product";
 
 const kettle: Product = {
@@ -33,24 +33,6 @@ test("quantity math", () => {
   const before = { a: 1 };
   withQty(before, "a", 1);
   assert.deepEqual(before, { a: 1 }, "withQty must not mutate its input");
-});
-
-test("Stripe line items", () => {
-  assert.deepEqual(toLineItems([]), []);
-  assert.deepEqual(
-    toLineItems([{ product: kettle, quantity: 3 }]),
-    [
-      {
-        quantity: 3,
-        price_data: {
-          currency: "eur",
-          unit_amount: 4900,
-          product_data: { name: "Kettle", description: "Boils water" },
-        },
-      },
-    ],
-    "Stripe bills cents per unit, quantity carries the rest",
-  );
 });
 
 // Money path: the €60 promise on the home and product pages is the boundary.

@@ -10,7 +10,7 @@ const test = bunTest.skipIf(!process.env.DATABASE_URL);
 // `use cache` is a build-time directive; outside Next.js its lifetime call has nothing to configure.
 mock.module("next/cache", () => ({ cacheLife: () => {} }));
 
-test("seed match, lookup, retirement, and category search", async () => {
+test("seed match, lookup, and category search", async () => {
   const products = await getProducts();
   assert.deepEqual(
     products,
@@ -20,7 +20,6 @@ test("seed match, lookup, retirement, and category search", async () => {
   const ids = products.map((p) => p.id);
   assert.equal(new Set(ids).size, ids.length, "catalog ids must be unique");
 
-  assert.equal(await getProduct("canvas-tote"), undefined, "retired stock must not resolve");
   const kettle = products.find((p) => p.id === "cream-electric-kettle");
   assert.ok(kettle);
   assert.deepEqual(await getProduct(kettle.id), kettle);

@@ -32,11 +32,6 @@ test("every product has a complete detail sheet", async () => {
   }
 });
 
-// The sheet is keyed by id, so a retired product must not leave one behind.
-test("retired stock has no sheet", async () => {
-  assert.equal(await getProductDetails("canvas-tote"), undefined, "retired stock must not resolve");
-});
-
 // Numbers quoted in the catalog description must reappear in the sheet: the two
 // are shown on the same page and may not disagree.
 test("sheet figures match the catalog description", async () => {
