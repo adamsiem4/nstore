@@ -135,11 +135,8 @@ test("acknowledges a payment intent Stripe doesn't know", async () => {
   assert.deepEqual(upserts, []);
 });
 
-test("rejects an invalid signature", async () => {
+test("rejects an invalid or missing signature", async () => {
   assert.equal((await webhook({ "stripe-signature": "invalid" })).status, 400);
-});
-
-test("rejects a missing signature", async () => {
   assert.equal((await webhook()).status, 400);
 });
 
